@@ -1,0 +1,104 @@
+@import url(screen.content.css);
+@import url(screen.hacks.css);
+
+.c3-edit-link {
+	float: right;
+}
+
+.top-container {
+	padding-top: 1.0em;
+}
+
+body {
+	font: 62.5%/1.0em 'Arial', 'Helvetica', sans-serif;
+	color: #333;
+	background: #99002a;
+	margin: 0;
+}
+
+#header {
+	background: #ffffff;
+	height: 142px;
+}
+
+#header img {
+	display: block;
+	padding: 18px 0 26px;
+	z-index: 1;
+}
+
+.constraint {
+	width: 920px;
+	margin: 0 auto;
+}
+
+#main {
+	background: #ffffff;
+}
+
+#nav {
+	background: url('../images/nav.jpg') no-repeat top left;
+	height: 31px;
+	margin-top: -17px;
+	z-index: 2;
+}
+
+#main .column-outer {
+	padding: 8px 8px 0 8px;
+	overflow: auto;
+}
+
+#main .column-outer .column-outer-left {
+	float: left;
+	width: 682px;
+}
+
+#main .column-outer .column-outer-right {
+	float: right;
+	width: 214px;
+}
+
+#main .column-inner {
+	padding: 20px 0px 20px 20px;
+	overflow: auto;
+}
+
+#main .column-inner .column-inner-left {
+	float: left;
+	width: 410px;
+}
+
+#main .column-inner .column-inner-right {
+	float: right;
+	width: 225px;
+	background: #eee;
+}
+
+#main .column-inner .column-inner-right .page-images {
+	padding: 15px;
+	font-size: 1.1em;
+}
+
+#footer {
+	background: #fff;
+	padding: 0 0 15px 0;
+}
+
+#footer ul {
+	margin: 0;
+	padding: 0 15px;
+	list-style: none;
+}
+
+#footer li {
+	float: left;
+	font-size: 1.0em;
+	line-height: 1.5em;
+	color: #afb09e;
+	padding-right: 1.2em;
+}
+
+#footer li.last-child {
+	float: right;
+	padding-right: 0;
+}
