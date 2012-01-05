@@ -37,12 +37,12 @@
 						
 							<div class="row<?php echo $this->form_validation->earmark('admin_username'); ?>">
 								<label for="admin_username">Username</label>
-								<input type="text" name="admin_username" id="admin_username" value="<?php echo $this->form_validation->value('admin_username'); ?>" />
+								<span><input type="text" name="admin_username" id="admin_username" value="<?php echo $this->form_validation->value('admin_username'); ?>"></span>
 							</div>
 						
 							<div class="row<?php echo $this->form_validation->earmark('admin_password'); ?>">
 								<label for="admin_password">Password</label>
-								<input type="password" name="admin_password" id="admin_password" />
+								<span><input type="password" name="admin_password" id="admin_password"></span>
 							</div>
 							
 							<div class="button-row">

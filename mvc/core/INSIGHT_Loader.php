@@ -1,6 +1,9 @@
-<?php
+<?php (defined('BASEPATH')) || exit('No direct script access allowed');
 
-class INSIGHT_Loader extends CI_Loader {
+/* load the MX_Loader class */
+require APPPATH . 'third_party/MX/Loader.php';
+
+class INSIGHT_Loader extends MX_Loader {
 	
 	const INSIGHT_SKIN_FOLDER = 'skins';
 	
@@ -12,9 +15,10 @@ class INSIGHT_Loader extends CI_Loader {
 	}
 	
 	public function skin($skin = null, $folder = null) {
-		
-		if(is_null($skin))
+
+		if(is_null($skin)) {
 			return $this->_ci_skin_path;
+		}
 		
 		// Set the current skin.
 		$this->_ci_skin = $skin;
@@ -23,6 +27,7 @@ class INSIGHT_Loader extends CI_Loader {
 		// Set the path to the skin folder.
 		$this->_ci_view_paths[$this->_ci_skin_path . DIRECTORY_SEPARATOR . (is_null($folder) ? 'views' : $folder) . DIRECTORY_SEPARATOR] = true;
 	}
+	
 	
 	/**
 	 * Database Loader

@@ -173,9 +173,27 @@ table .empty {
 	padding: 2.0em 4.0em;
 }
 
+.button-row {
+	margin-top: 1.75em;
+}
 
 .row { 
 	margin-bottom: 0.5em; 
+}
+
+.row > span {
+	display: inline-block;
+	background: #dfdfdf;
+	padding: 4px;
+	border-radius: 6px;
+	-moz-border-radius: 6px;
+	-webkit-border-radius: 6px;
+}
+
+.row input[type="text"], .row input[type="password"] {
+	font-size: 1.1em;
+	border: solid 1px #bdbdbd;
+	padding: 3px 2px;
 }
 
 .row label { 
@@ -193,6 +211,8 @@ table .empty {
 .row span.description {
 	font-size: 0.8em;
 	display: block;
+	padding: auto;
+	background: none;
 }
 
 .row.row-error label {

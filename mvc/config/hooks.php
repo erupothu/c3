@@ -9,11 +9,11 @@
 |	http://codeigniter.com/user_guide/general/hooks.html
 |
 */
-
+/*
 $hook['pre_system'] = array(
 	'class'    => 'LazyLoader',
 	'function' => 'init',
 	'filename' => 'LazyLoader.php',
 	'filepath' => 'hooks',
 	'params'   => array()
-);
+);*/

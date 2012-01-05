@@ -6,7 +6,7 @@ class Insight {
 	private $configuration;
 	
 	public function __construct($insight_configuration = array()) {
-		
+
 		// Alter INI.
 		ini_set('xdebug.var_display_max_depth', 4);
 		ini_set('xdebug.var_display_max_children', 256);
@@ -19,7 +19,7 @@ class Insight {
 		$this->ci->load->model('settings_model', 'settings');
 		$this->ci->load->config('insight', true);
 		$this->ci->load->library('Auth');
-		
+
 		// Load db configuration (i.e. user editable) and put into config.
 		// be nice to memcache this query (since it rarely changes).
 		$this->configuration = array_merge($this->configuration, array(

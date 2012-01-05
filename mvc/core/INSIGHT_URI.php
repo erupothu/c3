@@ -12,7 +12,7 @@ class INSIGHT_URI extends CI_URI {
 	
 	public function skin($path = null, $folder = null) {
 
-		$skin_path = DIRECTORY_SEPARATOR . (is_null($folder) ? get_instance()->load->skin() : 'skins/' . $folder);
+		$skin_path = DIRECTORY_SEPARATOR . (is_null($folder) ? CI::$APP->load->skin() : 'skins/' . $folder);
 		if(is_null($path))
 			return $skin_path;
 		

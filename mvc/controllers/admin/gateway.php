@@ -5,7 +5,6 @@ class Gateway extends INSIGHT_Admin_Controller {
 	public function __construct() {
 		
 		parent::__construct(false);
-		
 		$this->load->library('form_validation');
 	}
 	

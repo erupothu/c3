@@ -1,0 +1,3 @@
+<?php
+
+$route['page'] 			= 'main';

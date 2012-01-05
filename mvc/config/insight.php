@@ -4,7 +4,7 @@ $config = array(
 	
 	'display'	=> array(
 		
-		'skin'		=> 'highclare',
+		'skin'		=> 'demo',
 		'title'		=> 'Highclare School'
 		
 	),
