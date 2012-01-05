@@ -17,7 +17,7 @@ class Main extends INSIGHT_HMVC_Controller {
 		}
 		
 		// Protected page?
-		// var_dump($page);
+		// @TODO
 		
 		// Dispatch page data to the required template.
 		$this->load->view('templates/default.template.view.php', array(
