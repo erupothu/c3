@@ -7,6 +7,9 @@ class Insight {
 	
 	public function __construct($insight_configuration = array()) {
 
+		// Set Exception Handler
+		set_exception_handler(array($this, 'error'));
+		
 		// Alter INI.
 		ini_set('xdebug.var_display_max_depth', 4);
 		ini_set('xdebug.var_display_max_children', 256);
@@ -44,6 +47,40 @@ class Insight {
         return $encode ? htmlentities($position, ENT_COMPAT, 'UTF-8') : $position;
 	}
 	
+	
+	public function modules() {
+		
+		$modules = array();
+		
+		foreach(Modules::$locations as $location => $_) {
+			foreach(new DirectoryIterator($location) as $module_folder) {
+				
+				if($module_folder->isDot() || !$module_folder->isDir())
+					continue;
+
+				// Is this an administrable module?  Does it have an admin controller?
+				if(file_exists($module_folder->getPathname() . DIRECTORY_SEPARATOR . 'controllers/admin' . EXT)) {
+					$modules[$module_folder->getBasename()] = ucfirst($module_folder->getBasename());
+				}
+			}
+		}
+
+		return $modules;
+	}
+	
+	static public function error($exception) {
+		
+		// clear the output buffer.
+		
+		// load up acceptable 'skin' to display error.
+		
+		// log exception correctly.
+		
+		// output (temporary).
+		echo '<h4>Error:</h4>';
+		die($exception->getMessage());
+	}
+	
 	// TODO:
 	// Think of a cool way of doing this...
 	// lol?
@@ -67,4 +104,8 @@ class Insight {
 		}
 		echo str_repeat("\t", $indent) . "<!-- End of Hook -->\n";
 	}
+}
+
+class INSIGHT_Exception extends Exception {
+	
 }

@@ -33,8 +33,15 @@
 					
 					<ul id="menu-admin" class="clearfix">
 						<li<?php echo $this->router->fetch_class() == 'main' ? ' class="selected"' : ''; ?>><?php echo anchor('admin', 'Home'); ?></li>
+						<?php foreach($this->insight->modules() as $module_name => $module_title): ?>
+						<li<?php echo $this->router->fetch_module() == $module_name ? ' class="selected"' : ''; ?>><?php echo anchor('admin/' . $module_name, $module_title); ?></li>
+						<?php endforeach; ?>
+						<?php /*
+						
 						<li<?php echo $this->router->fetch_class() == 'page' ? ' class="selected"' : ''; ?>><?php echo anchor('admin/page', 'Pages'); ?></li>
 						<li<?php echo $this->router->fetch_class() == 'settings' ? ' class="selected"' : ''; ?>><?php echo anchor('admin/settings', 'Settings'); ?></li>
+						*/
+						?>
 						<li class="right-child last-child"><?php echo anchor('admin/logout', 'Log Out'); ?></li>
 					</ul>
 				</div>

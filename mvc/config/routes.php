@@ -6,12 +6,14 @@
 | -------------------------------------------------------------------------
 */
 
-$route['default_controller'] 			= 'main';
+$route['default_controller'] 			= 'page/main';
 $route['404_override'] 					= 'page/main';
 
 /* Administration */
+$route['admin']							= 'admin/main';
+$route['admin/(settings)']				= 'admin/$1';
+$route['admin/(settings)/(:any)']		= '$2/admin/$1';
 $route['admin/(login|logout)']			= 'admin/gateway/$1';
 $route['admin/([^/]+)/(:any)']			= '$1/admin/$2';
 $route['admin/([^/]+)/?']				= '$1/admin';
 
-$route['admin']							= 'admin';

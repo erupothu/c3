@@ -14,6 +14,15 @@ class INSIGHT_Loader extends MX_Loader {
 		parent::__construct();
 	}
 	
+	
+	/**
+	 * skin
+	 * 
+	 * @access	public
+	 * @param	string		name of the skin
+	 * @param	string		folder
+	 * @return 	void
+	 */
 	public function skin($skin = null, $folder = null) {
 
 		if(is_null($skin)) {
@@ -24,13 +33,18 @@ class INSIGHT_Loader extends MX_Loader {
 		$this->_ci_skin = $skin;
 		$this->_ci_skin_path = self::INSIGHT_SKIN_FOLDER . DIRECTORY_SEPARATOR . $this->_ci_skin;
 		
-		// Set the path to the skin folder.
-		$this->_ci_view_paths[$this->_ci_skin_path . DIRECTORY_SEPARATOR . (is_null($folder) ? 'views' : $folder) . DIRECTORY_SEPARATOR] = true;
+		// Set the path to the skin folder (modules, for example)
+		if(!is_null($folder)) {
+			$this->_ci_view_paths[$this->_ci_skin_path . DIRECTORY_SEPARATOR . $folder . DIRECTORY_SEPARATOR] = true;
+		}
+		
+		// Add the default skin folder.
+		$this->_ci_view_paths[$this->_ci_skin_path . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR] = true;
 	}
-	
+
 	
 	/**
-	 * Database Loader
+	 * database
 	 *
 	 * @access	public
 	 * @param	string		the DB credentials

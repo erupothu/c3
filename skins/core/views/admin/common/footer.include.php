@@ -9,7 +9,7 @@
 		<div id="footer">
 		
 			<div class="constrain">
-				C3 &nbsp;<span class="copyright">&copy; Creative Insight <?php echo date('Y'); ?></span>
+			Memory Usage: {memory_usage} &nbsp;&bull;&nbsp; Elapsed Time: {elapsed_time}s &nbsp;&bull;&nbsp; C3 &nbsp;<span class="copyright">&copy; Creative Insight <?php echo date('Y'); ?></span>
 			</div>
 			
 		</div>

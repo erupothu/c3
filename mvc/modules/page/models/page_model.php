@@ -38,10 +38,24 @@ class Page_Model extends NestedSet_Model {
 			return false;
 		}
 		
+		/*
 		$page_data = $page_result->row_array();
 		$this->current_slug = $page_data['page_slug'];
 		
-		return $page_data;
+		if(class_exists('Tidy')) {
+			$tidy = new Tidy;
+			$page_data['page_content'] = $tidy->repairString($page_data['page_content'], array(
+				'clean' 			=> true,
+				'indent' 			=> true,
+				'indent-spaces' 	=> 4,
+				'drop-empty-paras' 	=> true,
+				'show-body-only'	=> true
+			), 'UTF8');
+		}
+		*/
+		
+		$page = $page_result->row(0, 'Page_Object');
+		return $page;
 	}
 
 	public function get_slug() {
@@ -197,5 +211,28 @@ class NestedSet_Model extends CI_Model {
 		}
 		
 		return $built;
+	}
+}
+
+class Page_Object {
+	
+	public function content($cleaned = true) {
+		
+		if(!$cleaned) {
+			return $this->page_content;
+		}
+		
+		if(!extension_loaded('Tidy')) {
+			throw new INSIGHT_Exception('This feature is not available without the tidy library.');
+		}
+		
+		$tidy = new Tidy;
+		return $tidy->repairString($this->page_content, array(
+			'clean' 			=> true,
+			'indent' 			=> true,
+			'indent-spaces' 	=> 4,
+			'drop-empty-paras' 	=> true,
+			'show-body-only'	=> true
+		));
 	}
 }

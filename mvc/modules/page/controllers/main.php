@@ -19,8 +19,11 @@ class Main extends INSIGHT_HMVC_Controller {
 		// Protected page?
 		// @TODO
 		
+		
+		$template = 'home';
+		
 		// Dispatch page data to the required template.
-		$this->load->view('templates/default.template.view.php', array(
+		$this->load->view('templates/' . $template . '.template.view.php', array(
 			'page' 		=> $page
 		));
 	}

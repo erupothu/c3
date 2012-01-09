@@ -45,4 +45,8 @@ class Admin extends INSIGHT_Admin_Controller {
 			
 		return redirect('admin/page');
 	}
+	
+	public function settings() {
+		echo 'settings for page';
+	}
 }
