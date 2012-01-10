@@ -12,8 +12,6 @@
 		<link rel="canonical" href="<?php echo site_url(); ?>">
 		<link rel="stylesheet" href="<?php echo $this->uri->skin('styles/core.css'); ?>">
 		<script src="<?php echo $this->uri->skin('scripts/modernizr-2.0.6.min.js'); ?>"></script>
-		<style>
-		</style>
 	</head>
 	<body id="login">
 	

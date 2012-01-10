@@ -15,9 +15,6 @@
 		<link rel="stylesheet" href="<?php echo $this->uri->skin('scripts/libs/fileuploader-1.0.0/fileuploader-1.0.0.css'); ?>" />
 		<link rel="stylesheet" href="<?php echo $this->uri->skin('scripts/libs/fancybox-1.3.4/jquery.fancybox-1.3.4.css'); ?>" />
 		<script src="<?php echo $this->uri->skin('scripts/modernizr-2.0.6.min.js'); ?>"></script>
-		<style>
-		
-		</style>
 	</head>
 	<body>
 		

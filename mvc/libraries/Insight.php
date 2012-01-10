@@ -28,6 +28,10 @@ class Insight {
 		$this->configuration = array_merge($this->configuration, array(
 			'user' => $this->ci->settings->get()
 		));
+		
+		// Check Uploads directory.
+		if(file_exists('uploads') && is_writable('uploads')) {
+		}
 	}
 	
 	public function config($keystring = null, $encode = false) {
