@@ -23,7 +23,7 @@
 		<div class="right-column">
 			
 			<div class="box box-welcome-to-anubis">
-				<article style="position: relative; height: 384px; margin: 8px; background: url(<?php echo $this->uri->skin('assets/images/boxes/welcome-to-anubis.jpg'); ?>) no-repeat top left;">
+				<article class="article-home" style="position: relative; height: 384px; margin: 8px; background: url(<?php echo $this->uri->skin('assets/images/boxes/welcome-to-anubis.jpg'); ?>) no-repeat top left;">
 					
 					<div style="position: absolute; bottom: 0; padding: 20px;">
 						<?php echo $page->content(); ?>

@@ -35,7 +35,7 @@
 			
 			// Font Replacement.
 			Cufon.replace('h2 > span, a.button', { fontFamily: 'NeoSans-700' });
-			Cufon.replace('#secondary li a, h1, .tab', { fontFamily: 'NeoSans-500', hover: true });
+			Cufon.replace('#secondary li a, h1, h2, .tab, span.title', { fontFamily: 'NeoSans-500', hover: true });
 			Cufon.replace('.left-column em', { fontFamily: 'NeoSans-400' });
 			
 			// News Scroller.

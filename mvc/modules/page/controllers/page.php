@@ -1,6 +1,6 @@
 <?php
 
-class Main extends INSIGHT_HMVC_Controller {
+class Page extends INSIGHT_HMVC_Controller {
 	
 	public function __construct() {
 		
@@ -20,19 +20,20 @@ class Main extends INSIGHT_HMVC_Controller {
 		// @TODO
 		
 		
-		$template = 'home';
-		
 		// Dispatch page data to the required template.
-		$this->load->view('templates/' . $template . '.template.view.php', array(
-			'page' 		=> $page
-		));
+		$this->output('home', array('page' => $page));
 	}
 	
-	private function _404() {
-		
+	public function output($template, $data = array()) {
+
+		$this->load->view('templates/' . $template . '.template.view.php', $data);
+	}
+	
+	public function _404() {
+
 		// Send out a 404 header.
 		$this->output->set_status_header('404');
-		
+
 		// Load the 404 view.
 		$this->load->view('common/errors/404.view.php', array(
 			'request'	=> $this->uri->uri_string()

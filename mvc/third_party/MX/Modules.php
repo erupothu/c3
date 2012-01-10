@@ -202,7 +202,7 @@ class Modules
 				if ($base == 'libraries/' || $base == 'config/' || $base == 'helpers/' || preg_match('/^language\//', $base) || $base == 'views/')
 				{	
 					//looking into sparks dir
-					$fullpath = $location.$base;
+					$fullpath = $location . $base;
 					
 					//Camel case
 					if(is_file($fullpath.ucfirst($file_ext))) return array($fullpath, ucfirst($file));

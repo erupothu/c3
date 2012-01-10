@@ -10,7 +10,7 @@ class Page_Model extends NestedSet_Model {
 	
 	public function load($page_identifier, $page_column = 'page_slug', $allow_deleted = false) {
 		
-		$this->output->enable_profiler(false);
+		//$this->output->enable_profiler(false);
 		switch($page_column) {
 			case 'page_id': {
 				break;

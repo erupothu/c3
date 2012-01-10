@@ -48,17 +48,17 @@ body {
 	font: normal 13px/1.5em 'Arial', sans-serif normal;
 }
 
-header {
+#container > header {
 	background: url(../../assets/images/header.background.png) repeat-x top left;
 	height: 182px;
 }
 
-header .constrain {
+#container > header .constrain {
 	height: 182px;
 	position: relative;
 }
 
-header #logo {
+#container > header #logo {
 	width: 201px;
 	height: 73px;
 	display: block;
@@ -67,11 +67,11 @@ header #logo {
 	margin: 19px 0 0 -16px;
 }
 
-header h1 {
+#container > header h1 {
 	margin: 0;
 }
 
-header h2 {
+#container > header h2 {
 	color: #7e8285;
 	font-size: 25px;
 	font-weight: normal;
@@ -83,7 +83,7 @@ header h2 {
 	top: 50px;
 }
 
-header h2 span {
+#container > header h2 span {
 	line-height: 1.0em;
 	color: #fff;
 	font-size: 20px;
@@ -91,6 +91,54 @@ header h2 span {
 }
 
 
+
+.box-submenu {
+}
+
+.box-submenu h2 {
+	display: block;
+	width: 297px;
+	height: 40px;
+	background: url(../../assets/images/menu.sub.header.png) no-repeat top left;
+	color: #ffffff;
+	line-height: 35px;
+	margin: 0;
+	padding: 0;
+}
+
+.box-submenu h2 span {
+	padding: 0 80px 0 12px;
+	text-transform: uppercase;
+	font-size: 15px;
+}
+
+
+
+#sub-menu {
+	list-style: none;
+	padding: 0;
+}
+
+#sub-menu li {
+	border-bottom: solid 1px #ccc;
+}
+
+#sub-menu li.last-child {
+	border: none;
+}
+
+#sub-menu li a {
+	font-size: 1.1em;
+	display: block;
+	background: url(../../assets/images/menu.sub.markers.png) no-repeat top right;
+	height: 40px;
+	line-height: 40px;
+}
+
+#sub-menu li a:hover {
+	color: #000;
+	background-position: right -39px;
+}
 
 
 
@@ -301,7 +349,7 @@ header h2 span {
 
 
 /* END */
-article h1 {
+.article-home h1 {
 	margin: 0 0 0.5em 0;
 	font-size: 20px;
 	color: #ffffff;
@@ -309,10 +357,21 @@ article h1 {
 	text-align: right;
 }
 
-article p {
+.article-home p {
 	color: #ffffff;
 	text-align: right;
 }
+
+article .content {
+	margin: 6px 12px 12px;
+}
+
+article .content h1 {
+	color: #F2622D;
+	font-size: 17px;
+	text-transform: uppercase;
+}
+
 
 a.button {
 	display: block;

@@ -32,6 +32,11 @@ class Insight {
 		// Check Uploads directory.
 		if(file_exists('uploads') && is_writable('uploads')) {
 		}
+		
+		//define('INSIGHT_CONFIG_DATETIME', 'd/m/Y H:i');
+		
+		//var_dump($this->ci->config->set_item('language', 'en_us'));
+		//var_dump($this->ci->lang->line('test'));
 	}
 	
 	public function config($keystring = null, $encode = false) {
@@ -111,5 +116,8 @@ class Insight {
 }
 
 class INSIGHT_Exception extends Exception {
-	
+}
+
+function __($line) {
+	echo vsprintf(CI::$APP->lang->line($line), array_slice(func_get_args(), 1));
 }

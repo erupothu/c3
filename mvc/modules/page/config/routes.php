@@ -1,3 +1,3 @@
 <?php
 
-$route['page'] 			= 'main';
+$route['page'] 			= 'page';

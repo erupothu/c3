@@ -24,7 +24,7 @@
 				
 				<div class="constrain">
 				
-					<h1>Administration</h1>
+					<h1><?php echo $this->lang->line('admin_title'); ?></h1>
 					
 					<h6>Logged in as <span><?php echo $this->session->get('user/data/user_firstname'); ?></span></h6>
 					
@@ -33,16 +33,22 @@
 						<?php foreach($this->insight->modules() as $module_name => $module_title): ?>
 						<li<?php echo $this->router->fetch_module() == $module_name ? ' class="selected"' : ''; ?>><?php echo anchor('admin/' . $module_name, $module_title); ?></li>
 						<?php endforeach; ?>
-						<?php /*
-						
-						<li<?php echo $this->router->fetch_class() == 'page' ? ' class="selected"' : ''; ?>><?php echo anchor('admin/page', 'Pages'); ?></li>
 						<li<?php echo $this->router->fetch_class() == 'settings' ? ' class="selected"' : ''; ?>><?php echo anchor('admin/settings', 'Settings'); ?></li>
-						*/
-						?>
-						<li class="right-child last-child"><?php echo anchor('admin/logout', 'Log Out'); ?></li>
+						<li class="right-child last-child"><?php echo anchor('admin/logout', $this->lang->line('admin_auth_logout')); ?></li>
 					</ul>
+					
 				</div>
 				
+			</div>
+			
+			<div id="submenu" style="background: #f9f9f9; box-shadow: 0 2px 8px #ddd; display: none;" class="clearfix">
+				<div class="constrain">
+					<ul id="menu-admin-sub" style="list-style: none; float: right; position: relative; right: 50%; padding: 4px 0 8px 0;">
+						<li style="position: relative; left: 50%; float: left; margin-right: 8px;"><a href="#" style="display: block;">x</a></li>
+						<li style="position: relative; left: 50%; float: left; margin-right: 8px;"><a href="#" style="display: block;">x</a></li>
+						<li style="position: relative; left: 50%; float: left;"><a href="#" style="display: block;">x</a></li>
+					</ul>
+				</div>
 			</div>
 			
 			<div id="main">
