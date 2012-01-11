@@ -79,7 +79,7 @@ class INSIGHT_Session extends CI_Session {
 			setcookie(session_name(), '', time() - 86400, '/');
 		}
 		
-		session_destroy();
+		return session_destroy();
 	}
 	
 	public function regenerate_id() {
@@ -127,11 +127,5 @@ class INSIGHT_Session extends CI_Session {
 		
 		// Check for expiry.
 		return $regenerated_time <= $expiry_time;
-	}
-	
-	public function debug() {
-		
-		var_dump($_SESSION);
-		
 	}
 }

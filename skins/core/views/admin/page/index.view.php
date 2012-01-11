@@ -3,9 +3,20 @@
 		<h2>Pages</h2>
 
 		<table>
+			<colgroup>
+				<col />
+				<col />
+				<col />
+				<col />
+				<col />
+				<col />
+				<col />
+				<col />
+			</colgroup>
 			<thead>
 				<tr>
 					<th>ID</th>
+					<th>&mdash;</th>
 					<th>Name</th>
 					<th>Slug</th>
 					<th>Preview</th>
@@ -22,6 +33,7 @@
 				<?php foreach($pages as $page): ?>
 				<tr>
 					<td class="center"><?php echo $page->page_id; ?></td>
+					<td><span class="icon icon-locked">Locked</span></td>
 					<td><?php echo anchor('admin/page/update/' . $page->page_id, htmlentities($page->page_name)); ?></td>
 					<td><?php echo $page->page_slug; ?></td>
 					<td class="center">

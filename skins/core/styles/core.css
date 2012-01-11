@@ -261,7 +261,7 @@ fieldset {
 	border: solid 1px #EEEFB3;
 }
 
-.flash-message .flash-close {
+.flash-message .icon-close {
 	float: right;
 	width: 16px; 
 	height: 16px;
@@ -269,6 +269,21 @@ fieldset {
 	background: url(/skins/core/images/sprite.png) no-repeat 0px 0px;
 	outline: none;
 }
+
+.icon {
+	display: block;
+	background-image: url(/skins/core/images/sprite.png);
+	background-repeat: no-repeat;
+	text-indent: -999em;
+	width: 16px;
+	height: 16px;
+}
+
+.icon-locked {
+	background-position: 0 -16px;
+	margin: 0 auto;
+}
+
 
 /* meta */
 /*a.meta-image {

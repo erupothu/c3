@@ -16,6 +16,7 @@
 					<td class="center"><?php echo $article->id(); ?></td>
 					<td><?php echo anchor('admin/news/update/' . $article->id(), $article->title()); ?></td>
 					<td><?php echo $article->published(); ?></td>
+					<td><span clas="icon icon-locked">Locked</span></td>
 				</tr>
 				<?php endforeach; ?>
 				<?php if(count($articles) === 0): ?>

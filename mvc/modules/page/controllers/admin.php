@@ -9,6 +9,10 @@ class Admin extends INSIGHT_Admin_Controller {
 	}
 	
 	public function index() {
+		$x = $this->page->retrieve_nested();
+		
+		
+		var_dump($x);
 		
 		$this->load->view('admin/page/index.view.php', array(
 			'pages' => $this->page->retrieve()

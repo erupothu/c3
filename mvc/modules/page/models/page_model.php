@@ -181,16 +181,18 @@ class NestedSet_Model extends CI_Model {
 		$this->db->select('pn.page_id');
 		$this->db->select('pn.page_name');
 		$this->db->select('pp.page_id as page_parent_id');
+		$this->db->select('pn.page_left, pn.page_right');
 		$this->db->select('count(pp.page_id) - 1 as page_depth');
-		$this->db->select('group_concat(pp.page_id order by pp.page_left) as page_breadcrumb');
+		//$this->db->select('group_concat(DISTINCT pp.page_id order by pp.page_left ASC) as page_breadcrumb');
 		$this->db->from('page pn');
 		$this->db->from('page pp');
 		$this->db->where('pn.page_left between pp.page_left and pp.page_right');
 		$this->db->group_by('pn.page_id');
 		$this->db->order_by('pn.page_left');
 		$page_result = $this->db->get();
-		
-		return $this->build_nested($page_result->result());
+
+        
+		return $this->build_nested($page_result->result('Nested_Page_Object'));
 		/*
 		SELECT node.name 
 		FROM nested_category AS node,
@@ -202,12 +204,34 @@ class NestedSet_Model extends CI_Model {
 	
 	
 	
-	private function build_nested($data, &$built = array()) {
+	private function build_nested($data, &$parent = null, $depth = 0) {
 		
-		foreach($data as $row) {
-			var_dump($row);
-			// Add to the built array.
-			$built[$row->page_id] = $row;
+		//var_dump($data);
+		//echo 'current depth = ' . $depth . '<br />';
+		
+		$last = null;
+		if(!is_null($parent)) {
+			$built = &$parent->children;
+		}
+		else {
+			$built = array();
+		}
+		
+		foreach($data as $_key => $page) {
+			
+			//echo 'Inspecting: ' . $page->id() . '<br />';
+			
+			if($depth == $page->depth()) {
+				
+				$built[$page->id()] = $page;
+				unset($data[$_key]);
+			}
+			else {
+				$built[$last->id()]->children = $this->build_nested($data, $last, $page->depth());
+
+			}
+			
+			$last = $page;
 		}
 		
 		return $built;
@@ -215,7 +239,15 @@ class NestedSet_Model extends CI_Model {
 }
 
 class Page_Object {
+
+	public function id() {
+		return (int)$this->page_id;
+	}
 	
+	public function depth() {
+		return (int)$this->page_depth;
+	}
+
 	public function content($cleaned = true) {
 		
 		if(!$cleaned) {
@@ -234,5 +266,61 @@ class Page_Object {
 			'drop-empty-paras' 	=> true,
 			'show-body-only'	=> true
 		));
+	}
+}
+
+class Nested_Page_Object extends Page_Object implements RecursiveIterator, SeekableIterator {
+	
+	public $children = array();
+	
+	private $pointers = array();
+	private $position = 0;
+	
+	public function add_child(Nested_Page_Object $page) {
+		$this->children[$page->id()] = $page;
+		$this->pointers[] = $page->id();
+	}
+	
+	// RecursiveIterator
+	public function hasChildren() {
+		return count($this->children) > 0;
+	}
+	
+	public function getChildren() {
+		return $this->children;
+	}
+	
+	public function next() {
+		$this->position++;
+	}
+	
+	public function current() {
+		return $this->children[$this->pointers[$this->position]];
+	}
+	
+	public function rewind() {
+		$this->position = 0;
+	}
+	
+	public function key() {
+		return $this->position;
+	}
+	
+	public function valid() {
+		return isset($this->pointers[$this->position]);
+	}
+	
+	public function seek($position) {
+		$this->position = $position;
+		if(!$this->valid()) {
+			throw new OutOfBoundsException('Invalid');
+		}
+	}
+}
+
+class Nested_Root {
+	private $items;
+	public function add_child($object) {
+		$items[] = $object;
 	}
 }

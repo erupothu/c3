@@ -38,10 +38,8 @@ class INSIGHT_Admin_Controller extends INSIGHT_HMVC_Controller {
 		$this->required_perm = $required_perm;
 		
 		$this->load->library('form_validation');
-		//CI::$APP->load->library('form_validation');
 		
 		if($this->required_auth && !$this->auth->is_logged_in()) {
-		//if($this->required_auth && !CI::$APP->auth->is_logged_in()) {
 			return redirect('admin/login');
 		}
 	}

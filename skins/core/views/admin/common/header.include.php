@@ -58,7 +58,7 @@
 					<?php if(false !== $this->session->flashdata('admin/message', false)): ?>
 					<div class="flash-message">
 						<?php echo $this->session->flashdata('admin/message'); ?>
-						<a class="flash-close" href="javascript:;">x</a>
+						<a class="icon-close" href="javascript:;">x</a>
 					</div>
 					<?php endif; ?>
 				

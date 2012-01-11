@@ -47,10 +47,10 @@ class Auth {
 	}
 	
 	public function logout() {
-		$this->session->destroy();
+		return $this->session->destroy();
 	}
 	
-	public function ping() {
+	public function ping($update = true) {
 		
 		if(!$this->is_logged_in())
 			return false;
@@ -67,6 +67,12 @@ class Auth {
 		
 		$this->session->set('user/ping', time());
 		$this->session->set('user/data', $user_result->row_array());
+		
+		// Set last seen time.
+		if($update) {
+			$ping_time = new DateTime;
+			$this->db->update('user', array('user_date_lastseen' => $ping_time->format('Y-m-d H:i:s')), array('user_id' => $hash_parts[0]));
+		}
 		
 		return true;
 	}

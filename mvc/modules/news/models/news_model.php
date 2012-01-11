@@ -4,16 +4,17 @@ class News_Model extends CI_Model {
 	
 	public function __construct() {
 		parent::__construct();
+		
+		News_Model::install();
 	}
 	
 	public function create() {
 		
-		var_dump($this->session->get());
-		exit;
+		var_dump($this->form_validation->all_values());
 		
 		$news_create = new DateTime;
 		$news_insert = array(			
-			'news_author_id'		=> 1,
+			'news_author_id'		=> (int)$this->session->get('user/data/user_id'),
 			'news_title'			=> $this->form_validation->value('news_title', '', false),
 			'news_slug'				=> $this->form_validation->value('news_slug'),
 			'news_data_excerpt'		=> $this->form_validation->value('news_data_excerpt', null, false),
@@ -131,6 +132,64 @@ class News_Model extends CI_Model {
 		}
 		
 		return $news_result->row(0, 'News_Object');
+	}
+	
+	
+	static public function install() {
+		
+		get_instance()->load->dbforge();
+		$dbforge =& get_instance()->dbforge;
+
+		$columns = array(
+			'news_id' => array(
+				'type' 				=> 'mediumint',
+				'constraint'		=> 8,
+				'unsigned'			=> true,
+				'auto_increment'	=> true,
+				'null'				=> false
+			),
+			'news_author_id' => array(
+				'type' 				=> 'smallint',
+				'constraint'		=> 5,
+				'unsigned'			=> true,
+				'null'				=> false
+			),
+			'news_title' => array(
+				'type' 				=> 'varchar',
+				'constraint'		=> 256,
+				'null'				=> false
+			),
+			'news_slug' => array(
+				'type' 				=> 'varchar',
+				'constraint'		=> 256,
+				'null'				=> true
+			),
+			'news_data_excerpt' => array(
+				'type' 				=> 'text',
+				'null'				=> true
+			),
+			'news_data_full' => array(
+				'type' 				=> 'text',
+				'null'				=> false
+			),
+			'news_date_created' => array(
+				'type' 				=> 'datetime',
+				'null'				=> false
+			),
+			'news_date_updated' => array(
+				'type' 				=> 'datetime',
+				'null'				=> true
+			),
+			'news_date_published' => array(
+				'type' 				=> 'datetime',
+				'null'				=> false
+			),
+		);
+	
+		$dbforge->add_field($columns);
+		$dbforge->add_key('news_author_id');
+		$dbforge->add_key('news_id', true);
+		$dbforge->create_table('news_test');
 	}
 }
 
