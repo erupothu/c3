@@ -181,7 +181,24 @@ class NestedSet_Model extends CI_Model {
 		parent::__construct();
 	}
 	
+	
+	public function create($parent_id = 0, $between_left = null, $between_right = null) {
+		
+		if($parent_id == 0) {
+			
+		}
+		else {
+			
+		}
+		
+		//UPDATE nested_category SET rgt = rgt + 2 WHERE rgt > @myLeft;
+		//UPDATE nested_category SET lft = lft + 2 WHERE lft > @myLeft;
 
+		//INSERT INTO nested_category(name, lft, rgt) VALUES('FRS', @myLeft + 1, @myLeft + 2);
+		
+	}
+	
+	
 	public function delete($page_id) {
 		
 		// Get the core item & delete it.
