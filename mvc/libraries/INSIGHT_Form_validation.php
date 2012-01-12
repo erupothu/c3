@@ -4,6 +4,9 @@
 
 class INSIGHT_Form_Validation extends CI_Form_Validation {
 	
+	// CI
+	public $CI;
+	
 	// Error HTML
 	public $_error_start 	= '<ul class="validation-errors">';
 	public $_error_finish 	= '</ul>';
@@ -223,9 +226,10 @@ class INSIGHT_Form_Validation extends CI_Form_Validation {
 	
 	
 	public function cannot_match($string, $opposing_field) {
-		
+
 		if($string == $this->value($opposing_field, null, false)) {
-			$this->set_message(__function__, 'The %s field must not match the %s field');
+			//$this->set_message(__function__, 'The %s field must not match the %s field');
+			$this->set_message(__function__, $this->CI->lang->line(__function__));
 			
 			// Highlight both fields for clarity.
 			$this->add_error(null, $opposing_field, true);
@@ -236,7 +240,7 @@ class INSIGHT_Form_Validation extends CI_Form_Validation {
 		return true;
 	}
 	
-	
+
 	public function get_rules($group = null) {
 		
 		if(is_null($group))
@@ -258,8 +262,7 @@ class INSIGHT_Form_Validation extends CI_Form_Validation {
 		
 		return true;
 	}
-	
-	
+
 	public function _execute($row, $rules, $postdata = null, $cycles = 0) {
 
 		// @author jon

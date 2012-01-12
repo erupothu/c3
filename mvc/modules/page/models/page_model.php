@@ -57,6 +57,10 @@ class Page_Model extends NestedSet_Model {
 		$page = $page_result->row(0, 'Page_Object');
 		return $page;
 	}
+	
+	//public function retrieve_by_id($page_id) {
+	//	return $this->load($page_id, 'page_id', true);
+	//}
 
 	public function get_slug() {
 		return is_null($this->current_slug) ? false : $this->current_slug;
@@ -129,6 +133,7 @@ class Page_Model extends NestedSet_Model {
 		return $this->db->affected_rows() === 1;
 	}
 	
+	/*
 	public function delete($page_id) {
 		
 		// Check that the page exists.
@@ -142,6 +147,7 @@ class Page_Model extends NestedSet_Model {
 		
 		return $this->db->affected_rows() === 1;
 	}
+	*/
 	
 	public function purge() {
 		
@@ -175,71 +181,126 @@ class NestedSet_Model extends CI_Model {
 		parent::__construct();
 	}
 	
+
+	public function delete($page_id) {
+		
+		// Get the core item & delete it.
+		$page = $this->retrieve_by_id($page_id);
+		$this->db->where('page_left between ' . $page->tree_left() . ' and ' . $page->tree_right());
+		$this->db->delete('page');
+		
+		// Store the deleted items for flash message.
+		$deleted_items = $this->db->affected_rows();
+		
+		// Right
+		$this->db->set('page_right', 'page_right - ' . $page->tree_width(), false);
+		$this->db->where('page_right > ' . $page->tree_right());
+		$this->db->update('page');
+		
+		// Left
+		$this->db->set('page_left', 'page_left - ' . $page->tree_width(), false);
+		$this->db->where('page_left > ' . $page->tree_right());
+		$this->db->update('page');
+
+		// Write the flash message.
+		$this->session->set_flashdata('admin/message', sprintf('Deleted %d pages', $deleted_items));
+		
+		return $deleted_items === 0 ? false : $deleted_items;
+	}
+	
+	
+	
+	public function retrieve_by_id($item_id) {
+
+		$this->db->select('*');
+		$this->db->select('
+		ifnull((
+			select pp.page_id
+				from page pp
+					where pp.page_left < pn.page_left AND pp.page_right > pn.page_right
+				order by
+					pp.page_right asc
+				limit 1
+		), 0) as page_parent_id', false);
+		$this->db->from('page pn');
+		$this->db->where('pn.page_id', $item_id);
+
+		$page_result = $this->db->get();
+		
+		if($page_result->num_rows() !== 1) {
+			return false;
+		}
+		
+		return $page_result->row(0, 'Page_Object');
+	}
+	
 	
 	public function retrieve_nested() {
 		
 		$this->db->select('pn.page_id');
 		$this->db->select('pn.page_name');
-		$this->db->select('pp.page_id as page_parent_id');
-		$this->db->select('pn.page_left, pn.page_right');
+		$this->db->select('pn.page_slug');
+		$this->db->select('pn.page_date_created');
+		$this->db->select('pn.page_date_updated');
 		$this->db->select('count(pp.page_id) - 1 as page_depth');
-		//$this->db->select('group_concat(DISTINCT pp.page_id order by pp.page_left ASC) as page_breadcrumb');
-		$this->db->from('page pn');
+		//$this->db->select('pp.page_id as page_parent_id');
+
 		$this->db->from('page pp');
-		$this->db->where('pn.page_left between pp.page_left and pp.page_right');
+		$this->db->from('page pn');
+		
+		$this->db->where('(pn.page_left between pp.page_left and pp.page_right)');
 		$this->db->group_by('pn.page_id');
 		$this->db->order_by('pn.page_left');
 		$page_result = $this->db->get();
 
-        
-		return $this->build_nested($page_result->result('Nested_Page_Object'));
-		/*
-		SELECT node.name 
-		FROM nested_category AS node,
-		nested_category AS parent
-		WHERE node.lft BETWEEN parent.lft AND parent.rgt AND parent.name = 'ELECTRONICS' ORDER BY node.lft;
-		*/
+        $page_objects = $page_result->result('Nested_Page_Object');
+		
+		// Built a tree out of Page Objects
+		return $this->build_tree($page_objects);
 	}
 	
 	
-	
-	
-	private function build_nested($data, &$parent = null, $depth = 0) {
+	private function build_tree($data) {
 		
-		//var_dump($data);
-		//echo 'current depth = ' . $depth . '<br />';
+		$depths = array();
+		$pointer = array();
+		$_depth = 0;
 		
-		$last = null;
-		if(!is_null($parent)) {
-			$built = &$parent->children;
-		}
-		else {
-			$built = array();
-		}
+		$tree = &$pointer;
 		
 		foreach($data as $_key => $page) {
 			
-			//echo 'Inspecting: ' . $page->id() . '<br />';
-			
-			if($depth == $page->depth()) {
-				
-				$built[$page->id()] = $page;
-				unset($data[$_key]);
+			if($page->depth() < $_depth && $page->depth() !== 0) {
+				$tree = &$depths[$page->depth()-1]->children;
 			}
-			else {
-				$built[$last->id()]->children = $this->build_nested($data, $last, $page->depth());
-
+			elseif($page->depth() > $_depth) {
+				$tree = &$depths[$_depth]->children;
+			}
+			elseif($page->depth() == 0) {
+				$tree = &$pointer;
 			}
 			
-			$last = $page;
+			$tree[$page->id()] 	= $page;
+			$_depth 			= $page->depth();
+			$depths[$_depth] 	= &$tree[$page->id()];
 		}
-		
-		return $built;
+
+		return $pointer;
 	}
 }
 
 class Page_Object {
-
+	
+	const LINK_FRONT = 0x001;
+	const LINK_PREVIEW = 0x002;
+	const LINK_ADMIN_UPDATE = 0x004;
+	const LINK_ADMIN_DELETE = 0x008;
+	
+	public $page_id;
+	public $page_name;
+	public $page_parent_id;
+	public $page_depth;
+	
 	public function id() {
 		return (int)$this->page_id;
 	}
@@ -247,7 +308,65 @@ class Page_Object {
 	public function depth() {
 		return (int)$this->page_depth;
 	}
-
+	
+	public function title() {
+		return $this->page_name;
+	}
+	
+	public function parent() {
+		//return $this->page_parent_id == $this->page_id ? null : (int)$this->page_parent_id;
+		return (int)$this->page_parent_id;
+	}
+	
+	
+	// Tree methods.
+	public function tree_left() {
+		return (int)$this->page_left;
+	}
+	
+	public function tree_right() {
+		return (int)$this->page_right;
+	}
+	
+	public function tree_width() {
+		return ($this->tree_right() - $this->tree_left()) + 1;
+	}
+	
+	
+	public function created($format = 'd/m/Y H:i') {
+		$dt = DateTime::createFromFormat('Y-m-d H:i:s', $this->page_date_created);
+		return false !== $format ? $dt->format($format) : $dt;
+	}
+	
+	public function updated($format = 'd/m/Y H:i') {
+		
+		if(is_null($this->page_date_updated))
+			return $this->created($format);
+		
+		$dt = DateTime::createFromFormat('Y-m-d H:i:s', $this->page_date_updated);
+		return false !== $format ? $dt->format($format) : $dt;
+	}
+	
+	public function link($type = self::LINK_FRONT) {
+		
+		switch($type) {
+			case self::LINK_ADMIN_UPDATE: {
+				$link = site_url('admin/page/update/' . $this->id());
+				break;
+			}
+			case self::LINK_ADMIN_DELETE: {
+				$link = site_url('admin/page/delete/' . $this->id());
+				break;
+			}
+			case self::LINK_FRONT:
+			default: {
+				$link = site_url($this->page_slug);
+			}
+		}
+		
+		return $link;
+	}
+	
 	public function content($cleaned = true) {
 		
 		if(!$cleaned) {
@@ -269,19 +388,28 @@ class Page_Object {
 	}
 }
 
-class Nested_Page_Object extends Page_Object implements RecursiveIterator, SeekableIterator {
+class Nested_Page_Object extends Page_Object implements Iterator, Countable {
 	
 	public $children = array();
 	
 	private $pointers = array();
 	private $position = 0;
-	
-	public function add_child(Nested_Page_Object $page) {
+
+	public function addChild(Nested_Page_Object $page) {
 		$this->children[$page->id()] = $page;
 		$this->pointers[] = $page->id();
 	}
 	
-	// RecursiveIterator
+	public function addChildren($children) {
+		foreach($children as $child) {
+			$this->addChild($child);
+		}
+	}
+	
+
+	
+	
+	// Iterator methods.
 	public function hasChildren() {
 		return count($this->children) > 0;
 	}
@@ -289,7 +417,7 @@ class Nested_Page_Object extends Page_Object implements RecursiveIterator, Seeka
 	public function getChildren() {
 		return $this->children;
 	}
-	
+
 	public function next() {
 		$this->position++;
 	}
@@ -310,17 +438,9 @@ class Nested_Page_Object extends Page_Object implements RecursiveIterator, Seeka
 		return isset($this->pointers[$this->position]);
 	}
 	
-	public function seek($position) {
-		$this->position = $position;
-		if(!$this->valid()) {
-			throw new OutOfBoundsException('Invalid');
-		}
-	}
-}
-
-class Nested_Root {
-	private $items;
-	public function add_child($object) {
-		$items[] = $object;
+	
+	// Countable methods
+	public function count() {
+		return count($this->children);
 	}
 }

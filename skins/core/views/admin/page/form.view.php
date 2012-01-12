@@ -1,11 +1,15 @@
 
 	<div class="clearfix">
 		
+		<?php /*
+		<pre style="border: solid 1px #cccccc; padding: 20px; background: #fff; margin-bottom: 1.0em;"><?php print_r($page); ?></pre>
+		*/ ?>
+		
 		<form method="post" action="<?php echo $this->uri->uri_string(); ?>">
 			<fieldset>
 				
 				<?php if(isset($page->page_id)): ?>
-				<input type="hidden" name="page_id" value="<?php echo $page->page_id; ?>">
+				<input type="hidden" name="page_id" value="<?php echo $page->id(); ?>">
 				<?php endif; ?>
 				
 				<?php if($this->form_validation->has_errors()): ?>
@@ -19,10 +23,11 @@
 					<span><input type="text" name="page_name" id="page_name" value="<?php echo $this->form_validation->value('page_name', !isset($page) ? '' : $page->page_name, false); ?>" /></span>
 				</div>
 		
-				<div class="row required">
-					<label for="page_parent">Parent Page</label>
-					<span><select name="page_parent" id="page_parent">
+				<div class="row required<?php $this->form_validation->earmark('page_parent_id'); ?>">
+					<label for="page_parent_id">Parent Page</label>
+					<span><select name="page_parent_id" id="page_parent_id">
 						<option value="0">&nbsp;</option>
+						<?php echo Modules::run('page/admin/retrieve', 'select-options', array('selected' => $this->form_validation->value('page_parent_id', !isset($page) ? '' : $page->parent()))); ?>
 					</select></span>
 				</div>
 		
