@@ -139,8 +139,11 @@ h6 span {
 
 
 ul.admin-options {
-	margin: 1.75em 0 2.0em 1.25em;
+	/*margin: 1.75em 0 2.0em 1.25em;
 	list-style: outside square;
+	padding: 0;*/
+	margin: 1.75em 0;
+	list-style: none;
 	padding: 0;
 }
 
@@ -291,6 +294,8 @@ fieldset {
 	background: url(/skins/core/images/icon.image.png) no-repeat 0px 0px;		
 }*/
 
+/* Admin */
+
 
 /* Admin: Login Page */
 #admin-login {
@@ -307,8 +312,9 @@ span.copyright {
 	font-weight: bold;
 	text-decoration: none;
 	line-height: 13px;
-	padding: 4px 9px;
+	padding: 5px 9px;
 	cursor: pointer;
+	border: solid 1px #bbb;
 	border-radius: 11px;
 	-khtml-border-radius: 11px;
 	-webkit-border-radius: 11px;

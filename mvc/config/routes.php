@@ -9,6 +9,8 @@
 $route['default_controller'] 			= 'page';
 $route['404_override'] 					= 'page';
 
+$route['sitemap.?([a-zA-Z.]+)?']		= 'page/sitemap/$1';
+
 /* Administration */
 $route['admin']							= 'admin/main';
 $route['admin/(settings)']				= 'admin/$1';

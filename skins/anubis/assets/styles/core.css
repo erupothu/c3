@@ -473,7 +473,6 @@ a.button span {
 	display: block;
 }
 
-
 .tab {
 	display: inline-block;
 	background: url(../../assets/images/ui.tab-left.png) no-repeat top left;
@@ -494,11 +493,18 @@ a.button span {
 	padding-right: 15px;
 }
 
+.news-pane {
+	margin: 8px 12px; overflow: hidden; width: 930px;
+}
+
 .box.tabbed {
 	border-top-left-radius: 0;
 	-moz-border-top-left-radius: 0;
 	-webkit-border-top-left-radius: 0;
 }
+
+
+
 
 #container {
 	min-height: 100%;

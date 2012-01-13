@@ -18,7 +18,7 @@
 					<th>ID</th>
 					<th>&mdash;</th>
 					<th>Name</th>
-					<th>Slug</th>
+					<th>Permalink</th>
 					<th>Preview</th>
 					<th>Status</th>
 					<th>Last Updated</th>
@@ -40,7 +40,7 @@
 		</div>
 		
 		<ul class="admin-options">
-			<li><?php echo anchor('admin/page/create', 'New Page'); ?></li>
+			<li><?php echo anchor('admin/page/create', 'New Page', array('class' => 'button')); ?></li>
 		</ul>
 
 <?php $this->load->view('admin/common/footer.include.php'); ?>

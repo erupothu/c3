@@ -1,72 +1,134 @@
 <?php
 
 class Page_Model extends NestedSet_Model {
-	
-	private $current_slug;
-	
+
 	public function __construct() {
 		parent::__construct();
 	}
 	
-	public function load($page_identifier, $page_column = 'page_slug', $allow_deleted = false) {
+	
+	public function load($page_slug) {
 		
-		//$this->output->enable_profiler(false);
-		switch($page_column) {
-			case 'page_id': {
-				break;
-			}
-			case 'page_slug': {
-				
-				// Check for initial slash.
-				if(strlen($page_identifier) === 0 || substr($page_identifier, 0, 1) !== '/') {
-					$page_identifier = '/' . $page_identifier;
-				}
-				
-				break;
-			}
+		if(strlen($page_slug) === 0 || substr($page_slug, 0, 1) !== '/') {
+			$page_slug = '/' . $page_slug;
 		}
 		
-		$this->db->select('*');
-		$this->db->from('page p');
-		$this->db->where('p.' . $page_column, $page_identifier);
-		if(!$allow_deleted) {
-			$this->db->where_not_in('p.page_status', array('deleted'));
-		}
-		
+		$this->db->select('pn.*');
+		$this->db->select('group_concat(pp.page_slug order by pp.page_id separator "") as page_slug_path', false);
+		$this->db->select('count(pp.page_id) - 1 as page_depth');
+		$this->db->from('page pn');
+		$this->db->from('page pp');
+		$this->db->where('pn.page_left between pp.page_left and pp.page_right');
+		$this->db->having('page_slug_path', $page_slug);
+		$this->db->order_by('pn.page_left');
+		$this->db->group_by('pn.page_id');
 		$page_result = $this->db->get();
 		if($page_result->num_rows() !== 1) {
 			return false;
 		}
-		
-		/*
-		$page_data = $page_result->row_array();
-		$this->current_slug = $page_data['page_slug'];
-		
-		if(class_exists('Tidy')) {
-			$tidy = new Tidy;
-			$page_data['page_content'] = $tidy->repairString($page_data['page_content'], array(
-				'clean' 			=> true,
-				'indent' 			=> true,
-				'indent-spaces' 	=> 4,
-				'drop-empty-paras' 	=> true,
-				'show-body-only'	=> true
-			), 'UTF8');
-		}
-		*/
-		
-		$page = $page_result->row(0, 'Page_Object');
-		return $page;
-	}
-	
-	//public function retrieve_by_id($page_id) {
-	//	return $this->load($page_id, 'page_id', true);
-	//}
 
-	public function get_slug() {
-		return is_null($this->current_slug) ? false : $this->current_slug;
+		return $page_result->row(0, 'Page_Object');
 	}
 
 	public function create() {
+		
+		$subs = $this->retrieve_nested($this->form_validation->value('page_parent_id'));
+		
+		echo '<pre>';
+		print_r($subs);
+		echo '</pre>';
+		exit;
+		
+		// Find the right-hand marker.
+		$tree_right_marker = $this->tree_node_right($this->form_validation->value('page_parent_id'));
+		
+		echo '<br />Left: ' . $this->tree_node_left($this->form_validation->value('page_parent_id'));
+		echo '<br />Right: ' . $tree_right_marker;
+		echo '<br /><br />';
+		// Does this new leaf have a parent?
+		//if($this->form_validation->value('page_parent_id') == 0) {
+			
+		//	$tree_right_marker = $this->tree_node_right();
+		
+		
+		
+		// Check for a unique permalink...
+		/*		
+		- find siblings.
+			OR
+		- if this is a root element, find all root elements.
+		- check for unique
+		*/
+
+		$this->db->select('pn.page_id');
+		$this->db->select('pn.page_name');
+		$this->db->select('count(pp.page_id) - 1 as page_depth');
+		$this->db->from('page pn');
+		$this->db->from('page pp');
+		$this->db->where('pn.page_left between pp.page_left and pp.page_right');
+		$this->db->order_by('pn.page_left');
+		$this->db->group_by('pn.page_id');
+		
+		if($this->form_validation->value('page_parent_id') == 0) {		
+			$this->db->having('page_depth', 0);
+			$this->db->where('pn.page_slug', $this->form_validation->value('page_slug'));
+		}
+		else {
+			
+			$this->db->select('
+			ifnull((
+				select px.page_id
+					from page px
+						where px.page_left < pn.page_left AND px.page_right > pn.page_right
+					order by
+						px.page_right asc
+					limit 1
+			), 0) as page_parent_id', false);
+			
+			$this->db->where('pn.page_slug', $this->form_validation->value('page_slug'));
+			$this->db->having('page_parent_id', $this->form_validation->value('page_parent_id'));
+		}
+		
+		$page_result = $this->db->get();
+
+		if($page_result->num_rows() !== 0) {
+			$collision_object = $page_result->row(0, 'Page_Object');
+			die('this is not a unique slug..."' . $collision_object->title() . '" uses it!');
+		}
+		
+		
+		
+		
+		
+		
+		// Shift everything right to make room.
+		// First shift all rights.
+		$this->db->set('page_right', 'page_right + 2', false);
+		$this->db->where('page_right > ' . $tree_right_marker);
+		$this->db->update('page');
+
+		// Next, shift all lefts.
+		$this->db->set('page_left', 'page_left + 2', false);
+		$this->db->where('page_left > ' . $tree_right_marker);
+		$this->db->update('page');
+		
+		
+		//die($this->form_validation->value('page_parent_id'));
+		// 
+		
+		/*
+		LOCK TABLE nested_category WRITE;
+
+		SELECT @myRight := rgt FROM nested_category
+		WHERE name = 'TELEVISIONS';
+
+		UPDATE nested_category SET rgt = rgt + 2 WHERE rgt > @myRight;
+		UPDATE nested_category SET lft = lft + 2 WHERE lft > @myRight;
+
+		INSERT INTO nested_category(name, lft, rgt) VALUES('GAME CONSOLES', @myRight + 1, @myRight + 2);
+
+		UNLOCK TABLES;
+		*/
 		
 		$page_create = new DateTime;
 		$page_insert = array(
@@ -75,8 +137,8 @@ class Page_Model extends NestedSet_Model {
 			'page_slug'			=> $this->form_validation->value('page_slug'),
 			'page_content'		=> $this->form_validation->value('page_content', null, false),
 			'page_status'		=> $this->form_validation->value('page_status'),
-			'page_left'			=> 0,
-			'page_right'		=> 0,
+			'page_left'			=> $tree_right_marker + 1,
+			'page_right'		=> $tree_right_marker + 2,
 			'page_date_created'	=> $page_create->format('Y-m-d H:i:s')
 		);
 		
@@ -88,6 +150,7 @@ class Page_Model extends NestedSet_Model {
 		// Return the insert ID.
 		return $this->db->insert_id();
 	}
+	
 	
 	public function retrieve() {
 		
@@ -109,6 +172,7 @@ class Page_Model extends NestedSet_Model {
 		
 		return $pages;
 	}
+	
 	
 	public function update($page_id) {
 		
@@ -136,7 +200,11 @@ class Page_Model extends NestedSet_Model {
 	/*
 	public function delete($page_id) {
 		
-		// Check that the page exists.
+		// Are we nesting this function?
+		if(is_callable($callback = array($this, 'parent::delete'))) {
+			return call_user_func_array($callback, func_get_args());
+		}
+		
 		if(!$page = $this->load($page_id, 'page_id')) {
 			return false;
 		}
@@ -149,6 +217,7 @@ class Page_Model extends NestedSet_Model {
 	}
 	*/
 	
+
 	public function purge() {
 		
 		// Remove all 'deleted' pages permanently
@@ -201,6 +270,8 @@ class NestedSet_Model extends CI_Model {
 	
 	public function delete($page_id) {
 		
+		die('parent method: ' . $page_id);
+		
 		// Get the core item & delete it.
 		$page = $this->retrieve_by_id($page_id);
 		$this->db->where('page_left between ' . $page->tree_left() . ' and ' . $page->tree_right());
@@ -229,7 +300,7 @@ class NestedSet_Model extends CI_Model {
 	
 	public function retrieve_by_id($item_id) {
 
-		$this->db->select('*');
+		$this->db->select('pn.*');
 		$this->db->select('
 		ifnull((
 			select pp.page_id
@@ -240,42 +311,124 @@ class NestedSet_Model extends CI_Model {
 				limit 1
 		), 0) as page_parent_id', false);
 		$this->db->from('page pn');
+		$this->db->from('page pp');
 		$this->db->where('pn.page_id', $item_id);
+		$this->db->select('group_concat(pp.page_slug order by pp.page_id separator "") as page_slug_path', false);
+		$this->db->where('pn.page_left between pp.page_left and pp.page_right');
+		$this->db->order_by('pn.page_left');
+		$this->db->group_by('pn.page_id');
+		
+		
+		
+		
+		
+		
 
 		$page_result = $this->db->get();
 		
 		if($page_result->num_rows() !== 1) {
 			return false;
 		}
-		
+
 		return $page_result->row(0, 'Page_Object');
 	}
 	
 	
-	public function retrieve_nested() {
+	
+	/**
+	 * retrieve_nested
+	 * 
+	 * Obtain a nested iterable tree of objects from
+	 * the database.  Optionally, supply an ID for which
+	 * record you would like the root to be (to get a subtree).
+	 *
+	 * @param 	string $element_root	
+	 * @return 	void
+	 */
+	public function retrieve_nested($element_root = 0, $element_limit = 1) {
 		
+		/*
+		SELECT node.name, (COUNT(parent.name) - (sub_tree.depth + 1)) AS depth
+		FROM nested_category AS node,
+		        nested_category AS parent,
+		        nested_category AS sub_parent,
+		        (
+		                SELECT node.name, (COUNT(parent.name) - 1) AS depth
+		                FROM nested_category AS node,
+		                        nested_category AS parent
+		                WHERE node.lft BETWEEN parent.lft AND parent.rgt
+		                        AND node.name = 'PORTABLE ELECTRONICS'
+		                GROUP BY node.name
+		                ORDER BY node.lft
+		        )AS sub_tree
+		WHERE node.lft BETWEEN parent.lft AND parent.rgt
+		        AND node.lft BETWEEN sub_parent.lft AND sub_parent.rgt
+		        AND sub_parent.name = sub_tree.name
+		GROUP BY node.name
+		HAVING depth <= 1
+		ORDER BY node.lft;
+		*/
+			
 		$this->db->select('pn.page_id');
 		$this->db->select('pn.page_name');
 		$this->db->select('pn.page_slug');
 		$this->db->select('pn.page_date_created');
 		$this->db->select('pn.page_date_updated');
-		$this->db->select('count(pp.page_id) - 1 as page_depth');
-		//$this->db->select('pp.page_id as page_parent_id');
-
+		$this->db->select('group_concat(pp.page_slug order by pp.page_id separator "") as page_slug_path', false);
+		
 		$this->db->from('page pp');
 		$this->db->from('page pn');
 		
 		$this->db->where('(pn.page_left between pp.page_left and pp.page_right)');
+		
 		$this->db->group_by('pn.page_id');
 		$this->db->order_by('pn.page_left');
-		$page_result = $this->db->get();
+		
+		// If we need to obtain a sub-tree, we need to join
+		// an additional items table plus the sub-tree to cross-reference
+		if($element_root !== 0 && is_numeric($element_root)) {
+			
+			$this->db->from('page ps');
+			$this->db->from(sprintf('(
+				select
+					pn.page_id,
+					(count(pp.page_id) - 1) as page_depth
+				from
+					page as pn,
+					page as pp
+				where
+					pn.page_left between pp.page_left and pp.page_right
+						and pn.page_id = %d
+					group by pn.page_id
+					order by pn.page_left
+			) as pt', $element_root));
+			
+			$this->db->where('(pn.page_left between ps.page_left and ps.page_right)');
+			$this->db->where('(ps.page_id = pt.page_id)');
+			$this->db->select('(count(pp.page_id) - (pt.page_depth + 1)) as page_depth');
+			
+			// Limit the depth of the sub-tree?
+			if(!is_null($element_limit)) {
+				$this->db->having('page_depth <=' . $element_limit);
+			}
 
+		}
+		else {
+			$this->db->select('count(pp.page_id) - 1 as page_depth');
+		}
+
+		$page_result = $this->db->get();
+		
+		//echo '<pre>';
+		//echo $this->db->last_query();
+		//echo '</pre>';
+		
+		
         $page_objects = $page_result->result('Nested_Page_Object');
 		
 		// Built a tree out of Page Objects
 		return $this->build_tree($page_objects);
 	}
-	
 	
 	private function build_tree($data) {
 		
@@ -304,6 +457,34 @@ class NestedSet_Model extends CI_Model {
 
 		return $pointer;
 	}
+	
+	
+	
+	
+	
+	protected function tree_node_left($node_id = 0) {
+		return $this->tree_meta('page_left', $node_id);
+	}
+	
+	protected function tree_node_right($node_id = 0) {
+		return $this->tree_meta('page_right', $node_id);
+	}
+	
+	private function tree_meta($direction, $node_id = 0) {
+		
+		$node_select = $node_id == 0 ? 'max(' . $direction . ')' : $direction;
+		
+		$this->db->select($node_select . ' as node_meta');
+		$this->db->from('page');
+		
+		if($node_id > 0) {
+			$this->db->where('page.page_id', $node_id);
+		}
+		
+		$node_result = $this->db->get();
+		return $node_result->num_rows() == 0 ? 0 : (int)$node_result->row('node_meta');
+	}
+	
 }
 
 class Page_Object {
@@ -324,6 +505,14 @@ class Page_Object {
 	
 	public function depth() {
 		return (int)$this->page_depth;
+	}
+	
+	public function slug($permalink = false) {
+		return $permalink ? $this->permalink() : $this->page_slug;
+	}
+	
+	public function permalink($complete = false) {
+		return isset($this->page_slug_path) ? ($complete ? site_url($this->page_slug_path) : $this->page_slug_path) : false;
 	}
 	
 	public function title() {

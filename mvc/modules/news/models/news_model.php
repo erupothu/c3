@@ -5,12 +5,12 @@ class News_Model extends CI_Model {
 	public function __construct() {
 		parent::__construct();
 		
-		News_Model::install();
+		//News_Model::install();
 	}
 	
 	public function create() {
 		
-		var_dump($this->form_validation->all_values());
+		//var_dump($this->form_validation->all_values());
 		
 		$news_create = new DateTime;
 		$news_insert = array(			
@@ -216,9 +216,10 @@ class News_Object {
 	public function size() {
 		return strlen($this->news_data_full);
 	}
-	
-	
-	
+
+	public function permalink() {
+		return site_url(array('news', $this->news_slug));
+	}
 	
 	
 	/**
@@ -233,6 +234,19 @@ class News_Object {
 		$dt = DateTime::createFromFormat('Y-m-d H:i:s', $this->news_date_published);
 		return false !== $format ? $dt->format($format) : $dt;
 	}
+	
+	
+	public function excerpt($length = 65, $cleaned = true) {
+		
+		$content = $this->content($cleaned);
+		$content = strip_tags($content);
+		
+		preg_match(sprintf('/\A(.{%1$u,%2$u}(?!\w)|.{0,%2$u})/s', 0, $length), $content, $matches);
+		$excerpt = $matches[1] . (strlen($content) > $length ? '&hellip;' : '');
+		
+		return $excerpt;
+	}
+	
 	
 	public function content($cleaned = true) {
 		

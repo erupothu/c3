@@ -5,14 +5,14 @@
 		<div class="left-column">
 			
 			<div class="box box-training-and-operations">
-				<a href="#">
+				<a href="/training-and-operations">
 					<img src="<?php echo $this->uri->skin('assets/images/boxes/training-and-operations.jpg'); ?>" alt="Training &amp; Operations">
 					<span class="strip"><em>Training &amp; Operations</em></span>
 				</a>
 			</div>
 			
 			<div class="box box-special-projects">
-				<a href="#">
+				<a href="/special-projects">
 					<img src="<?php echo $this->uri->skin('assets/images/boxes/special-projects.jpg'); ?>" alt="Special Projects">
 					<span class="strip"><em>Special Projects</em></span>
 				</a>
@@ -45,24 +45,15 @@
 		
 		<div class="box tabbed">
 			
-			<div style="margin: 8px 12px; overflow: hidden; width: 930px;" class="news-pane">
+			<div class="news-pane">
 				
 				<ul class="clearfix news-content">
-					<?php for($i = 1; $i <= 8; $i++): ?>
-					<li>
-						<img src="/uploads/news-temp-100x100.jpg" alt="News Temp" style="margin-right: 14px; float: left;">
-						<div style="height: 100px; width: 180px; margin-right: 16px; float: left; position: relative;">
-							<h3 style="margin: 5px 0 5px; padding: 0; color: #E63812;">11/12/2011</h3>
-							<p style="margin: 0; color: #15191A;">Anubis have been approved as a City &amp; Guilds Centre&hellip;</p>
-							<a href="#" class="button read-more" style="position: absolute; bottom: 0;">Read More <?php echo $i; ?><span></span></a>
-						</div>
-					</li>
-					<?php endfor; ?>
+					<?php echo Modules::run('news/retrieve', 'list-item'); ?>
 				</ul>
 				
 			</div>
-				<div class="slider"></div>
 			
+			<div class="slider"></div>
 			
 		</div>
 		

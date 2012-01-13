@@ -21,26 +21,47 @@ class News extends INSIGHT_HMVC_Controller {
 		//$this->load->view('archive.view.php', array(
 		//	'articles' => $this->news->retrieve()
 		//));
-		echo Modules::run('page/output', 'inner', array(
-			'articles' => $this->news->retrieve()
-		));
 		
 		
-		// Does this page exist?
-		//if(!$page = $this->page->load($this->uri->uri_string())) {
-		//	show_404();
-		//}
+		var_dump($this->news->retrieve());
 		
-		// Protected page?
-		// @TODO
-		
-		
-		//$template = 'home';
-		
+		//echo Modules::run('page/output', 'inner', array(
+		//	'articles' => $this->news->retrieve()
+		//));
+
 		// Dispatch page data to the required template.
 		//$this->load->view('templates/' . $template . '.template.view.php', array(
 		//	'page' 		=> $page
 		//));
+	}
+	
+	
+	public function retrieve($format = '', $args = array()) {
+		
+		// Load all news into an Iterator.
+		$news_iterator = new ArrayIterator($this->news->retrieve());
+		
+		// Load an empty chunk if there are 0 rows.
+		
+		
+		// Iterate over children.
+		iterator_apply($news_iterator, array($this, '_render'), array($news_iterator, 0, $format, $args));
+	}
+	
+	
+	private function _render($iterator, $limit = 0, $format = '', $args = array()) {
+		
+		if($iterator->count() === 0) {
+			return $this->load->view('chunks/news/' . $format . '.empty.chunk.php');
+		}
+		
+		while($iterator->valid()) {
+			
+			$item = $iterator->current();
+			$this->load->view('chunks/news/' . $format . '.chunk.php', array_merge(array('article' => $item), $args));
+
+			$iterator->next();
+		}
 	}
 	
 	

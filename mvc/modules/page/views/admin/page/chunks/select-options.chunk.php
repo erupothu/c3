@@ -1,0 +1,1 @@
+				<option value="<?php echo $page->id(); ?>"<?php echo isset($selected) && $page->id() == $selected ? ' selected="selected"' : ''; ?>><?php echo $page->depth() > 0 ? str_repeat('&mdash;', $page->depth()) . ' ' : ''; ?><?php echo $page->title(); ?></option>

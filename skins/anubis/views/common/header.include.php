@@ -77,11 +77,11 @@
 					
 					<ul id="primary">
 						<?php if($this->auth->is_logged_in()): ?>
-						<li class="first-child"><a href="#">Logged in as <span><?php echo $this->session->get('user/data/user_firstname'); ?></span></a></li>
-						<li class="highlight"><a href="#">My Account</a></li>
-						<li class="highlight"><a href="#">Logout</a></li>
+						<li class="first-child"><a href="/account">Logged in as <span><?php echo $this->session->get('user/data/user_firstname'); ?></span></a></li>
+						<li class="highlight"><a href="/account">My Account</a></li>
+						<li class="highlight"><a href="/account/log-out">Logout</a></li>
 						<?php else: ?>
-						<li class="first-child"><a href="#">Login</a></li>
+						<li class="first-child"><a href="/account/log-in">Login</a></li>
 						<li class="highlight no-separator"><a href="#">Register</a></li>
 						<?php endif; ?>
 						<li class="last-child">
@@ -104,22 +104,22 @@
 						<ul id="secondary">
 							<li class="first-child"><a href="/">Home</a></li>
 							<li>
-								<a href="#">About Us</a>
+								<a href="/about-us">About Us</a>
 								<ul class="sub-menu">
-									<li><a href="#">Management Team</a></li>
-									<li><a href="#">Mission Statement</a></li>
-									<li><a href="#">Employment Opportunities</a></li>
+									<li><a href="/about-us/management-team">Management Team</a></li>
+									<li><a href="/about-us/mission-statement">Mission Statement</a></li>
+									<li><a href="/about-us/employment-opportunities">Employment Opportunities</a></li>
 								</ul>
 							</li>
-							<li class="grey"><a href="#"><span>Training &amp; Operations</span></a></li>
-							<li class="grey"><a href="#"><span>Special Projects</span></a></li>
-							<li><a href="#">News</a></li>
+							<li class="grey"><a href="/training-and-operations"><span>Training &amp; Operations</span></a></li>
+							<li class="grey"><a href="/special-projects"><span>Special Projects</span></a></li>
+							<li><a href="/news">News</a></li>
 							<li class="last-child">
-								<a href="#">Contact Us</a>
+								<a href="/contact-us">Contact Us</a>
 								<ul class="sub-menu">
-									<li><a href="#">Contact Form</a></li>
-									<li><a href="#">Map</a></li>
-									<li><a href="#">Company Regulatory Information</a></li>
+									<li><a href="/contact-us/contact-form">Contact Form</a></li>
+									<li><a href="/contact-us/map">Map</a></li>
+									<li><a href="/contact-us/company-regulatory-information">Company Regulatory Information</a></li>
 								</ul>
 							</li>
 						</ul>

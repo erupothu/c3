@@ -71,7 +71,7 @@
 				pasteFromWordRemoveStyles: true,
 				forcePasteAsPlainText: true,
 				
-				height: '400px',
+				height: '200px',
 				width: '560px',
 				resize_maxWidth: '100%',
 				startupShowBorders: false
