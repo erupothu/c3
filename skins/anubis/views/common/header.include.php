@@ -63,6 +63,10 @@
 					}
 				}
 			});
+			
+			if($('#news-latest li').length < 4) {
+				$('#news-latest .slider').hide();
+			}
 		});
 		
 		</script>
@@ -82,12 +86,12 @@
 						<li class="highlight"><a href="/account/log-out">Logout</a></li>
 						<?php else: ?>
 						<li class="first-child"><a href="/account/log-in">Login</a></li>
-						<li class="highlight no-separator"><a href="#">Register</a></li>
+						<li class="highlight no-separator"><a href="/account/register">Register</a></li>
 						<?php endif; ?>
 						<li class="last-child">
 							<ul>
-								<li><a href="#">Shopping Cart <span>&nbsp;0 items</span></a></li>
-								<li class="highlight"><a href="#">Checkout</a></li>
+								<li><a href="/cart">Shopping Cart <span>&nbsp;0 items</span></a></li>
+								<li class="highlight"><a href="/cart/checkout">Checkout</a></li>
 								<li class="last-child"><a href="#">Credit Application</a></li>	
 							</ul>
 						</li>

@@ -7,6 +7,9 @@ class Page_Model extends NestedSet_Model {
 	}
 	
 	
+
+	
+	
 	public function load($page_slug) {
 		
 		if(strlen($page_slug) === 0 || substr($page_slug, 0, 1) !== '/') {
@@ -32,104 +35,64 @@ class Page_Model extends NestedSet_Model {
 
 	public function create() {
 		
-		$subs = $this->retrieve_nested($this->form_validation->value('page_parent_id'));
-		
-		echo '<pre>';
-		print_r($subs);
-		echo '</pre>';
-		exit;
-		
-		// Find the right-hand marker.
-		$tree_right_marker = $this->tree_node_right($this->form_validation->value('page_parent_id'));
-		
-		echo '<br />Left: ' . $this->tree_node_left($this->form_validation->value('page_parent_id'));
-		echo '<br />Right: ' . $tree_right_marker;
-		echo '<br /><br />';
-		// Does this new leaf have a parent?
-		//if($this->form_validation->value('page_parent_id') == 0) {
-			
-		//	$tree_right_marker = $this->tree_node_right();
-		
-		
 		
 		// Check for a unique permalink...
-		/*		
-		- find siblings.
-			OR
-		- if this is a root element, find all root elements.
-		- check for unique
+		// ~ now done by the form_validation object.
+		// end check for a unique permalink.
+		
+		
+		
+		
+		$parent_id = $this->form_validation->value('page_parent_id');
+		
+		// Ascertain which part of the tree we will pivot
+		// our changes around (left weight, or right weight).
+		$direction = ($parent_id == 0 || count($page_tree = $this->retrieve_nested($parent_id)) > 0) ? 'tree_node_right' : 'tree_node_left';
+		$tree_mark = $this->$direction($parent_id);
+		
+		echo 'parent: ' . $parent_id . '<br />';
+		echo $direction . ' (' . $tree_mark . ')<br />';
+		die();
+		
+		/*
+		
+		with children, add to right.
+		----------------------------
+		
+		tree_mark = parent_right.
+		increase left and right of all nodes +2 where left/right >= parent_right.
+		new_node_left = tree_mark
+		new_node_right = tree_mark + 1.
+		
+		
+		without children, still add to right?
+		-------------------------------------
+		
+		above will also work!?
+		
+		
+		root node, add to the right (end)
+		---------------------------------
+		
+		tree mark = max_right
+		no movement needed.
+		new_node_left = tree_mark + 1
+		new_node_right = tree_mark + 2
+		
 		*/
-
-		$this->db->select('pn.page_id');
-		$this->db->select('pn.page_name');
-		$this->db->select('count(pp.page_id) - 1 as page_depth');
-		$this->db->from('page pn');
-		$this->db->from('page pp');
-		$this->db->where('pn.page_left between pp.page_left and pp.page_right');
-		$this->db->order_by('pn.page_left');
-		$this->db->group_by('pn.page_id');
-		
-		if($this->form_validation->value('page_parent_id') == 0) {		
-			$this->db->having('page_depth', 0);
-			$this->db->where('pn.page_slug', $this->form_validation->value('page_slug'));
-		}
-		else {
-			
-			$this->db->select('
-			ifnull((
-				select px.page_id
-					from page px
-						where px.page_left < pn.page_left AND px.page_right > pn.page_right
-					order by
-						px.page_right asc
-					limit 1
-			), 0) as page_parent_id', false);
-			
-			$this->db->where('pn.page_slug', $this->form_validation->value('page_slug'));
-			$this->db->having('page_parent_id', $this->form_validation->value('page_parent_id'));
-		}
-		
-		$page_result = $this->db->get();
-
-		if($page_result->num_rows() !== 0) {
-			$collision_object = $page_result->row(0, 'Page_Object');
-			die('this is not a unique slug..."' . $collision_object->title() . '" uses it!');
-		}
-		
-		
-		
-		
-		
 		
 		// Shift everything right to make room.
 		// First shift all rights.
 		$this->db->set('page_right', 'page_right + 2', false);
-		$this->db->where('page_right > ' . $tree_right_marker);
+		$this->db->where('page_right > ' . $tree_mark);
 		$this->db->update('page');
 
 		// Next, shift all lefts.
 		$this->db->set('page_left', 'page_left + 2', false);
-		$this->db->where('page_left > ' . $tree_right_marker);
+		$this->db->where('page_left > ' . $tree_mark);
 		$this->db->update('page');
 		
-		
-		//die($this->form_validation->value('page_parent_id'));
-		// 
-		
-		/*
-		LOCK TABLE nested_category WRITE;
-
-		SELECT @myRight := rgt FROM nested_category
-		WHERE name = 'TELEVISIONS';
-
-		UPDATE nested_category SET rgt = rgt + 2 WHERE rgt > @myRight;
-		UPDATE nested_category SET lft = lft + 2 WHERE lft > @myRight;
-
-		INSERT INTO nested_category(name, lft, rgt) VALUES('GAME CONSOLES', @myRight + 1, @myRight + 2);
-
-		UNLOCK TABLES;
-		*/
-		
+		// Now insert the new page.
 		$page_create = new DateTime;
 		$page_insert = array(
 			'page_author_id'	=> 1,
@@ -137,12 +100,14 @@ class Page_Model extends NestedSet_Model {
 			'page_slug'			=> $this->form_validation->value('page_slug'),
 			'page_content'		=> $this->form_validation->value('page_content', null, false),
 			'page_status'		=> $this->form_validation->value('page_status'),
-			'page_left'			=> $tree_right_marker + 1,
-			'page_right'		=> $tree_right_marker + 2,
+			'page_left'			=> $tree_mark + 1,
+			'page_right'		=> $tree_mark + 2,
 			'page_date_created'	=> $page_create->format('Y-m-d H:i:s')
 		);
 		
 		$this->db->insert('page', $page_insert);
+
+
 		
 		// Flash Message
 		$this->session->set_flashdata('admin/message', sprintf('Page entitled "%s" has been created', $this->form_validation->value('page_name')));
@@ -183,8 +148,8 @@ class Page_Model extends NestedSet_Model {
 			'page_slug'			=> $this->form_validation->value('page_slug'),
 			'page_content'		=> $this->form_validation->value('page_content', null, false),
 			'page_status'		=> $this->form_validation->value('page_status'),
-			'page_left'			=> 0,
-			'page_right'		=> 0,
+//			'page_left'			=> 0,
+//			'page_right'		=> 0,
 			'page_date_updated'	=> $page_update->format('Y-m-d H:i:s')
 		);
 		
@@ -228,6 +193,8 @@ class Page_Model extends NestedSet_Model {
 		return $deleted_pages;
 	}
 	
+	
+	
 	public function sitemap() {
 		
 		$sitemap_data = array();
@@ -241,6 +208,57 @@ class Page_Model extends NestedSet_Model {
 		
 		return $sitemap_data;
 	}
+	
+	
+	
+	/**
+	 * validate_unique_permalink
+	 *
+	 * @param string $page_slug 
+	 * @param string $reference_field 
+	 * @return boolean
+	 */
+	public function validate_unique_permalink($page_slug, $reference_field = 'page_parent_id') {
+
+		$this->db->select('pn.page_id');
+		$this->db->select('pn.page_name');
+		$this->db->select('count(pp.page_id) - 1 as page_depth');
+		$this->db->from('page pn');
+		$this->db->from('page pp');
+		$this->db->where('pn.page_left between pp.page_left and pp.page_right');
+		$this->db->order_by('pn.page_left');
+		$this->db->group_by('pn.page_id');
+		
+		if($this->form_validation->value($reference_field) == 0) {		
+			$this->db->having('page_depth', 0);
+			$this->db->where('pn.page_slug', $page_slug);
+		}
+		else {
+			
+			$this->db->select('
+				ifnull((
+					select px.page_id
+						from page px
+							where px.page_left < pn.page_left AND px.page_right > pn.page_right
+						order by
+							px.page_right asc
+						limit 1
+				), 0) as page_parent_id
+			', false);
+			
+			$this->db->where('pn.page_slug', $page_slug);
+			$this->db->having('page_parent_id', $this->form_validation->value($reference_field));
+		}
+		
+		$page_result = $this->db->get();
+		if($page_result->num_rows() == 0) {
+			return true;
+		}
+		
+		// Set validation message because we have found a collision.
+		$this->form_validation->set_message('module_callback', sprintf('The %%s must have a unique permalink. This is taken by page "%s"!', $page_result->row(0, 'Page_Object')->title()));
+		return false;
+	}
 }
 
 
@@ -249,28 +267,9 @@ class NestedSet_Model extends CI_Model {
 	public function __construct() {
 		parent::__construct();
 	}
-	
-	
-	public function create($parent_id = 0, $between_left = null, $between_right = null) {
-		
-		if($parent_id == 0) {
-			
-		}
-		else {
-			
-		}
-		
-		//UPDATE nested_category SET rgt = rgt + 2 WHERE rgt > @myLeft;
-		//UPDATE nested_category SET lft = lft + 2 WHERE lft > @myLeft;
 
-		//INSERT INTO nested_category(name, lft, rgt) VALUES('FRS', @myLeft + 1, @myLeft + 2);
-		
-	}
-	
-	
+
 	public function delete($page_id) {
-		
-		die('parent method: ' . $page_id);
 		
 		// Get the core item & delete it.
 		$page = $this->retrieve_by_id($page_id);
@@ -291,7 +290,7 @@ class NestedSet_Model extends CI_Model {
 		$this->db->update('page');
 
 		// Write the flash message.
-		$this->session->set_flashdata('admin/message', sprintf('Deleted %d pages', $deleted_items));
+		$this->session->set_flashdata('admin/message', sprintf('Deleted %d page%s', $deleted_items, $deleted_items == 1 ? '' : 's'));
 		
 		return $deleted_items === 0 ? false : $deleted_items;
 	}
@@ -345,7 +344,7 @@ class NestedSet_Model extends CI_Model {
 	 * @param 	string $element_root	
 	 * @return 	void
 	 */
-	public function retrieve_nested($element_root = 0, $element_limit = 1) {
+	public function retrieve_nested($element_root = 0, $element_limit = null) {
 		
 		/*
 		SELECT node.name, (COUNT(parent.name) - (sub_tree.depth + 1)) AS depth
@@ -372,6 +371,9 @@ class NestedSet_Model extends CI_Model {
 		$this->db->select('pn.page_id');
 		$this->db->select('pn.page_name');
 		$this->db->select('pn.page_slug');
+		// debug:
+		$this->db->select('pn.page_left, pn.page_right');
+		//
 		$this->db->select('pn.page_date_created');
 		$this->db->select('pn.page_date_updated');
 		$this->db->select('group_concat(pp.page_slug order by pp.page_id separator "") as page_slug_path', false);
@@ -386,7 +388,7 @@ class NestedSet_Model extends CI_Model {
 		
 		// If we need to obtain a sub-tree, we need to join
 		// an additional items table plus the sub-tree to cross-reference
-		if($element_root !== 0 && is_numeric($element_root)) {
+		if($element_root != 0 && is_numeric($element_root)) {
 			
 			$this->db->from('page ps');
 			$this->db->from(sprintf('(
@@ -418,16 +420,12 @@ class NestedSet_Model extends CI_Model {
 		}
 
 		$page_result = $this->db->get();
-		
-		//echo '<pre>';
-		//echo $this->db->last_query();
-		//echo '</pre>';
-		
-		
         $page_objects = $page_result->result('Nested_Page_Object');
+		$tree_objects = $this->build_tree($page_objects);
 		
-		// Built a tree out of Page Objects
-		return $this->build_tree($page_objects);
+		// Built a tree out of 'Nested_Page_Object's
+		// If we have specified a root, stop it being wrapped in an array by build_tree.
+		return $element_root == 0 ? $tree_objects : current($tree_objects);
 	}
 	
 	private function build_tree($data) {
@@ -594,7 +592,7 @@ class Page_Object {
 	}
 }
 
-class Nested_Page_Object extends Page_Object implements Iterator, Countable {
+class Nested_Page_Object extends Page_Object implements RecursiveIterator, Countable {
 	
 	public $children = array();
 	
@@ -612,7 +610,13 @@ class Nested_Page_Object extends Page_Object implements Iterator, Countable {
 		}
 	}
 	
-
+	public function left() {
+		return (int)$this->page_left;
+	}
+	
+	public function right() {
+		return (int)$this->page_right;
+	}
 	
 	
 	// Iterator methods.

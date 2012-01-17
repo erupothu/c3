@@ -36,6 +36,9 @@
 				<div style="margin: 8px;">
 
 					<article>
+						
+						<?php if($this->uri->segment(0) == 'news'): ?>
+							
 						<header style="height: 153px; position: relative; background: url(/uploads/header.temp.about-us.jpg) no-repeat top center;">
 							<span class="title" style="font-size: 20px; text-transform: uppercase; position: absolute; bottom: 0; right: 0; display: block; padding: 12px 14px; color: #fff;"><?php echo $article->title(); ?></span>
 						</header>
@@ -46,8 +49,22 @@
 							<time pubdate="pubdate"><?php echo $article->published(); ?></time>
 							
 							<?php echo $article->content(); ?>
+							
 						</div>
+						<?php else: ?>
 						
+							<header style="height: 153px; position: relative; background: url(/uploads/header.temp.about-us.jpg) no-repeat top center;">
+								<span class="title" style="font-size: 20px; text-transform: uppercase; position: absolute; bottom: 0; right: 0; display: block; padding: 12px 14px; color: #fff;"><?php echo $page->title(); ?></span>
+							</header>
+
+							<div class="content" style="color: #333 !important;">
+
+								<?php echo $page->content(); ?>
+
+							</div>
+						
+							
+						<?php endif; ?>
 					</article>
 					
 				</div>

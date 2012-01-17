@@ -9,7 +9,8 @@
 $route['default_controller'] 			= 'page';
 $route['404_override'] 					= 'page';
 
-$route['sitemap.?([a-zA-Z.]+)?']		= 'page/sitemap/$1';
+$route['sitemap']						= 'page/sitemap';
+$route['sitemap.?([a-zA-Z.]+)?']		= 'page/sitemap/generate/$1';
 
 /* Administration */
 $route['admin']							= 'admin/main';

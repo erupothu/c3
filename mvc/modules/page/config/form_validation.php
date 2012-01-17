@@ -22,7 +22,7 @@ $config = array(
 		array(
 			'field'	=> 'page_slug',
 			'label'	=> 'URL Slug',
-			'rules'	=> 'required|valid_slug'
+			'rules'	=> 'required|valid_slug|module_callback[validate_unique_permalink]'
 		),
 		array(
 			'field'	=> 'page_content',

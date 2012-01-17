@@ -5,45 +5,56 @@ class Page extends INSIGHT_HMVC_Controller {
 	public function __construct() {
 		
 		parent::__construct();
+		
 		$this->load->model('page_model', 'page');
 	}
 	
+	
+	/**
+	 * index
+	 *
+	 * @return void
+	 */
 	public function index() {
-		
-		// Static routes.
-		//if(false !== ($method = $this->uri->segment(1)) && method_exists($this, $method)) {
-		//	return call_user_func_array(array($this, $method), array_slice($this->uri->segment_array(), 1));
-		//}
-		
-		// Does this page exist?
+
+		// Check to see if this page exists.
 		if(!$page = $this->page->load($this->uri->uri_string())) {
 			return $this->_404();
 		}
 		
 		// Protected page?
-		// @TODO
+		// @TODO Permissions module?
+		
+		// Select template.
+		// @TODO This needs to come from the metadata.
+		$page_template = $page->slug() == '/' ? 'home' : 'inner';
 		
 		// Dispatch page data to the required template.
-		$this->output('home', array('page' => $page));
+		$this->output($page_template, array('page' => $page));
 	}
 
-	
+
+	/**
+	 * output
+	 *
+	 * @param string $template 
+	 * @param array $data 
+	 * @return void
+	 */
 	public function output($template, $data = array()) {
 		$this->load->view('templates/' . $template . '.template.view.php', $data);
 	}
-	
-	
-	public function sitemap($format = null) {
-		
-		var_dump('Format:', $format);
-		
-		echo '<blockquote>
-			- Static sitemap page is displayed, optional format for SEO.<br />
-			- What about SEO module?  Can we hook this here?
-		</blockquote>';
-	}
-	
-	
+
+
+	/**
+	 * _404
+	 *
+	 * Method to run upon a route not matching any
+	 * page within the system.
+	 * 
+	 * @access public
+	 * @return void
+	 */
 	public function _404() {
 
 		// Send out a 404 header.

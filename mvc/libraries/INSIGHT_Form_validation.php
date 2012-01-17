@@ -276,7 +276,31 @@ class INSIGHT_Form_Validation extends CI_Form_Validation {
 	}
 	
 	
+	public function module_callback($data, $args) {
+
+		if(count($args = explode(',', $args)) < 1) {
+			return true;
+		}
+		
+		$model_name	= $this->CI->router->fetch_module();
+		$function 	= array_shift($args);
+		array_unshift($args, $data);
+		
+		// Gain access to the model.
+		// This required the model to be in the format:
+		// module_name/models/module_name_model.php
+		// Yes, this is a little restrictive but keeps the form_validation rules neater.
+		$this->CI->load->model(sprintf('%1$s/%1$s_model', $model_name), $model_name);
+		
+		if(!method_exists($this->CI->$model_name, $function)) {
+			$this->set_message(__function__, 'Cannot validate %s (' . get_class($this->CI->$model_name) . '::' . $function . ' does not exist).');
+			return false;
+		}
+		
+		return call_user_func_array(array($this->CI->$model_name, $function), $args);
+	}
 	
+
 	public function valid_password_strength($password_string) {
 		
 		if(!preg_match('/.*^(?=.{6,})(?=.*[a-z])(?=.*[0-9]).*$/', $password_string)) {

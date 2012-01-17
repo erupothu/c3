@@ -22,17 +22,14 @@ class News extends INSIGHT_HMVC_Controller {
 		//	'articles' => $this->news->retrieve()
 		//));
 		
-		
-		var_dump($this->news->retrieve());
-		
 		//echo Modules::run('page/output', 'inner', array(
 		//	'articles' => $this->news->retrieve()
 		//));
 
 		// Dispatch page data to the required template.
-		//$this->load->view('templates/' . $template . '.template.view.php', array(
-		//	'page' 		=> $page
-		//));
+		$this->load->view('templates/news-archive.template.view.php', array(
+			'articles'	=> $this->news->retrieve()
+		));
 	}
 	
 	
@@ -50,7 +47,7 @@ class News extends INSIGHT_HMVC_Controller {
 	
 	
 	private function _render($iterator, $limit = 0, $format = '', $args = array()) {
-		
+
 		if($iterator->count() === 0) {
 			return $this->load->view('chunks/news/' . $format . '.empty.chunk.php');
 		}
