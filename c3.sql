@@ -73,6 +73,32 @@ LOCK TABLES `image` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `menu`
+--
+
+DROP TABLE IF EXISTS `menu`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `menu` (
+  `menu_id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `menu_key` varchar(32) NOT NULL,
+  `menu_name` varchar(64) DEFAULT NULL,
+  PRIMARY KEY (`menu_id`),
+  UNIQUE KEY `menu_key` (`menu_key`)
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `menu`
+--
+
+LOCK TABLES `menu` WRITE;
+/*!40000 ALTER TABLE `menu` DISABLE KEYS */;
+INSERT INTO `menu` VALUES (1,'header','Header'),(2,'footer','Footer');
+/*!40000 ALTER TABLE `menu` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `news`
 --
 
@@ -114,16 +140,17 @@ DROP TABLE IF EXISTS `page`;
 CREATE TABLE `page` (
   `page_id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `page_author_id` mediumint(8) unsigned NOT NULL,
-  `page_name` varchar(64) NOT NULL,
-  `page_slug` varchar(64) NOT NULL,
-  `page_content` mediumtext NOT NULL,
+  `page_name` varchar(128) NOT NULL,
+  `page_slug` varchar(128) NOT NULL,
+  `page_content` text,
   `page_status` enum('draft','published','deleted') NOT NULL,
   `page_left` mediumint(8) unsigned NOT NULL,
   `page_right` mediumint(8) unsigned NOT NULL,
   `page_date_created` datetime NOT NULL,
   `page_date_updated` datetime DEFAULT NULL,
-  PRIMARY KEY (`page_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+  PRIMARY KEY (`page_id`),
+  KEY `page_slug` (`page_slug`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -132,7 +159,7 @@ CREATE TABLE `page` (
 
 LOCK TABLES `page` WRITE;
 /*!40000 ALTER TABLE `page` DISABLE KEYS */;
-INSERT INTO `page` VALUES (1,1,'Test','/','<h1>\n	Welcome to Anubis</h1>\n<p>\n	Anubis is a modern, high-quality, professional risk management company with a mix of executive directors who possess diverse but complementary backgrounds. The depth of experience, current operational and training expertise is unrivalled in any one company in the private security industry</p>\n','published',1,2,'2012-01-05 17:11:04','2012-01-09 17:23:28'),(2,1,'About Us','/about','<h1>\n	About Us</h1>\n<p>\n	<strong>Aliquam lectus orci, adipiscing et, sodalesac feugiat non, lacus. Ut dictum velit nec est. Quisque posuere, purus sit amet malesuada blandit, sapien sapien auctor arcu, sed pulvinar felis mi sollicitudin tortor. Maecenas volutpat, nisl et dignissim pharetra, urna lectus ultrices est, vel pretium pede turpis id velit. Aliquam sagittis magna in.</strong></p>\n<p>\n	Quisque facilisis erat a dui. Nam malesuada ornare dolor. Cras gravida, diam sit amet rhoncus ornare, erat elit consectetuer erat, id egestas pede nibh eget odio. Proin tincidunt, velit vel porta elementum, magna diam molestie sapien, non aliquet massa pede eu diam. Aliquam iaculis. Fusce et ipsum et nulla tristique facilisis. Donec eget sem sit amet ligula viverra gravida. Etiam vehicula urna vel turpis. Suspendisse sagittis ante a urna. Morbi a est quis orci consequat rutrum. Nullam egestas feugiat felis. Integer adipiscing semper ligula. Nunc molestie, nisl sit amet cursus convallis, sapien lectus pretium metus, vitae pretium enim wisi id lectus. Donec vestibulum. Etiam vel nibh. Nulla facilisi. Mauris lorem pharetra. Donec augue. Fusce ultrices, neque id dignissim ultrices, tellus mauris dictum.</p>\n','published',3,14,'2012-01-10 10:44:48','2012-01-13 16:59:50'),(3,1,'About is my parent','/tester','<p>\n	whatever.</p>\n','published',4,9,'2012-01-11 13:34:27',NULL),(4,1,'going even deeper','/deep-dude','<p>\n	deeeeeep</p>\n','published',5,6,'2012-01-12 11:16:16',NULL),(5,1,'another deep one','/deep1','<p>\n	agassaf</p>\n','published',7,8,'2012-01-12 11:16:27',NULL),(6,1,'More About Us (About Us is parent)','/more-about-us','<p>\n	more.</p>\n','published',10,11,'2012-01-12 11:43:56','2012-01-12 16:31:11'),(7,1,'Another Root!','/rooty','asfnoasofias','published',15,16,'0000-00-00 00:00:00',NULL),(8,1,'Even MORE about us.','/asfkohsahfoias','afsafsasfafsafs','published',12,13,'2012-01-12 12:26:05','2012-01-12 12:26:05'),(9,1,'Testing!!!!!','/afs','<p>\n	afasafs</p>\n','published',17,18,'2012-01-13 16:05:08',NULL);
+INSERT INTO `page` VALUES (1,1,'Home','/','<h1>\n	Welcome to Anubis</h1>\n<p>\n	Anubis is a modern, high-quality, professional risk management company with a mix of executive directors who possess diverse but complementary backgrounds. The depth of experience, current operational and training expertise is unrivalled in any one company in the private security industry.</p>\n','published',1,2,'2012-01-18 14:10:31',NULL),(2,1,'About Us','/about-us','<h1>\n	About Anubis</h1>\n<p>\n	Anubis is a modern, high-quality, professional risk management company with a mix of executive directors who possess diverse but complementary backgrounds. The depth of experience, current operational and training expertise is unrivalled in any one company in the private security industry. Anubis personnel work internationally as consultants providing a wide range of security services in many unusual and challenging climates. In addition to our established executive customers, Anubis clients include UK and International Government&rsquo;s armed forces and security services.</p>\n<p>\n	With an experienced team of consultants who are all world experts in their respective fields, Anubis offers training and risk management advice and operational assistance to international corporate, governmental and non-governmental clients.</p>\n<p>\n	Anubis leads the way in the provision of discreet personal protection and security consultancy for business clients. Our knowledge and operational expertise in this area is unrivalled at providing bespoke services to customers in the UK and around the world.</p>\n','published',3,4,'2012-01-18 14:28:40',NULL);
 /*!40000 ALTER TABLE `page` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -184,6 +211,38 @@ CREATE TABLE `page_meta` (
 LOCK TABLES `page_meta` WRITE;
 /*!40000 ALTER TABLE `page_meta` DISABLE KEYS */;
 /*!40000 ALTER TABLE `page_meta` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `page_test`
+--
+
+DROP TABLE IF EXISTS `page_test`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `page_test` (
+  `page_id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `page_author_id` mediumint(8) unsigned NOT NULL,
+  `page_name` varchar(128) NOT NULL,
+  `page_slug` varchar(128) NOT NULL,
+  `page_content` text,
+  `page_status` enum('draft','published','deleted') NOT NULL,
+  `page_left` mediumint(8) unsigned NOT NULL,
+  `page_right` mediumint(8) unsigned NOT NULL,
+  `page_date_created` datetime NOT NULL,
+  `page_date_updated` datetime DEFAULT NULL,
+  PRIMARY KEY (`page_id`),
+  KEY `page_slug` (`page_slug`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `page_test`
+--
+
+LOCK TABLES `page_test` WRITE;
+/*!40000 ALTER TABLE `page_test` DISABLE KEYS */;
+/*!40000 ALTER TABLE `page_test` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -269,7 +328,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,'technical@creativeinsight.co.uk','53e89fc7f6132101d6c5068bb0e7073fca2968a80e5f04d79e35dea2f003e936',NULL,'Creative','Insight',NULL,NULL,1,1,'2011-10-25 17:21:09','2012-01-13 17:33:23');
+INSERT INTO `user` VALUES (1,'technical@creativeinsight.co.uk','53e89fc7f6132101d6c5068bb0e7073fca2968a80e5f04d79e35dea2f003e936',NULL,'Creative','Insight',NULL,NULL,1,1,'2011-10-25 17:21:09','2012-01-18 17:28:28');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -305,4 +364,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-01-13 17:34:10
+-- Dump completed on 2012-01-18 17:28:59

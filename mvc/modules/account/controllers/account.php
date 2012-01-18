@@ -4,9 +4,9 @@ class Account extends INSIGHT_HMVC_Controller {
 	
 	public function __construct() {
 		
-		$this->load->library('form_validation');
 		parent::__construct();
 		
+		$this->load->library('form_validation');
 		$this->load->model('account_model', 'account');
 	}
 	
@@ -17,14 +17,10 @@ class Account extends INSIGHT_HMVC_Controller {
 	public function register() {
 
 		if($this->form_validation->run('account-form')) {
-			var_dump($_POST);
-			echo 'yes';
+			$this->account->create();
+			die('STOP');
 		}
-		else {
-			print_r($this->form_validation->all_values());
-			echo 'no';
-		}
-		
+
 		$this->load->view('register/form.view.php', array());
 	}
 

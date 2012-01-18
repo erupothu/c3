@@ -7,12 +7,12 @@ $config = array(
 		array(
 			'field'	=> 'account_email',
 			'label'	=> 'Email Address',
-			'rules'	=> 'required|valid_email|unique_email'
+			'rules'	=> 'required|valid_email|module_callback[validate_unique_email]'
 		),
 		array(
 			'field'	=> 'account_password',
 			'label'	=> 'Password',
-			'rules'	=> 'required'
+			'rules'	=> 'required|valid_password_strength'
 		),
 		array(
 			'field'	=> 'account_password_confirm',
@@ -42,44 +42,17 @@ $config = array(
 		),
 		array(
 			'field'	=> 'account_telephone',
-			'label'	=> '',
-			'rules'	=> ''
-		),
-
-/*
-		
-		array(
-			'field'	=> 'account_',
-			'label'	=> '',
-			'rules'	=> ''
-		),
-		array(
-			'field'	=> 'account_',
-			'label'	=> '',
-			'rules'	=> ''
-		),
-		array(
-			'field'	=> 'account_',
-			'label'	=> '',
-			'rules'	=> ''
-		),
-		array(
-			'field'	=> 'account_',
-			'label'	=> '',
-			'rules'	=> ''
-		),
-		array(
-			'field'	=> 'account_',
-			'label'	=> '',
+			'label'	=> 'Telephone',
 			'rules'	=> ''
 		),
 		
 		array(
-			'field'	=> 'account_',
-			'label'	=> '',
+			'field'	=> 'account_marketing',
+			'label'	=> 'Marketing Flag',
 			'rules'	=> ''
+			
 		)
-	*/		
+	
 	)
 
 );

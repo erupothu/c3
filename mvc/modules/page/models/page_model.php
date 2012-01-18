@@ -3,11 +3,10 @@
 class Page_Model extends NestedSet_Model {
 
 	public function __construct() {
+		
 		parent::__construct();
+		self::install();
 	}
-	
-	
-
 	
 	
 	public function load($page_slug) {
@@ -33,53 +32,14 @@ class Page_Model extends NestedSet_Model {
 		return $page_result->row(0, 'Page_Object');
 	}
 
+
 	public function create() {
-		
-		
-		// Check for a unique permalink...
-		// ~ now done by the form_validation object.
-		// end check for a unique permalink.
-		
-		
-		
 		
 		$parent_id = $this->form_validation->value('page_parent_id');
 		
-		// Ascertain which part of the tree we will pivot
-		// our changes around (left weight, or right weight).
-		$direction = ($parent_id == 0 || count($page_tree = $this->retrieve_nested($parent_id)) > 0) ? 'tree_node_right' : 'tree_node_left';
-		$tree_mark = $this->$direction($parent_id);
-		
-		echo 'parent: ' . $parent_id . '<br />';
-		echo $direction . ' (' . $tree_mark . ')<br />';
-		die();
-		
-		/*
-		
-		with children, add to right.
-		----------------------------
-		
-		tree_mark = parent_right.
-		increase left and right of all nodes +2 where left/right >= parent_right.
-		new_node_left = tree_mark
-		new_node_right = tree_mark + 1.
-		
-		
-		without children, still add to right?
-		-------------------------------------
-		
-		above will also work!?
-		
-		
-		root node, add to the right (end)
-		---------------------------------
-		
-		tree mark = max_right
-		no movement needed.
-		new_node_left = tree_mark + 1
-		new_node_right = tree_mark + 2
-		
-		*/
+		// Find the right-weight of the parent node.  If this is the root, then do 
+		// not drop the weight by one (to find the node's left, or last child's right).
+		$tree_mark = $this->tree_node_right($parent_id) + ($parent_id == 0 ? 0 : -1);
 		
 		// Shift everything right to make room.
 		// First shift all rights.
@@ -107,8 +67,6 @@ class Page_Model extends NestedSet_Model {
 		
 		$this->db->insert('page', $page_insert);
 
-
-		
 		// Flash Message
 		$this->session->set_flashdata('admin/message', sprintf('Page entitled "%s" has been created', $this->form_validation->value('page_name')));
 		
@@ -182,7 +140,7 @@ class Page_Model extends NestedSet_Model {
 	}
 	*/
 	
-
+	/*
 	public function purge() {
 		
 		// Remove all 'deleted' pages permanently
@@ -192,7 +150,7 @@ class Page_Model extends NestedSet_Model {
 		$this->session->set_flashdata('admin/message', sprintf('%d page%s have been purged.', $deleted_pages, $deleted_pages == 1 ? '' : 's'));		
 		return $deleted_pages;
 	}
-	
+	*/
 	
 	
 	public function sitemap() {
@@ -258,6 +216,80 @@ class Page_Model extends NestedSet_Model {
 		// Set validation message because we have found a collision.
 		$this->form_validation->set_message('module_callback', sprintf('The %%s must have a unique permalink. This is taken by page "%s"!', $page_result->row(0, 'Page_Object')->title()));
 		return false;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	static public function install($force = false) {
+		
+		get_instance()->load->dbforge();
+		$dbforge =& get_instance()->dbforge;
+		
+		$columns = array(
+			'page_id' => array(
+				'type' 				=> 'mediumint',
+				'constraint'		=> 8,
+				'unsigned'			=> true,
+				'auto_increment'	=> true,
+				'null'				=> false
+			),
+			'page_author_id' => array(
+				'type' 				=> 'mediumint',
+				'constraint'		=> 8,
+				'unsigned'			=> true,
+				'null'				=> false
+			),
+			'page_name' => array(
+				'type' 				=> 'varchar',
+				'constraint'		=> 128,
+				'null'				=> false
+			),
+			'page_slug' => array(
+				'type' 				=> 'varchar',
+				'constraint'		=> 128,
+				'null'				=> false
+			),
+			'page_content' => array(
+				'type' 				=> 'text',
+				'null'				=> true
+			),
+			'page_status' => array(
+				'type' 				=> 'enum',
+				'constraint'		=> "'" . implode("', '", array('draft', 'published', 'deleted')) . "'",
+				'null'				=> false
+			),
+			'page_left' => array(
+				'type' 				=> 'mediumint',
+				'constraint'		=> 8,
+				'unsigned'			=> true,
+				'null'				=> false
+			),
+			'page_right' => array(
+				'type' 				=> 'mediumint',
+				'constraint'		=> 8,
+				'unsigned'			=> true,
+				'null'				=> false
+			),
+			'page_date_created' => array(
+				'type' 				=> 'datetime',
+				'null'				=> false
+			),
+			'page_date_updated' => array(
+				'type' 				=> 'datetime',
+				'null'				=> true
+			)
+		);
+		
+		$dbforge->add_field($columns);
+		$dbforge->add_key('page_slug');
+		$dbforge->add_key('page_id', true);
+		
+		$dbforge->create_table('page', !$force);
 	}
 }
 
