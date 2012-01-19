@@ -89,35 +89,7 @@ class Insight {
 		echo '<h4>Error:</h4>';
 		die($exception->getMessage());
 	}
-	
-	// TODO:
-	// Think of a cool way of doing this...
-	// lol?
-	// @TODO
-	public function hook($hook_name, $indent = 0) {
-		
-		echo "<!-- Hook: " . $hook_name . " -->\n";
-		switch($hook_name) {
-			
-			case 'header': {
-				
-				if($this->config('user/seo_block_robots') == 1) {
-					echo str_repeat("\t", $indent) . '<meta name="robots" content="noindex, nofollow">' . "\n";
-				}
-				
-				break;
-			}
-			case 'footer': {
-				break;
-			}
-		}
-		echo str_repeat("\t", $indent) . "<!-- End of Hook -->\n";
-	}
 }
 
 class INSIGHT_Exception extends Exception {
-}
-
-function __($line) {
-	echo vsprintf(CI::$APP->lang->line($line), array_slice(func_get_args(), 1));
 }

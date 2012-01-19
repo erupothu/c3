@@ -9,25 +9,44 @@ class Account_Model extends CI_Model {
 	
 	public function create() {
 		
-		echo Auth::encrypt($this->form_validation->value('account_password')) . '<br />';
-		var_dump($this->form_validation->all_values());
-		die();
+		// Split name.
+		$user_lastname 	= null;
+		$user_firstname = $this->form_validation->value('account_name');
 		
-		$account_data = array(
-			'user_email'			=> null,
-			'user_password'			=> null,
+		if(false !== strpos($user_firstname, ' ')) {
+			list($user_firstname, $user_lastname) = preg_split('/\s+/', $user_firstname, 2, PREG_SPLIT_NO_EMPTY);
+		}
+
+		
+		// Create New User
+		$account_create = new DateTime;
+		$account_insert = array(
+			'user_email'			=> $this->form_validation->value('account_email'),
+			'user_password'			=> Auth::encrypt($this->form_validation->value('account_password')),
 			'user_title'			=> null,
-			'user_firstname'		=> null,
-			'user_lastname'			=> null,
-			'user_company'			=> null,
-			'user_telephone'		=> null,
-			'user_marketing'		=> null,
-			'user_administrator'	=> null,
-			'user_date_created'		=> null,
+			'user_firstname'		=> $user_firstname,
+			'user_lastname'			=> $user_lastname,
+			'user_company'			=> $this->form_validation->value('account_organisation'),
+			'user_telephone'		=> $this->form_validation->value('account_telephone'),
+			'user_marketing'		=> $this->form_validation->value('account_marketing', 1),
+			'user_administrator'	=> 0,
+			'user_date_created'		=> $account_create->format('Y-m-d H:i:s'),
 			'user_date_lastseen'	=> null
 		);
 		
 		$this->db->insert('user', $account_data);
+		$user_id = $this->db->insert_id();
+		
+		// Flash Message?
+		//$this->session->set_flashdata('admin/message', sprintf('News article entitled "%s" has been created', $this->form_validation->value('news_title')));
+		
+		// Dispatch Email.
+		$this->email->set_mailtype('html');
+		$this->email->template('registration.email.php', array_merge($account_insert, array('user_password_plaintext' => $this->form_validation->value('account_password'))));
+		$this->email->from('no-reply@anubisltd.com', 'Anubis');
+		$this->email->to($this->form_validation->value('account_email'));
+		$this->email->subject('Registration complete');
+		$this->email->send();
 		
 		return $this->db->insert_id();
 	}
@@ -58,6 +77,10 @@ class Account_Model extends CI_Model {
 		}
 		
 		return true;
+	}
+	
+	public function format_clean_name($name_string = '') {
+		return preg_replace_callback('/(^|\'|\s|\-)[a-z]/', function($part) { return strtoupper($part[0]); }, $name_string);
 	}
 }
 

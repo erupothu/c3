@@ -2,7 +2,7 @@
 
 $config = array(
 	
-	'account-form' => array(
+	'account-register-form' => array(
 		
 		array(
 			'field'	=> 'account_email',
@@ -50,9 +50,21 @@ $config = array(
 			'field'	=> 'account_marketing',
 			'label'	=> 'Marketing Flag',
 			'rules'	=> ''
-			
 		)
 	
+	),
+	
+	'account-login-form' => array(
+		array(
+			'field'	=> 'account_email',
+			'label'	=> 'Email Address',
+			'rules'	=> 'required|valid_email'
+		),
+		array(
+			'field'	=> 'account_password',
+			'label'	=> 'Password',
+			'rules'	=> 'required'
+		),
 	)
 
 );

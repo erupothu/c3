@@ -2,9 +2,9 @@
 
 class Auth {
 	
-	private $db;
-	private $session;
-	private $configuration;
+	protected $db;
+	protected $session;
+	protected $configuration;
 	
 	public function __construct() {
 		
@@ -19,6 +19,8 @@ class Auth {
 	}
 	
 	public function login($email_address, $password, $additional_clauses = array()) {
+		
+		//var_dump(get_class());
 		
 		$this->db->select('*');
 		$this->db->from('user u');
