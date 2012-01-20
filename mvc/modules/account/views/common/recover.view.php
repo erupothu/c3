@@ -1,6 +1,6 @@
 <?php $this->load->view('common/header.include.php'); ?>
 
-	<h2>Login to Anubis</h2>
+	<h2>Recover your Account</h2>
 
 	<form method="post" action="<?php echo $this->uri->uri_string(); ?>">
 		
@@ -17,22 +17,8 @@
 				<span><input type="text" name="account_email" id="account_email" value="<?php echo $this->form_validation->value('account_email'); ?>"></span>
 			</div>
 			
-			<div class="row required<?php echo $this->form_validation->earmark('account_password'); ?>">
-				<label for="account_password">Password</label>
-				<span><input type="password" name="account_password" id="account_password" value="<?php echo $this->form_validation->value('account_password'); ?>"></span>
-			</div>
-			
-			<div>
-				
-				<ul>
-					<li>Haven't registered yet?  <?php echo anchor('account/register', 'Register an account'); ?></li>
-					<li>Cannot remember your password?  <?php echo anchor('account/recover', 'Recover your lost password'); ?> now!</li>
-				</ul>
-				
-			</div>
-
 			<div class="button-row">
-				<input type="submit" value="Login">
+				<input type="submit" value="Recover Account">
 			</div>
 			
 		</fieldset>

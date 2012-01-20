@@ -7,10 +7,8 @@ class Account extends INSIGHT_HMVC_Controller {
 		parent::__construct();
 		
 		$this->load->library('form_validation');
-		//$this->load->library('account/user_authenticated');
 		$this->load->model('account_model', 'account');
 		$this->load->config('countries');
-		
 	}
 	
 	public function index() {
@@ -19,9 +17,7 @@ class Account extends INSIGHT_HMVC_Controller {
 			return redirect('account/log-in');
 		}
 		
-		var_dump($this->user);
-		
-		echo 'account::index';
+		$this->load->view('dashboard.view.php');
 	}
 
 	public function register() {
@@ -34,29 +30,21 @@ class Account extends INSIGHT_HMVC_Controller {
 		$this->load->view('register/form.view.php', array());
 	}
 
+	public function recover() {
+		$this->load->view('common/recover.view.php');
+	}
+	
 	public function log_in() {
-		
-		//var_dump($this->user->is_logged_in());
-		
+
 		if($this->form_validation->run('account-login-form')) {
 			
 			if(false !== User_Authenticated::login($this->form_validation->value('account_email'), $this->form_validation->value('account_password'))) {
-				
-				//die('l');
+				$this->session->set_flashdata('core/message', sprintf('Welcome back, %s!', $this->user->name()));
 				return redirect('account');
 			}
 			
 			$this->form_validation->add_error(null, 'account_email', true);
 			$this->form_validation->add_error('Your login/password combination is incorrect. Please check your details and try again.', 'account_password');
-			//var_dump($a);
-			//var_dump($this->user);
-			//$this->user->login($this->form_validation->value('account_email'), $this->form_validation->value('account_password'));
-			//var_dump($this->user);
-			//var_dump($this->session->get());
-			
-			//var_dump($this->user);
-			
-			var_dump($this->form_validation->all_values());
 		}
 		
 		$this->load->view('common/login.view.php');
