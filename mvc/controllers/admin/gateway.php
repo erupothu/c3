@@ -17,8 +17,8 @@ class Gateway extends INSIGHT_Admin_Controller {
 		if($this->form_validation->run('admin-login')) {
 			
 			// Try and log in.
-			if(false !== $this->auth->login($this->form_validation->value('admin_username'), $this->form_validation->value('admin_password'), array('u.user_administrator' => 1))) {
-				$this->session->set_flashdata('admin/message', sprintf('Welcome back, %s!', $this->session->get('user/data/user_firstname')));
+			if(false !== User_Administrator::login($this->form_validation->value('admin_username'), $this->form_validation->value('admin_password'))) {
+				$this->session->set_flashdata('admin/message', sprintf('Welcome back, %s!', $this->administrator->name()));
 				return redirect('admin');
 			}
 			
@@ -31,7 +31,10 @@ class Gateway extends INSIGHT_Admin_Controller {
 	
 	public function logout() {
 		
-		$this->auth->logout();
-		return redirect('');
+		if(is_object($this->administrator) && $this->administrator->authenticated()) {
+			$this->administrator->logout();
+		}
+		
+		return redirect();
 	}
 }

@@ -24,7 +24,14 @@
 					<h1>Administration</h1>
 					
 					<div id="admin-login">
-					
+						
+						<?php if(false !== $this->session->flashdata('admin/message', false)): ?>
+						<div class="flash-message">
+							<?php echo $this->session->flashdata('admin/message'); ?>
+							<a class="icon-close" href="javascript:;">x</a>
+						</div>
+						<?php endif; ?>
+						
 						<form method="post" action="<?php echo $this->uri->uri_string(); ?>">
 					
 							<?php if($this->form_validation->has_errors()): ?>

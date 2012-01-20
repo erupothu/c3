@@ -1,30 +1,38 @@
 <?php
 
+require_once APPPATH . 'libraries/User_Guest.php';
+require_once APPPATH . 'libraries/User_Administrator.php';
+require_once APPPATH . 'modules/account/libraries/User_Authenticated.php';
+
 class Auth {
 	
-	protected $db;
-	protected $session;
-	protected $configuration;
+	private $db;
 	
-	public function __construct() {
+	public function __construct($return = false) {
 		
-		$ci = &get_instance();
-		$ci->load->library('Session');
-		
-		$this->db = &$ci->db;
-		$this->session = &$ci->session;
-		
-		// temp?
-		$this->ping();
+		CI::$APP->load->library('Session');
+		$this->db = &get_instance()->db;
 	}
 	
-	public function login($email_address, $password, $additional_clauses = array()) {
-		
-		//var_dump(get_class());
+	/**
+	 * login
+	 *
+	 * @param string $username 
+	 * @param string $password 
+	 * @param string $clauses 
+	 * @return void
+	 * 
+	 * return Guest by default.
+	 * 
+	 * 
+	 * 
+	 * 
+	 */
+	public function login($unique_identifier, $password, $auth_class = null, $additional_clauses = array()) {
 		
 		$this->db->select('*');
 		$this->db->from('user u');
-		$this->db->where('u.user_email', $email_address);
+		$this->db->where('u.user_email', $unique_identifier);
 		$this->db->where('u.user_password', self::encrypt($password));
 		$this->db->limit(1);
 		
@@ -35,55 +43,68 @@ class Auth {
 		
 		$user_result = $this->db->get();
 		if($user_result->num_rows() !== 1) {
+			return new User_Guest;
+		}
+		
+		if(is_null($auth_class)) {
+			$auth_class = 'User_Authenticated';
+		}
+		
+		$user = $user_result->row(0, $auth_class);
+		$user->init();
+		$this->pulse();
+		
+		return $user;
+	}
+	
+	public function logout($auth_class = null) {
+
+		if(is_null($auth_class)) {
+			return CI::$APP->session->destroy();
+		}
+		
+		if(!CI::$APP->session->get('auth/' . $auth_class::$key)) {
 			return false;
 		}
 		
-		$user = $user_result->row_array();
-		
-		$this->session->set('user/hash', sprintf('%d:%s', $user['user_id'], $user['user_password']));
-		$this->session->set('user/time', time());
-		$this->session->set('user/ping', time());
-		$this->session->set('user/data', $user);
-		
-		return true;
+		return CI::$APP->session->set('auth/' . $auth_class::$key, null);
 	}
 	
-	public function logout() {
-		return $this->session->destroy();
-	}
-	
-	public function ping($update = true) {
+	public function pulse() {
 		
-		if(!$this->is_logged_in())
+		if(!CI::$APP->session->get('auth/user')) {
+			$user = new User_Guest;
+			get_instance()->user = &$user;
+		}
+		
+		// Drop out if there are no authenticated sessions.
+		if(!$data = CI::$APP->session->get('auth')) {
 			return false;
+		}
+		
+		foreach($data as $_key => $sub_data) {
 			
-		$hash_parts = explode(':', $this->session->get('user/hash'));
-		$this->db->select('*');
-		$this->db->from('user u');
-		$this->db->where('u.user_id', $hash_parts[0]);
-		$this->db->where('u.user_password', $hash_parts[1]);
-		$user_result = $this->db->get();
-		if($user_result->num_rows() !== 1) {
-			return $this->logout();
+			$user_class = $sub_data['file'];
+			$auth_key = $user_class::$key;
+			
+			list($user_id, $user_password) = explode(':', $sub_data['hash']);
+		
+			$this->db->select('*');
+			$this->db->from('user u');
+			$this->db->where('u.user_id', $user_id);
+			$this->db->where('u.user_password', $user_password);
+			$user_result = $this->db->get();
+			if($user_result->num_rows() !== 1) {
+				CI::$APP->session->set('auth/' . $auth_key, null);
+				continue;
+			}
+
+			CI::$APP->session->set('auth/' . $auth_key . '/ping', time());
+			get_instance()->{$auth_key} = &$user_result->row(0, $user_class);//array('test');
 		}
-		
-		$this->session->set('user/ping', time());
-		$this->session->set('user/data', $user_result->row_array());
-		
-		// Set last seen time.
-		if($update) {
-			$ping_time = new DateTime;
-			$this->db->update('user', array('user_date_lastseen' => $ping_time->format('Y-m-d H:i:s')), array('user_id' => $hash_parts[0]));
-		}
-		
-		return true;
 	}
 	
-	public function is_logged_in() {
-		return false !== $this->session->get('user/hash');
-	}
-	
-	static public function encrypt($source_string) {
+	static public function encrypt($string) {
 		
 		$security_settings = get_instance()->insight->config('security');
 		
@@ -92,40 +113,52 @@ class Auth {
 			throw new Exception('I cannot find the algorithm: "' . $security_settings['algorithm'] . '". Try: ' . implode(', ', hash_algos()));
 		}
 		
-		return hash($security_settings['algorithm'], $security_settings['salt_one'] . $source_string . $security_settings['salt_two'], false);
+		return hash($security_settings['algorithm'], $security_settings['salt_one'] . $string . $security_settings['salt_two'], false);
 	}
+
+}
+
+abstract class User {
 	
-	static public function generate_password($length = 8, $ords = null) {
+	static public $key;
+	abstract public function authenticated();
+
+	public function init() {
 		
-		$pass = '';
-		$ords = is_null($ords) ? array_merge($let = range(97, 122), $num = range(48, 57)) : $ords;
-		for($r = 0; $r < $length; $r++) {
+		if(isset($this->pulse_skip) && $this->pulse_skip)
+			return;
+		
+		$class = get_class($this);
+		
+		$key = 'auth/' . $class::$key;//substr(strtolower(get_class($this)), 5);
+		
+		if(!CI::$APP->session->get($key)) {
 			
-			// Force it to start with a letter if there
-			// are no forced ords via $ords.
-			if($r == 0 && isset($let)) {
-				$pass .= chr($let[array_rand($let)]);
-				continue;
-			}
-			
-			$pass .= chr($ords[array_rand($ords)]);
+			CI::$APP->session->set($key, array(
+				'time' => time(),
+				'hash' => sprintf('%d:%s', $this->user_id, $this->user_password),
+				'file' => $class
+			));
 		}
 		
-		return $pass;
+		// Set the pulse time.
+		CI::$APP->session->set($key . '/ping', time());
 	}
 	
-	static public function generate_distinct_ords() {		
-
-		return array_merge(
-			array(74, 75, 77, 78, 80, 107, 109, 110),
-			range(50, 57), 
-			range(65, 72), 
-			range(82, 90), 
-			range(97, 104), 
-			range(112, 122)
-		);
+	public function logout() {
+		return CI::$APP->auth->logout(get_class($this));
 	}
 	
-	public function can() { return true; }
-	public function cannot() { return false; }
+	public function name() {
+		return sprintf('%s %s', $this->user_firstname, $this->user_lastname);
+	}
+	
+	
+	public function can($permission = null) {
+		return true;
+	}
+	
+	public function cannot($permission = null) {
+		return !$this->can($permission);
+	}
 }

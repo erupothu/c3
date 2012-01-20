@@ -80,10 +80,10 @@
 				<div class="constrain clearfix">
 					
 					<ul id="primary">
-						<?php if($this->auth->is_logged_in()): ?>
-						<li class="first-child"><a href="/account">Logged in as <span><?php echo $this->session->get('user/data/user_firstname'); ?></span></a></li>
+						<?php if($this->user->authenticated() && $this->user->can('do stuff')): ?>
+						<li class="first-child"><a href="/account">Logged in as <span><?php echo $this->user->name(); ?></span></a></li>
 						<li class="highlight"><a href="/account">My Account</a></li>
-						<li class="highlight"><a href="/account/log-out">Logout</a></li>
+						<li class="highlight no-separator"><a href="/account/log-out">Logout</a></li>
 						<?php else: ?>
 						<li class="first-child"><a href="/account/log-in">Login</a></li>
 						<li class="highlight no-separator"><a href="/account/register">Register</a></li>

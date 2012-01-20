@@ -21,7 +21,10 @@ class Insight {
 		// Load models, configurations, libraries.
 		$this->ci->load->model('settings_model', 'settings');
 		$this->ci->load->config('insight', true);
-		$this->ci->load->library('Auth');
+		$this->ci->load->library('Auth', false);
+		
+		// Init user objects.
+		$this->ci->auth->pulse();
 
 		// Load db configuration (i.e. user editable) and put into config.
 		// be nice to memcache this query (since it rarely changes).

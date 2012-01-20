@@ -57,7 +57,12 @@ class INSIGHT_Session extends CI_Session {
 			}
 			
 			// Set the end-point to the new value.
-			$pointer[$segment] = $value;
+			if(!is_null($value)) {
+				$pointer[$segment] = $value;
+			}
+			else {
+				unset($pointer[$segment]);
+			}
 		}
 		
 		return true;		

@@ -11,14 +11,10 @@ class INSIGHT_HMVC_Controller extends MX_Controller {
 	
 	public function __construct() {
 		
-		
-		
 		parent::__construct();
-		//var_dump(get_instance()->insight->config('display/skin'));
-		
-		CI::$APP->load->skin(get_instance()->insight->config('display/skin'), 'views' . DIRECTORY_SEPARATOR . CI::$APP->router->fetch_module());
+
 		// Set the skin.
-		// $this->load->skin(get_instance()->insight->config('display/skin'));
+		CI::$APP->load->skin(get_instance()->insight->config('display/skin'), 'views' . DIRECTORY_SEPARATOR . CI::$APP->router->fetch_module());
 	}
 }
 
@@ -26,6 +22,7 @@ class INSIGHT_Admin_Controller extends INSIGHT_HMVC_Controller {
 	
 	protected $required_auth = true;
 	protected $required_perm = null;
+	private $user_identifier = 'administrator';
 	
 	public function __construct($required_auth = true, $required_perm = null) {
 		
@@ -39,7 +36,7 @@ class INSIGHT_Admin_Controller extends INSIGHT_HMVC_Controller {
 		
 		$this->load->library('form_validation');
 		
-		if($this->required_auth && !$this->auth->is_logged_in()) {
+		if($this->required_auth && (!is_object($this->{$this->user_identifier}) || !$this->{$this->user_identifier}->authenticated() || $this->{$this->user_identifier}->cannot('ADMINISTRATION_VIEW'))) {
 			return redirect('admin/login');
 		}
 	}

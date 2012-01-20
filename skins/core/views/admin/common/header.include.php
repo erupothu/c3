@@ -26,7 +26,7 @@
 				
 					<h1><?php echo $this->lang->line('admin_title'); ?></h1>
 					
-					<h6>Logged in as <span><?php echo $this->session->get('user/data/user_firstname'); ?></span></h6>
+					<h6>Logged in as <span><?php echo $this->administrator->name(); ?></span></h6>
 					
 					<ul id="menu-admin" class="clearfix">
 						<li<?php echo $this->router->fetch_class() == 'main' ? ' class="selected"' : ''; ?>><?php echo anchor('admin', 'Home'); ?></li>
