@@ -177,7 +177,7 @@ class Page_Model extends NestedSet_Model {
 	 * @return boolean
 	 */
 	public function validate_unique_permalink($page_slug, $reference_field = 'page_parent_id') {
-
+		
 		$this->db->select('pn.page_id');
 		$this->db->select('pn.page_name');
 		$this->db->select('count(pp.page_id) - 1 as page_depth');
@@ -187,10 +187,12 @@ class Page_Model extends NestedSet_Model {
 		$this->db->order_by('pn.page_left');
 		$this->db->group_by('pn.page_id');
 		
+		// If we are at the root...
 		if($this->form_validation->value($reference_field) == 0) {		
 			$this->db->having('page_depth', 0);
 			$this->db->where('pn.page_slug', $page_slug);
 		}
+		// If we are not at the root (i.e. a child)...
 		else {
 			
 			$this->db->select('
@@ -206,6 +208,13 @@ class Page_Model extends NestedSet_Model {
 			
 			$this->db->where('pn.page_slug', $page_slug);
 			$this->db->having('page_parent_id', $this->form_validation->value($reference_field));
+		}
+		
+		// If there is a page id value present in the POST array
+		// allow this to be 'ignored' from the query.  This will
+		// stop self-comparisons on an ->update() request.
+		if(false !== $this->form_validation->value('page_id')) {
+			$this->db->where('pn.page_id !=', $this->form_validation->value('page_id'));
 		}
 		
 		$page_result = $this->db->get();
