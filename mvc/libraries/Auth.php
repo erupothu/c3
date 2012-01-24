@@ -100,7 +100,7 @@ class Auth {
 			}
 
 			CI::$APP->session->set('auth/' . $auth_key . '/ping', time());
-			get_instance()->{$auth_key} = &$user_result->row(0, $user_class);//array('test');
+			get_instance()->{$auth_key} = &$user_result->row(0, $user_class);
 		}
 	}
 	
@@ -116,6 +116,46 @@ class Auth {
 		return hash($security_settings['algorithm'], $security_settings['salt_one'] . $string . $security_settings['salt_two'], false);
 	}
 
+	static public function generate_password($length = 8, $ords = null, $encrypt = false) {
+
+		$pass = '';
+		$ords = is_null($ords) ? array_merge($let = range(97, 122), $num = range(48, 57)) : $ords;
+		for($r = 0; $r < $length; $r++) {
+
+			// Force it to start with a letter if there
+			// are no forced ords via $ords.
+			if($r == 0 && isset($let)) {
+				$pass .= chr($let[array_rand($let)]);
+				continue;
+			}
+
+			$pass .= chr($ords[array_rand($ords)]);
+		}
+
+		if(!$encrypt)
+			return $pass;
+		
+		return self::encrypt($pass);
+	}
+	
+	static public function generate_pw($length = 8) {
+		die('playing!  dont use this.');
+		$list = explode(PHP_EOL, `cat /usr/share/dict/words | awk 'length == 8'`);
+		$word = $list[array_rand($list, 1)];
+		var_dump(strtolower(substr($word, 0, 1) . strtr(substr($word, 1), 'aeo', '430')));
+	}
+
+	static protected function generate_distinct_ords() {		
+
+		return array_merge(
+			array(74, 75, 77, 78, 80, 107, 109, 110),
+			range(50, 57), 
+			range(65, 72), 
+			range(82, 90), 
+			range(97, 104), 
+			range(112, 122)
+		);
+	}
 }
 
 abstract class User {
@@ -130,7 +170,7 @@ abstract class User {
 		
 		$class = get_class($this);
 		
-		$key = 'auth/' . $class::$key;//substr(strtolower(get_class($this)), 5);
+		$key = 'auth/' . $class::$key;
 		
 		if(!CI::$APP->session->get($key)) {
 			
@@ -147,6 +187,10 @@ abstract class User {
 	
 	public function logout() {
 		return CI::$APP->auth->logout(get_class($this));
+	}
+	
+	public function id() {
+		return (int)$this->user_id;
 	}
 	
 	public function name() {

@@ -79,6 +79,29 @@ class Account_Model extends CI_Model {
 		return true;
 	}
 	
+	public function validate_account_recoverable($email) {
+		
+		$this->db->select('count(user.user_id) as user_count');
+		$this->db->select('if(ISNULL(user.user_recovery), 1, 0) as user_recoverable', false);
+		$this->db->from('user');
+		$this->db->where('user.user_email', $email);
+		$account_result = $this->db->get();
+		
+		if((int)$account_result->row('user_count') === 0) {
+			$this->form_validation->set_message('module_callback', 'There is no account with that %s in the system.');
+			return false;
+		}
+		
+		/*
+		if((int)$account_result->row('user_recoverable') === 0) {
+			$this->form_validation->set_message('module_callback', 'TODO');
+			return false;
+		}
+		*/
+		
+		return true;
+	}
+	
 	public function format_clean_name($name_string = '') {
 		return preg_replace_callback('/(^|\'|\s|\-)[a-z]/', function($part) { return strtoupper($part[0]); }, $name_string);
 	}

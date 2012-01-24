@@ -1,6 +1,6 @@
 <?php $this->load->view('common/header.include.php'); ?>
 
-	<h2>Login</h2>
+	<h2>Login to Anubis</h2>
 
 	<form method="post" action="<?php echo $this->uri->uri_string(); ?>">
 		
@@ -10,31 +10,24 @@
 		</div>
 		<?php endif; ?>
 		
-		<fieldset>
-			
+		<fieldset class="clearfix">
+				
 			<div class="row required<?php echo $this->form_validation->earmark('account_email'); ?>">
 				<label for="account_email">Email Address</label>
 				<span><input type="text" name="account_email" id="account_email" value="<?php echo $this->form_validation->value('account_email'); ?>"></span>
+				<small><?php echo anchor('account/register', $this->lang->line('account_register')); ?></small>
 			</div>
-			
+		
 			<div class="row required<?php echo $this->form_validation->earmark('account_password'); ?>">
 				<label for="account_password">Password</label>
 				<span><input type="password" name="account_password" id="account_password" value="<?php echo $this->form_validation->value('account_password'); ?>"></span>
+				<small><?php echo anchor('account/recover', $this->lang->line('account_recover')); ?></small>
 			</div>
 			
-			<div>
-				
-				<ul>
-					<li>Haven't registered yet?  <?php echo anchor('account/register', 'Register an account'); ?></li>
-					<li>Cannot remember your password?  <?php echo anchor('account/recover', 'Recover your lost password'); ?> now!</li>
-				</ul>
-				
-			</div>
-
 			<div class="button-row">
-				<input type="submit" value="Login">
+				<input type="submit" value="<?php echo $this->lang->line('account_login_text'); ?>">
 			</div>
-			
+				
 		</fieldset>
 		
 	</form>

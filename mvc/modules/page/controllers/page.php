@@ -5,7 +5,6 @@ class Page extends INSIGHT_HMVC_Controller {
 	public function __construct() {
 		
 		parent::__construct();
-		
 		$this->load->model('page_model', 'page');
 	}
 	
@@ -43,6 +42,31 @@ class Page extends INSIGHT_HMVC_Controller {
 	 */
 	public function output($template, $data = array()) {
 		$this->load->view('templates/' . $template . '.template.view.php', $data);
+	}
+
+
+	
+	public function children($parent) {
+
+		$page_id = $parent->parent() == 0 || $parent->hasChildren() ? $parent->id() : $parent->parent();
+		
+		$page = $this->page->retrieve_nested($page_id, 1);
+		if(!$page->hasChildren()) {
+			return;
+		}
+		
+		$this->load->view('chunks/page/child-pages.chunk.php', array(
+			'parent'	=> $page,
+			'pages' 	=> $page->getChildren()
+		));
+	}
+	
+	
+	public function breadcrumb($parent) {
+
+		$this->load->view('chunks/page/breadcrumb.chunk.php', array(
+			'breadcrumbs' => $this->page->path($parent->id())
+		));
 	}
 
 

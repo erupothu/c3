@@ -23,7 +23,7 @@ class Admin extends INSIGHT_Admin_Controller {
 		}
 		
 		$this->load->view('admin/news/create.view.php', array(
-			'news' => new News_Object
+		//	'news' => new News_Object
 		));
 	}
 	

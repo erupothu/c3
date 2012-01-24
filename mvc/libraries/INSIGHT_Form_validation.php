@@ -105,7 +105,7 @@ class INSIGHT_Form_Validation extends CI_Form_Validation {
 	public function selected($field, $value, $default = false) {
 		
 		if(!isset($this->_field_data[$field])) {
-			return $default ? ' selected="selected"' : null;
+			return $default == $value ? ' selected="selected"' : null;
 		}
 		
 		if($this->_field_data[$field]['postdata'] == $value)
@@ -219,6 +219,22 @@ class INSIGHT_Form_Validation extends CI_Form_Validation {
 		if(0 == preg_match('/^(?#Protocol)(?:(?:ht|f)tp(?:s?)\:\/\/|~\/|\/)?(?#Username:Password)(?:\w+:\w+@)?(?#Subdomains)(?:(?:[-\w]+\.)+(?#TopLevel Domains)(?:com|org|net|gov|mil|biz|info|mobi|name|aero|jobs|museum|travel|[a-z]{2}))(?#Port)(?::[\d]{1,5})?(?#Directories)(?:(?:(?:\/(?:[-\w~!$+|.,=]|%[a-f\d]{2})+)+|\/)+|\?|#)?(?#Query)(?:(?:\?(?:[-\w~!$+|.,*:]|%[a-f\d{2}])+=?(?:[-\w~!$+|.,*:=]|%[a-f\d]{2})*)(?:&(?:[-\w~!$+|.,*:]|%[a-f\d{2}])+=?(?:[-\w~!$+|.,*:=]|%[a-f\d]{2})*)*)*(?#Anchor)(?:#(?:[-\w~!$+|.,*:=]|%[a-f\d]{2})*)?$/', $string)) {
 			$this->set_message(__function__, 'The %s field must contain a valid URL');
 			return false;
+		}
+		
+		return true;
+	}
+	
+	public function valid_date(&$string, $expected_format = 'Y-m-d') {
+		
+		$date = DateTime::createFromFormat($expected_format, $string);
+		$errs = DateTime::getLastErrors();
+		
+		// DateTime will often 'repair' bad dates.
+		$string = $date->format($expected_format);
+		
+		if($errs['warning_count'] + $errs['error_count'] > 0) {
+			$this->set_message(__function__, '%s must be a valid date (' . $expected_format . ')');
+			return false;			
 		}
 		
 		return true;

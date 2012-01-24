@@ -55,6 +55,7 @@ $config = array(
 	),
 	
 	'account-login-form' => array(
+		
 		array(
 			'field'	=> 'account_email',
 			'label'	=> 'Email Address',
@@ -65,6 +66,15 @@ $config = array(
 			'label'	=> 'Password',
 			'rules'	=> 'required'
 		),
+	),
+	
+	'account-recover-form' => array(
+		
+		array(
+			'field'	=> 'account_email',
+			'label'	=> 'Email Address',
+			'rules'	=> 'required|valid_email|module_callback[validate_account_recoverable]'
+		)
 	)
 
 );

@@ -8,7 +8,6 @@ class Account extends INSIGHT_HMVC_Controller {
 		
 		$this->load->library('form_validation');
 		$this->load->model('account_model', 'account');
-		$this->load->config('countries');
 	}
 	
 	public function index() {
@@ -30,7 +29,31 @@ class Account extends INSIGHT_HMVC_Controller {
 		$this->load->view('register/form.view.php', array());
 	}
 
-	public function recover() {
+	public function recover($hash = null) {
+		
+		if(!is_null($hash)) {
+			die($hash);
+		}
+		
+		if($this->form_validation->run('account-recover-form')) {
+			
+			// Set temporary new PW.
+			// Email hash to the user.
+			
+			// On clicking the recovery, set temporary PW = new PW.
+			// Log the user in.
+			
+			$pass = Auth::generate_password();
+			$encrypted = Auth::encrypt($pass);
+			echo $this->form_validation->value('account_email') . '<br />';
+			echo $pass . '<br />';
+			echo $encrypted . '<br />';
+			echo strlen($encrypted) . ' bytes<br />';
+			
+			echo strtolower(site_url(array(__class__, __function__, $encrypted)));
+			die();
+		}
+		
 		$this->load->view('common/recover.view.php');
 	}
 	
@@ -42,9 +65,9 @@ class Account extends INSIGHT_HMVC_Controller {
 				$this->session->set_flashdata('core/message', sprintf('Welcome back, %s!', $this->user->name()));
 				return redirect('account');
 			}
-			
+
 			$this->form_validation->add_error(null, 'account_email', true);
-			$this->form_validation->add_error('Your login/password combination is incorrect. Please check your details and try again.', 'account_password');
+			$this->form_validation->add_error($this->lang->line('account_login_fail'), 'account_password');
 		}
 		
 		$this->load->view('common/login.view.php');

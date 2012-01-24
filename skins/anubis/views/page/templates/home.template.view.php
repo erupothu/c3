@@ -27,7 +27,7 @@
 					
 					<div style="position: absolute; bottom: 0; padding: 20px;">
 						<?php echo $page->content(); ?>
-						<a href="#" class="button read-more" style="float: right;">Read More<span></span></a>
+						<a href="/about-us" class="button orange read-more" style="float: right;">Read More<span></span></a>
 					</div>
 					
 				</article>

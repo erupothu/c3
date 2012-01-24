@@ -16,6 +16,19 @@ class Page_Model extends NestedSet_Model {
 		}
 		
 		$this->db->select('pn.*');
+		
+		// @TODO
+		// only if we are nesting...
+		$this->db->select('
+		ifnull((
+			select pp.page_id
+				from page pp
+					where pp.page_left < pn.page_left AND pp.page_right > pn.page_right
+				order by
+					pp.page_right asc
+				limit 1
+		), 0) as page_parent_id', false);
+		
 		$this->db->select('group_concat(pp.page_slug order by pp.page_id separator "") as page_slug_path', false);
 		$this->db->select('count(pp.page_id) - 1 as page_depth');
 		$this->db->from('page pn');
@@ -55,7 +68,7 @@ class Page_Model extends NestedSet_Model {
 		// Now insert the new page.
 		$page_create = new DateTime;
 		$page_insert = array(
-			'page_author_id'	=> 1,
+			'page_author_id'	=> $this->administrator->id(),
 			'page_name'			=> $this->form_validation->value('page_name', '', false),
 			'page_slug'			=> $this->form_validation->value('page_slug'),
 			'page_content'		=> $this->form_validation->value('page_content', null, false),
@@ -309,6 +322,30 @@ class NestedSet_Model extends CI_Model {
 		parent::__construct();
 	}
 
+	
+	public function path($page_id) {
+		
+		$this->db->select('pp.page_id');
+		$this->db->select('pp.page_name');
+		$this->db->select('pp.page_slug');
+		$this->db->from('page pn');
+		$this->db->from('page pp');
+		$this->db->where('pn.page_left between pp.page_left and pp.page_right');
+		$this->db->where('pn.page_id', $page_id);
+		$this->db->order_by('pn.page_left');
+		$page_result = $this->db->get();
+		
+		
+		$page_coslug = '';
+		$breadcrumbs = array('/' => 'Home');
+		foreach($page_result->result() as $page) {
+			$page_coslug .= $page->page_slug;
+			$breadcrumbs[$page_coslug] = $page->page_name;
+		}
+		
+		return $breadcrumbs;
+	}
+
 
 	public function delete($page_id) {
 		
@@ -335,9 +372,8 @@ class NestedSet_Model extends CI_Model {
 		
 		return $deleted_items === 0 ? false : $deleted_items;
 	}
-	
-	
-	
+
+
 	public function retrieve_by_id($item_id) {
 
 		$this->db->select('pn.*');
@@ -358,12 +394,6 @@ class NestedSet_Model extends CI_Model {
 		$this->db->order_by('pn.page_left');
 		$this->db->group_by('pn.page_id');
 		
-		
-		
-		
-		
-		
-
 		$page_result = $this->db->get();
 		
 		if($page_result->num_rows() !== 1) {
@@ -386,35 +416,14 @@ class NestedSet_Model extends CI_Model {
 	 * @return 	void
 	 */
 	public function retrieve_nested($element_root = 0, $element_limit = null) {
-		
-		/*
-		SELECT node.name, (COUNT(parent.name) - (sub_tree.depth + 1)) AS depth
-		FROM nested_category AS node,
-		        nested_category AS parent,
-		        nested_category AS sub_parent,
-		        (
-		                SELECT node.name, (COUNT(parent.name) - 1) AS depth
-		                FROM nested_category AS node,
-		                        nested_category AS parent
-		                WHERE node.lft BETWEEN parent.lft AND parent.rgt
-		                        AND node.name = 'PORTABLE ELECTRONICS'
-		                GROUP BY node.name
-		                ORDER BY node.lft
-		        )AS sub_tree
-		WHERE node.lft BETWEEN parent.lft AND parent.rgt
-		        AND node.lft BETWEEN sub_parent.lft AND sub_parent.rgt
-		        AND sub_parent.name = sub_tree.name
-		GROUP BY node.name
-		HAVING depth <= 1
-		ORDER BY node.lft;
-		*/
 			
 		$this->db->select('pn.page_id');
 		$this->db->select('pn.page_name');
 		$this->db->select('pn.page_slug');
+		
 		// debug:
 		$this->db->select('pn.page_left, pn.page_right');
-		//
+		
 		$this->db->select('pn.page_date_created');
 		$this->db->select('pn.page_date_updated');
 		$this->db->select('group_concat(pp.page_slug order by pp.page_id separator "") as page_slug_path', false);
@@ -430,6 +439,9 @@ class NestedSet_Model extends CI_Model {
 		// If we need to obtain a sub-tree, we need to join
 		// an additional items table plus the sub-tree to cross-reference
 		if($element_root != 0 && is_numeric($element_root)) {
+		
+			// TEMP:
+			$this->db->select('nullif(pt.page_id, pn.page_id) as page_parent_id', false);
 			
 			$this->db->from('page ps');
 			$this->db->from(sprintf('(
@@ -454,7 +466,6 @@ class NestedSet_Model extends CI_Model {
 			if(!is_null($element_limit)) {
 				$this->db->having('page_depth <=' . $element_limit);
 			}
-
 		}
 		else {
 			$this->db->select('count(pp.page_id) - 1 as page_depth');
@@ -563,6 +574,9 @@ class Page_Object {
 		return (int)$this->page_parent_id;
 	}
 	
+	public function active() {
+		return CI::$APP->uri->uri_string() === $this->permalink();
+	}	
 	
 	// Tree methods.
 	public function tree_left() {
@@ -575,6 +589,10 @@ class Page_Object {
 	
 	public function tree_width() {
 		return ($this->tree_right() - $this->tree_left()) + 1;
+	}
+	
+	public function hasChildren() {
+		return ($this->tree_right() - $this->tree_left()) > 1;
 	}
 	
 	
@@ -666,7 +684,7 @@ class Nested_Page_Object extends Page_Object implements RecursiveIterator, Count
 	}
 	
 	public function getChildren() {
-		return $this->children;
+		return new ArrayIterator($this->children);
 	}
 
 	public function next() {
@@ -688,7 +706,7 @@ class Nested_Page_Object extends Page_Object implements RecursiveIterator, Count
 	public function valid() {
 		return isset($this->pointers[$this->position]);
 	}
-	
+
 	
 	// Countable methods
 	public function count() {

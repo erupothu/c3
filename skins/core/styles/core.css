@@ -287,6 +287,11 @@ fieldset {
 	margin: 0 auto;
 }
 
+.icon-calendar {
+	background-position: 0 -32px;
+	margin: 0 auto;
+}
+
 
 /* meta */
 /*a.meta-image {

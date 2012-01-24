@@ -14,8 +14,8 @@
 			
 		</div>
 		
-		<script src="<?php echo $this->uri->skin('scripts/jquery-1.6.4.min.js'); ?>"></script>
-		<script src="<?php echo $this->uri->skin('scripts/jquery-ui-1.8.16.min.js'); ?>"></script>
+		<script src="<?php echo $this->uri->skin('scripts/jquery-1.7.1.min.js'); ?>"></script>
+		<script src="<?php echo $this->uri->skin('scripts/jquery-ui-1.8.17.min.js'); ?>"></script>
 		<script src="<?php echo $this->uri->skin('scripts/libs/jcrop-0.9.9/jquery.jcrop-0.9.9.min.js'); ?>"></script>
 		<script src="<?php echo $this->uri->skin('scripts/libs/ckeditor-3.6.2/ckeditor.js'); ?>"></script>
 		<script src="<?php echo $this->uri->skin('scripts/libs/ckeditor-3.6.2/adapters/jquery.js'); ?>"></script>
@@ -308,6 +308,24 @@
 				}
 			}).click(false);
 			*/
+			
+			
+			
+
+			$('.date-picker').datepicker({
+				dateFormat	: 'yy-mm-dd',
+				onSelect	: function(text, inst) {
+					
+				}
+			});
+			
+			$('.date-picker-icon').click(function(e) {
+				$dp = $(this).parents('.row').find('.date-picker');
+				$dp.datepicker('show');
+				e.preventDefault();
+			});
+
+
 		});
 		
 		</script>

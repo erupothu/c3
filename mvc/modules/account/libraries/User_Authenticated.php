@@ -10,6 +10,10 @@ class User_Authenticated extends User {
 	}
 
 	static public function login($user_email, $user_hash) {
-		return CI::$APP->auth->login($user_email, $user_hash, __CLASS__);
+		
+		if(!($user = CI::$APP->auth->login($user_email, $user_hash, __CLASS__)) instanceof self)
+			return false;
+		
+		return $user;
 	}
 }

@@ -13,7 +13,6 @@ class News extends INSIGHT_HMVC_Controller {
 	 * index
 	 *
 	 * @return void
-	 * @author jon
 	 */
 	public function index() {
 		
@@ -69,7 +68,6 @@ class News extends INSIGHT_HMVC_Controller {
 	 * @param string $month 
 	 * @param string $day 
 	 * @return void
-	 * @author jon
 	 */
 	public function archive($year = null, $month = null, $day = null) {
 
@@ -79,7 +77,7 @@ class News extends INSIGHT_HMVC_Controller {
 		
 		$articles = $this->news->archive($year, $month, $day);
 		
-		var_dump($articles);
+		//var_dump($articles);
 
 		// Run it through the news template.
 	}
@@ -92,25 +90,28 @@ class News extends INSIGHT_HMVC_Controller {
 	 * @todo 	Relies on 'page' module. Add in way of registering a 'not found' func.
 	 * @param 	string $news_slug 
 	 * @return 	void
-	 * @author 	jon
 	 */
 	public function view($news_slug) {
 		
-		// Does this news article exist?
+		// Does this news article exist?  404 if not.
 		if(!$article = $this->news->retrieve_by_slug($news_slug)) {
 			return $this->output->set_output(Modules::run('page/_404'));
 		}
 		
 		// Run it through a news template if it exists.
-		$output = Modules::run('page/output', 'inner', array(
+		//$output = Modules::run('page/output', 'inner', array(
+		//	'article' => $article
+		//));
+		
+		//if(!is_null($output)) {
+		//	return $this->output->set_output($output);
+		//}
+		
+		$this->load->view('templates/news-article.template.view.php', array(
 			'article' => $article
 		));
 		
-		if(!is_null($output)) {
-			return $this->output->set_output($output);
-		}
-		
 		// Fall back to the page template.
-		die('fail');
+		//die('fail');
 	}
 }

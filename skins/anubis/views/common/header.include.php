@@ -26,6 +26,10 @@
 		<script src="<?php echo $this->uri->skin('assets/scripts/jquery-ui-1.8.16.min.js'); ?>"></script>
 		<script src="<?php echo $this->uri->skin('assets/scripts/cufon-1.09i.yui.js'); ?>"></script>
 		
+		<!--[if lt IE 9]>
+		<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+		<![endif]-->
+		
 		<script src="<?php echo $this->uri->skin('assets/scripts/neosans-400.font.js'); ?>"></script>
 		<script src="<?php echo $this->uri->skin('assets/scripts/neosans-500.font.js'); ?>"></script>
 		<script src="<?php echo $this->uri->skin('assets/scripts/neosans-700.font.js'); ?>"></script>
@@ -35,7 +39,7 @@
 			
 			// Font Replacement.
 			Cufon.replace('h2 > span, a.button', { fontFamily: 'NeoSans-700' });
-			Cufon.replace('#secondary li a, h1, h2, .tab, span.title', { fontFamily: 'NeoSans-500', hover: true });
+			Cufon.replace('#secondary li a, h1, h2:not(header h2), .tab, span.title', { fontFamily: 'NeoSans-500', hover: true });
 			Cufon.replace('.left-column em', { fontFamily: 'NeoSans-400' });
 			
 			// News Scroller.
@@ -61,6 +65,16 @@
 						
 						scrollContent.css('margin-left', 0);
 					}
+				},
+				create: function(event, ui) {
+					
+					$w = 0;
+					scrollPane.find('li').each(function() {
+						$w += $(this).width();
+					});
+					
+					// Set the scroller to the correct width.
+					scrollContent.css({ width: $w + 'px' });
 				}
 			});
 			
@@ -77,7 +91,7 @@
 			
 			<header>
 				
-				<div class="constrain clearfix">
+				<div id="header" class="constrain clearfix">
 					
 					<ul id="primary">
 						<?php if($this->user->authenticated() && $this->user->can('do stuff')): ?>

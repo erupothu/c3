@@ -3,18 +3,17 @@
 class News_Model extends CI_Model {
 	
 	public function __construct() {
+		
 		parent::__construct();
 		
 		//News_Model::install();
 	}
 	
 	public function create() {
-		
-		//var_dump($this->form_validation->all_values());
-		
+
 		$news_create = new DateTime;
 		$news_insert = array(			
-			'news_author_id'		=> (int)$this->session->get('user/data/user_id'),
+			'news_author_id'		=> $this->administrator->id(),
 			'news_title'			=> $this->form_validation->value('news_title', '', false),
 			'news_slug'				=> $this->form_validation->value('news_slug'),
 			'news_data_excerpt'		=> $this->form_validation->value('news_data_excerpt', null, false),
@@ -34,8 +33,11 @@ class News_Model extends CI_Model {
 	
 	public function retrieve() {
 		
-		$this->db->select('*');
+		$this->db->select('news.*');
+		$this->db->select('user.user_firstname as news_author_firstname');
+		$this->db->select('user.user_lastname as news_author_lastname');
 		$this->db->from('news');
+		$this->db->join('user', 'user.user_id = news.news_author_id');
 		$this->db->where('NOW() >= news.news_date_published');
 		$this->db->order_by('news.news_date_published desc');
 		$news_result = $this->db->get();
@@ -79,8 +81,11 @@ class News_Model extends CI_Model {
 	
 	public function archive($year, $month = null, $day = null) {
 		
-		$this->db->select('*');
+		$this->db->select('news.*');
+		$this->db->select('user.user_firstname as news_author_firstname');
+		$this->db->select('user.user_lastname as news_author_lastname');
 		$this->db->from('news');
+		$this->db->join('user', 'user.user_id = news.news_author_id');
 		$this->db->where('YEAR(news.news_date_published)', $year);
 		$this->db->order_by('news.news_date_published desc');
 		
@@ -108,8 +113,11 @@ class News_Model extends CI_Model {
 
 	public function retrieve_by_id($news_id) {
 		
-		$this->db->select('*');
+		$this->db->select('news.*');
+		$this->db->select('user.user_firstname as news_author_firstname');
+		$this->db->select('user.user_lastname as news_author_lastname');
 		$this->db->from('news');
+		$this->db->join('user', 'user.user_id = news.news_author_id');
 		$this->db->where('news.news_id', $news_id);
 		$news_result = $this->db->get();
 		
@@ -122,8 +130,11 @@ class News_Model extends CI_Model {
 	
 	public function retrieve_by_slug($news_slug) {
 		
-		$this->db->select('*');
+		$this->db->select('news.*');
+		$this->db->select('user.user_firstname as news_author_firstname');
+		$this->db->select('user.user_lastname as news_author_lastname');
 		$this->db->from('news');
+		$this->db->join('user', 'user.user_id = news.news_author_id');
 		$this->db->where('news.news_slug', $news_slug);
 		$news_result = $this->db->get();
 		
@@ -203,8 +214,6 @@ class News_Object {
 		return $this->$key;
 	}
 	
-	
-	
 	public function id() {
 		return (int)$this->news_id;
 	}
@@ -216,9 +225,18 @@ class News_Object {
 	public function size() {
 		return strlen($this->news_data_full);
 	}
+	
+	public function author() {
+		return sprintf('%s %s', $this->news_author_firstname, $this->news_author_lastname);
+	}
 
-	public function permalink() {
-		return site_url(array('news', $this->news_slug));
+	public function permalink($complete = false) {
+		$permalink = array('news', $this->news_slug);
+		return $complete ? site_url($permalink) : '/' . implode('/', $permalink);
+	}
+	
+	public function active() {
+		return CI::$APP->uri->uri_string() === $this->permalink();
 	}
 	
 	
@@ -264,7 +282,11 @@ class News_Object {
 			'indent' 			=> true,
 			'indent-spaces' 	=> 4,
 			'drop-empty-paras' 	=> true,
-			'show-body-only'	=> true
+			'show-body-only'	=> true,
+			'preserve-entities'	=> true,
+			'input-encoding'	=> 'utf8',
+			'char-encoding'		=> 'utf8',
+			'output-encoding'	=> 'utf8'
 		));
 	}
 }

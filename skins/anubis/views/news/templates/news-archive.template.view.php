@@ -6,22 +6,18 @@
 		
 			<div class="box box-submenu">
 				
-				<div style="margin: 8px;">
-					<h2><span>Technical Equipment</span></h2>
+				<div class="spacing">
 					
-					<ul id="sub-menu">
-						<li class="first-child"><a href="#">COTS Equipment</a></li>
-						<li><a href="#">Tracking (Aquilia)</a></li>
-						<li><a href="#">Audio Equipment</a></li>
-						<li><a href="#">Video Equipment</a></li>
-						<li class="last-child"><a href="#">Technical Assistance</a></li>
-					</ul>
+					<h2><span>News</span></h2>
+					
+					&nbsp;
+					
 				</div>
 				
 			</div>
 			
 			<div class="box box-training-and-operations">
-				<a href="#">
+				<a href="/training-and-operations" title="Training &amp; Operations">
 					<img src="<?php echo $this->uri->skin('assets/images/boxes/training-and-operations.jpg'); ?>" alt="Training &amp; Operations">
 					<span class="strip"><em>Training &amp; Operations</em></span>
 				</a>
@@ -41,10 +37,10 @@
 					
 					<?php foreach($articles as $article): ?>
 					<article>
-						<div class="content clearfix" style="color: #333 !important;">
-							<h2><?php echo $article->title(); ?></h2>
+						<div class="content clearfix">
+							<h2><a href="<?php echo $article->permalink(); ?>"><?php echo $article->title(); ?></a></h2>
 							<p><?php echo $article->excerpt(210); ?></p>
-							<a href="<?php echo $article->permalink(); ?>" class="button read-more" style="float: right; margin-top: 0px;">Read More<span></span></a>
+							<a href="<?php echo $article->permalink(); ?>" class="button read-more orange" style="float: right; margin-top: 0px;">Read More<span></span></a>
 						</div>
 					</article>
 					<?php endforeach; ?>

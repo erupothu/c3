@@ -92,6 +92,38 @@ body {
 
 
 
+.breadcrumb {
+	clear: both;
+	overflow: auto;
+	padding: 4px 8px;
+}
+
+.breadcrumb ul {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	font-size: 11px;
+}
+
+.breadcrumb li {
+	color: #333;
+	float: left;
+	margin-right: 8px;
+}
+
+.breadcrumb a {
+	color: #E7551E;
+	font-weight: bold;
+	text-decoration: none;
+}
+
+.breadcrumb a:hover {
+	color: #2C3339;
+	text-decoration: underline;
+}
+
+
+
 .box-submenu {
 }
 
@@ -106,11 +138,121 @@ body {
 	padding: 0;
 }
 
+.box-submenu h2 a {
+	margin: 0 !important;
+	color: #ffffff !important;
+	color: inherit;
+}
+
 .box-submenu h2 span {
 	padding: 0 80px 0 12px;
 	text-transform: uppercase;
 	font-size: 15px;
 }
+
+
+.product {
+	position: relative;
+	border-bottom: solid 1px #cccccc;
+	padding: 8px 0;
+}
+
+.product header {
+	font-size: 14px;
+	padding: 8px 0 4px;
+}
+
+.product .thumbnail {
+	border: solid 1px #cccccc;
+	background: #fff;
+	display: block;
+	width: 106px;
+	height: 106px;
+	float: left;
+	
+	margin-right: 12px;
+}
+
+.product .thumbnail.left {
+	margin-right: 8px;
+}
+
+.product .thumbnail.right {
+	margin: 0;
+}
+
+.product .thumbnail img {
+	margin: 3px;
+	display: block;
+}
+
+.product .details {
+	float: left;
+	width: 486px;
+	margin-right: 8px;
+	height: 108px;
+}
+
+.product .title {
+	float: left;
+}
+
+.product .title a {
+	color: #E53812;
+	text-decoration: none;
+}
+
+.product .code {
+	float: right;
+	color: #E53812;
+}
+
+.product .price {
+	float: left;
+	font-size: 16px;
+	line-height: 23px;
+	color: #E53812;
+}
+
+.product .code span, .product .price span {
+	color: #999;
+}
+
+.product .price span {
+	padding-right: 4px;
+}
+
+.product .description p {
+	margin: 0;
+}
+
+.product .button {
+	float: left;
+	position: absolute;
+	bottom: 16px;
+}
+
+.product.last-child, .product.full-details {
+	border-bottom: 0;
+	padding-bottom: 0;
+}
+
+#products h2 {
+	display: block;
+	height: 40px;
+	background: url(../../assets/images/page.header.png) no-repeat top right;
+	color: #ffffff;
+	line-height: 35px;
+	margin: 0;
+	padding: 0;
+}
+
+#products h2 span {
+	padding: 0 80px 0 12px;
+	text-transform: uppercase;
+	font-size: 15px;
+}
+
 
 
 
@@ -130,16 +272,22 @@ body {
 #sub-menu li a {
 	font-size: 1.1em;
 	display: block;
-	background: url(../../assets/images/menu.sub.markers.png) no-repeat top right;
+	background: url(../../assets/images/menu.sub.markers.png) no-repeat right -39px;
 	height: 40px;
 	line-height: 40px;
+	margin: 0 8px;
+	color: #2C3339;
 }
 
 #sub-menu li a:hover {
-	color: #000;
-	background-position: right -39px;
+	color: #E7551E;
+	background-position: right 0;
 }
 
+#sub-menu li.selected a {
+	color: #E7551E;
+	background-position: right 0
+}
 
 
 /* MENUS */
@@ -317,6 +465,10 @@ body {
 	margin-bottom: 8px;
 }
 
+.box .spacing {
+	margin: 8px;
+}
+
 .left-column .box a {
 	display: block;
 	margin: 8px;
@@ -364,6 +516,7 @@ body {
 
 article .content {
 	margin: 6px 12px 12px;
+	color: #333333;
 }
 
 article .content h1 {
@@ -372,10 +525,23 @@ article .content h1 {
 	text-transform: uppercase;
 }
 
+article .content h2 {
+	color: #222222;
+	font-size: 15px;
+	text-transform: uppercase;
+}
+
+article .content a {
+	font-weight: bold;
+	color: #F2622D;
+}
+
+article .content a:hover {
+	color: #2C3339;
+}
 
 a.button {
 	display: block;
-	background: url(../../assets/images/button.orange-left.png) no-repeat left top;
 	height: 23px;
 	margin-right: 11px;
 	text-transform: uppercase;
@@ -392,9 +558,25 @@ a.button span {
 	width: 11px;
 	height: 23px;
 	float: right;
-	background: url(../../assets/images/button.orange-right.png) no-repeat right top;
 	margin-right: -11px;
 	padding: 0 0 0 5px;
+}
+
+a.orange {
+	color: #ffffff !important;
+	background: url(../../assets/images/button.orange-left.png) no-repeat left top;	
+}
+
+a.grey {
+	background: url(../../assets/images/button.grey-left.png) no-repeat left top;	
+}
+
+a.orange span {
+	background: url(../../assets/images/button.orange-right.png) no-repeat right top;
+}
+
+a.grey span {
+	background: url(../../assets/images/button.grey-right.png) no-repeat right top;
 }
 
 
@@ -461,7 +643,6 @@ a.button span {
 	margin: 0;
 	padding: 0;
 	width: auto;
-	width: 2500px;
 }
 
 #news-latest ul li {
@@ -522,67 +703,142 @@ a.button span {
 	height: 93px;
 }
 
-/* FOOTER */
-footer {
+
+
+
+
+
+/* FORM */
+form {
+	
+}
+
+fieldset {
+	border: none;
+	padding: 0;
+	margin: 0;
+}
+
+.row {
+	margin-bottom: 0.5em;
+}
+
+.row small {
+	display: block;
+	padding: 2px 0 0 8px;
+	color: #333333;
+}
+
+.row small a {
+	color: #2C3339;
+}
+
+.row small a:hover {
+	color: #000000;
+}
+
+.row > span {
+	display: inline-block;
+	background: #dfdfdf;
+	padding: 2px 4px;
+	border-radius: 6px;
+	-moz-border-radius: 6px;
+	-webkit-border-radius: 6px;
+}
+
+.row input[type="text"], .row input[type="password"] {
+	font-size: 1.0em;
+	border: solid 1px #bdbdbd;
+	padding: 4px 3px;
+	width: 200px;
+}
+
+.row label { 
+	display: block;
+	font-weight: bold;
+	color: #666;
+	line-height: 1.5em;
+}
+
+.row-error label {
+	color: #E7551E;
+}
+
+/* FORM ERRORS */
+.row.form-errors {
+	margin-bottom: 0.5em;
+}
+
+.row.form-errors ul {
+	list-style: outside square;
+	padding: 0.25em 0 0.75em 2.25em;
+}
+
+
+
+
+
+
+/* MAIN FOOTER */
+body > footer {
 	background: url(../../assets/images/footer.background.png) repeat-x top left;
 	height: 93px;
 }
 
-footer .constrain {
+body > footer .constrain {
 	height: 93px;
 	background: url(../../assets/images/footer.accreditations.png) no-repeat center left;
 }
 
-
-footer .outer {
+body > footer .outer {
 	list-style: none;
 	padding-top: 15px;
 }
 
-footer .inner {
+body > footer .inner {
 	clear: both;
 	list-style: none;
 }
 
-footer .inner a {
+body > footer .inner a {
 	color: #6C6D72;
 	text-decoration: none;
 }
 
-footer .inner li {
+body > footer .inner li {
 	float: left;
 }
 
-footer .outer .first-child .first-child {
+body > footer .outer .first-child .first-child {
 	color: #E7551E;
 	font-weight: bold;
 }
 
-footer .outer .last-child .last-child a {
+body > footer .outer .last-child .last-child a {
 	color: #fff;
 }
 
-footer .outer > li {
+body > footer .outer > li {
 	display: block;
 	float: right;
 	clear: both;
 }
 
-footer .inner li a {
+body > footer .inner li a {
 	padding-right: 10px;
 	padding-left: 5px;
 }
 
-footer .inner li a {
+body > footer .inner li a {
 	background: url(../../assets/images/footer.separator.png) no-repeat right 2px;
 }
 
-footer .inner li.last-child a {
+body > footer .inner li.last-child a {
 	padding-right: 0;
 	background: none;
 }
 
-footer a:hover {
+body > footer a:hover {
 	color: #fff;
 	text-decoration: underline;
 }
