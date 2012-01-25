@@ -13,9 +13,9 @@
 				
 				<ul class="outer">
 					<li class="first-child">
-						
+
 						<ul class="inner">
-							<?php if(!is_null($this->administrator) && CI::$APP->router->fetch_module() == 'page'): ?>
+							<?php if(property_exists(CI::$APP, 'administrator') && CI::$APP->router->fetch_module() == 'page'): ?>
 							<li class="first-child edit-child" style="padding-right: 6px;"><?php echo anchor($page->link(Page_Object::LINK_ADMIN_UPDATE), 'Edit Page'); ?></li>
 							<?php endif; ?>
 							<li class="first-child last-child">Anubis Ltd <?php echo date('Y'); ?> &copy;</li>

@@ -45,15 +45,18 @@
 				<label for="account_unit">Unit</label>
 				<span><input type="text" name="account_unit" id="account_unit" value="<?php echo $this->form_validation->value('account_unit'); ?>"></span>
 			</div>
-			
+
 			<div class="row required<?php echo $this->form_validation->earmark('account_country'); ?>">
 				<label for="account_country">Country</label>
 				<span><select name="account_country" id="account_country">
-					<option value="">Select Country</option><!--
+					<option value="">Select Country</option>
+					<?php $countries = $this->config->item('countries'); if(false !== $this->config->item('important') && count($this->config->item('important')) > 0): ?>
 					<option value="">----------------</option>
-					<option value="GBR">United Kingdom</option>-->
+					<?php foreach($this->config->item('important') as $iso_code): ?>
+					<option value="<?php echo $iso_code; ?>"<?php echo $this->form_validation->selected('account_country', $iso_code); ?>><?php echo htmlentities($countries[$iso_code], ENT_COMPAT, 'UTF-8', false); ?></option>
+					<?php endforeach; endif; ?>
 					<option value="">----------------</option>
-					<?php foreach($this->config->item('countries') as $iso_code => $iso_title): ?>
+					<?php foreach($countries as $iso_code => $iso_title): ?>
 					<option value="<?php echo $iso_code; ?>"<?php echo $this->form_validation->selected('account_country', $iso_code); ?>><?php echo htmlentities($iso_title, ENT_COMPAT, 'UTF-8', false); ?></option>
 					<?php endforeach; ?>
 				</select></span>
@@ -72,7 +75,18 @@
 			<fieldset>
 			
 				<legend><?php echo $_x; ?> Address</legend>
-			
+				
+				<?php if($_x == 'Delivery'): ?>
+				<div class="row">
+
+					<input type="checkbox" name="account_delivery_same" id="account_delivery_same" value="1"<?php echo $this->form_validation->checked('account_delivery_same', '1', '1'); ?>>
+					<label for="account_delivery_same">
+						Deliver to my billing address
+					</label>
+
+				</div>
+				<?php endif; ?>
+				
 				<div class="row">
 					<label for="">Town/City</label>
 					<span><input type="text" name="" id="" value=""></span>

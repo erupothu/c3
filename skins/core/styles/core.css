@@ -376,6 +376,7 @@ span.copyright {
 .clearfix { display: block; }
 /* End hide from IE-mac */
 
+/* CK EDITOR */
 .cke_focus, textarea {
 	outline: none !important;
 }

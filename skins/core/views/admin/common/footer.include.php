@@ -17,8 +17,15 @@
 		<script src="<?php echo $this->uri->skin('scripts/jquery-1.7.1.min.js'); ?>"></script>
 		<script src="<?php echo $this->uri->skin('scripts/jquery-ui-1.8.17.min.js'); ?>"></script>
 		<script src="<?php echo $this->uri->skin('scripts/libs/jcrop-0.9.9/jquery.jcrop-0.9.9.min.js'); ?>"></script>
+		
 		<script src="<?php echo $this->uri->skin('scripts/libs/ckeditor-3.6.2/ckeditor.js'); ?>"></script>
 		<script src="<?php echo $this->uri->skin('scripts/libs/ckeditor-3.6.2/adapters/jquery.js'); ?>"></script>
+		
+		<!--
+		<script src="<?php echo $this->uri->skin('scripts/libs/ckeditor-r7356/ckeditor.js'); ?>"></script>
+		<script src="<?php echo $this->uri->skin('scripts/libs/ckeditor-r7356/adapters/jquery.js'); ?>"></script>
+		-->
+		
 		<script src="<?php echo $this->uri->skin('scripts/libs/fileuploader-1.0.0/fileuploader-1.0.0.js'); ?>"></script>
 		<script src="<?php echo $this->uri->skin('scripts/libs/fancybox-1.3.4/jquery.fancybox-1.3.4.min.js'); ?>"></script>
 		<script>
@@ -57,15 +64,16 @@
 					{ name: 'justify', items: [ 'JustifyLeft', 'JustifyCenter', 'JustifyRight' ] },
 					{ name: 'insert', items: [ 'Link', 'Unlink', 'Anchor', 'SpecialChar' ] },
 					{ name: 'document', items: [ 'Source' ] },
-					{ name: 'editing', items : [ 'SpellChecker' ] },
+					{ name: 'editing', items : [ 'SpellChecker', 'C3Widgets' ] },
 				],
 				removePlugins: 'elementspath',
+				extraPlugins: 'C3Widgets',
 				stylesSet: [
 					{ name: 'Normal', element: 'p' },
 					{ name: 'Heading', element : 'h2', styles : { } },
 					{ name: 'Subheading', element: 'h3' }
 				],
-				contentsCss: [ '<?php echo $this->uri->skin('styles/screen.content.css', 'highclare'); ?>' ],
+				contentsCss: [ '<?php echo $this->uri->skin('styles/page.css'); ?>', '<?php echo $this->uri->skin('assets/styles/page.css', $this->insight->config('display/skin')); ?>' ],
 				bodyClass: 'page-content',
 				pasteFromWordRemoveFontStyles: true,
 				pasteFromWordRemoveStyles: true,
@@ -74,10 +82,96 @@
 				height: '200px',
 				width: '560px',
 				resize_maxWidth: '100%',
-				startupShowBorders: false
-				
+				startupShowBorders: false,
+				autoParagraph: false
 				//filebrowserUploadUrl: '/admin/image/upload_ck'
 			};
+		
+			CKEDITOR.plugins.add('C3Widgets', {   
+				requires: ['richcombo'],
+				init: function(editor) {
+					
+					var config = editor.config, lang = editor.lang.format;
+					
+					// Gets the list of tags from the settings.
+					var tags = [
+						['[C3 Contact Form]', 'Contact Form', 'Contact Form', { module: 'contact', method: 'form'} ]
+					];
+					
+					// Create style objects for all defined styles.
+					editor.ui.addRichCombo('C3Widgets', {
+						
+						label: 'Widget',
+						title: 'Insert Widget',
+						voiceLabel: 'Insert Widget',
+						className : 'cke_format',
+						multiSelect : false,
+						
+						panel: {
+							css : [ CKEDITOR.getUrl(editor.skinPath + 'editor.css') ],
+							voiceLabel : lang.panelVoiceLabel
+						},
+						
+						init: function() {
+							this.startGroup('Select Widget');
+							
+							t = 0;
+							for(var this_tag in tags) {
+								this.add('{' + t + '}' + tags[this_tag][0], tags[this_tag][1], tags[this_tag][2]);
+								t++;
+							}
+						},
+						
+						onClick: function(value) {
+
+							editor.focus();
+							editor.fire('saveSnapshot');
+							
+							// Insert Widget (find TAG ID)
+							valuem = value.match(/{(\d+)}/);
+							tag_id = valuem[1];
+							
+							// Strip TAG ID
+							value = value.replace(/{\d+}/, '');
+							attrb = '';
+							
+							// Convert to attribs.
+							if(tags[tag_id][3]) {
+								for(var key in tags[tag_id][3]) {
+									if(tags[tag_id][3].hasOwnProperty(key)) {
+										attrb += ' ' + key + '="' + tags[tag_id][3][key] + '"';
+									}
+								}
+							}
+							
+							// Inject
+							var widgetElement = CKEDITOR.dom.element.createFromHtml('<widget contenteditable="false"' + attrb + '>' + value + '</widget>', editor.document);
+							editor.insertElement(widgetElement);
+
+							editor.fire('saveSnapshot');
+						}
+					});
+					
+					editor.dataProcessor.writer.setRules('widget', {
+						indent: false,
+				        breakBeforeOpen: true,
+						breakAfterOpen: false,
+						breakBeforeClose: false,
+						breakAfterClose: true
+					});
+					
+					editor.dataProcessor.writer.setRules('p', {
+						indent: true,
+				        breakBeforeOpen: true,
+						breakAfterOpen: true,
+						breakBeforeClose: true,
+						breakAfterClose: true
+					});
+				}
+			});
+			
+			CKEDITOR.dtd.$body['widget'] = 1;
+			
 		
 			$areas = $('.ck-default textarea, textarea.ck-default').ckeditor(ck_tb_default);
 			

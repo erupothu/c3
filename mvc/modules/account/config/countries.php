@@ -1,6 +1,16 @@
 <?php
 
 $config = array(
+	
+	// These countries will appear at the top in a separate area.
+	// @format ISO 3166-1 alpha-3
+	'important'	=> array(
+		'GBR',
+		'USA'
+	),
+	
+	// Full list of countries.
+	// @format ISO 3166-1 alpha-3
 	'countries' => array(
 		'AFG' => 'Afghanistan',
 		'ALB' => 'Albania',

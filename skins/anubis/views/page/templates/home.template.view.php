@@ -25,7 +25,7 @@
 			<div class="box box-welcome-to-anubis">
 				<article class="article-home" style="position: relative; height: 384px; margin: 8px; background: url(<?php echo $this->uri->skin('assets/images/boxes/welcome-to-anubis.jpg'); ?>) no-repeat top left;">
 					
-					<div style="position: absolute; bottom: 0; padding: 20px;">
+					<div class="page-content" style="position: absolute; bottom: 0; padding: 20px;">
 						<?php echo $page->content(); ?>
 						<a href="/about-us" class="button orange read-more" style="float: right;">Read More<span></span></a>
 					</div>

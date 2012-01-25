@@ -44,10 +44,6 @@ html, body {
 	height: 100%;
 }
 
-body {
-	font: normal 13px/1.5em 'Arial', sans-serif normal;
-}
-
 #container > header {
 	background: url(../../assets/images/header.background.png) repeat-x top left;
 	height: 182px;
@@ -108,7 +104,14 @@ body {
 .breadcrumb li {
 	color: #333;
 	float: left;
-	margin-right: 8px;
+	margin-right: 6px;
+	background: url(../../assets/images/page.breadcrumb.separator.png) no-repeat right 5px;
+	padding-right: 12px;
+}
+
+.breadcrumb .first-child, .breadcrumb .last-child {
+	background: none;
+	margin-right: 0;
 }
 
 .breadcrumb a {
@@ -514,32 +517,6 @@ body {
 	text-align: right;
 }
 
-article .content {
-	margin: 6px 12px 12px;
-	color: #333333;
-}
-
-article .content h1 {
-	color: #F2622D;
-	font-size: 17px;
-	text-transform: uppercase;
-}
-
-article .content h2 {
-	color: #222222;
-	font-size: 15px;
-	text-transform: uppercase;
-}
-
-article .content a {
-	font-weight: bold;
-	color: #F2622D;
-}
-
-article .content a:hover {
-	color: #2C3339;
-}
-
 a.button {
 	display: block;
 	height: 23px;
@@ -751,6 +728,10 @@ fieldset {
 	border: solid 1px #bdbdbd;
 	padding: 4px 3px;
 	width: 200px;
+}
+
+.row select {
+
 }
 
 .row label { 

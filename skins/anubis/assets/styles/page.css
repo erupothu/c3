@@ -1,0 +1,29 @@
+body {
+	font: normal 13px/1.5em 'Arial', sans-serif normal;
+}
+
+.page-content {
+	margin: 6px 12px 12px;
+	color: #333333;
+}
+
+.page-content h1 {
+	color: #F2622D;
+	font-size: 17px;
+	text-transform: uppercase;
+}
+
+.page-content h2 {
+	color: #222222;
+	font-size: 15px;
+	text-transform: uppercase;
+}
+
+.page-content a {
+	font-weight: bold;
+	color: #F2622D;
+}
+
+.page-content a:hover {
+	color: #2C3339;
+}

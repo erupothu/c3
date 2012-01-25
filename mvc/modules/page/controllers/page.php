@@ -41,9 +41,44 @@ class Page extends INSIGHT_HMVC_Controller {
 	 * @return void
 	 */
 	public function output($template, $data = array()) {
-		$this->load->view('templates/' . $template . '.template.view.php', $data);
+		
+		// Parsey
+		$output = $this->load->view('templates/' . $template . '.template.view.php', $data, true);
+		
+		libxml_use_internal_errors(true);
+		$dom = new DOMDocument();
+		$dom->loadHTML($output);
+		$xpath = new DOMXPath($dom);
+		$nodes = $xpath->query('//widget');
+		foreach($nodes as $n => $node) {
+			
+			if(!$node->hasAttribute('module')) {
+				continue;
+			}
+						
+			$module_call = sprintf('%s/%s', $node->getAttribute('module'), $node->hasAttribute('method') ? $node->getAttribute('method') : 'index');
+			if(is_null($module_data = Modules::run($module_call))) {
+				
+				// It is a shorttag.  We will likely want to just remove it.
+				$nodes->item($n)->parentNode->removeChild($nodes->item($n));
+				continue;
+			}
+			
+			$out_element = new DOMDocument;
+			$out_element->loadHTML($module_data);
+			
+			// Splice the new elements into the DOM Document.
+			$create_node = $dom->importNode($out_element->documentElement, true);
+			$nodes->item($n)->parentNode->replaceChild($create_node, $nodes->item($n));
+		}
+		
+		if($nodes->length > 0) {
+			$output = $dom->saveHTML();
+		}
+		
+		// Output.
+		$this->output->set_output($output);
 	}
-
 
 	
 	public function children($parent) {

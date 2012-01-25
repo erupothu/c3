@@ -4,4 +4,4 @@ $autoload['language'] = array(
 	CI::$APP->router->fetch_module()
 );
 
-$autoload['config'] = array('countries');
+//$autoload['config'] = array('countries');

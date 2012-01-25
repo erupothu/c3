@@ -29,7 +29,7 @@
 						
 						<?php echo Modules::run('page/breadcrumb', $page); ?>
 
-						<div class="content">
+						<div class="page-content">
 							<?php echo $page->content(); ?>
 						</div>
 

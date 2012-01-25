@@ -8,6 +8,8 @@ class Account extends INSIGHT_HMVC_Controller {
 		
 		$this->load->library('form_validation');
 		$this->load->model('account_model', 'account');
+		
+		$this->load->config('countries');
 	}
 	
 	public function index() {
@@ -37,21 +39,35 @@ class Account extends INSIGHT_HMVC_Controller {
 		
 		if($this->form_validation->run('account-recover-form')) {
 			
-			// Set temporary new PW.
-			// Email hash to the user.
+			die('Send out hash here');
 			
-			// On clicking the recovery, set temporary PW = new PW.
-			// Log the user in.
+			/*
 			
-			$pass = Auth::generate_password();
-			$encrypted = Auth::encrypt($pass);
-			echo $this->form_validation->value('account_email') . '<br />';
-			echo $pass . '<br />';
-			echo $encrypted . '<br />';
-			echo strlen($encrypted) . ' bytes<br />';
+			// Generate & Encrypt a password.
+			$plainpass = Auth::generate_password();
+			$encrypted = Auth::encrypt($plainpass);
 			
-			echo strtolower(site_url(array(__class__, __function__, $encrypted)));
-			die();
+			// Get User ID.
+			$this->db->select('user.user_id');
+			$this->db->from('user');
+			$this->db->where('user.user_email', $this->form_validation->value('account_email'));
+			$user_result = $this->db->get();
+			$user_id = $user_result->row('user_id');
+			
+			// Update user table with the recover password.
+			$this->db->update('user', array('user_recovery'	=> $encrypted), array('user_id' => $user_id));
+			
+			// Generate an email.
+			// Dispatch Email.
+			$this->email->set_mailtype('html');
+			$this->email->template('recover.email.php', array_merge($account_insert, array('user_password_plaintext' => $this->form_validation->value('account_password'))));
+			$this->email->from('no-reply@anubisltd.com', 'Anubis');
+			$this->email->to($this->form_validation->value('account_email'));
+			$this->email->subject('Registration complete');
+			$this->email->send();
+			strtolower(site_url(array(__class__, __function__, $encrypted)))
+			
+			*/
 		}
 		
 		$this->load->view('common/recover.view.php');

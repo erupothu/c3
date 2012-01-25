@@ -23,18 +23,17 @@ class Account_Model extends CI_Model {
 		$account_insert = array(
 			'user_email'			=> $this->form_validation->value('account_email'),
 			'user_password'			=> Auth::encrypt($this->form_validation->value('account_password')),
-			'user_title'			=> null,
 			'user_firstname'		=> $user_firstname,
 			'user_lastname'			=> $user_lastname,
 			'user_company'			=> $this->form_validation->value('account_organisation'),
-			'user_telephone'		=> $this->form_validation->value('account_telephone'),
+			'user_telephone'		=> $this->form_validation->value('account_telephone', null),
 			'user_marketing'		=> $this->form_validation->value('account_marketing', 1),
 			'user_administrator'	=> 0,
 			'user_date_created'		=> $account_create->format('Y-m-d H:i:s'),
 			'user_date_lastseen'	=> null
 		);
 		
-		$this->db->insert('user', $account_data);
+		$this->db->insert('user', $account_insert);
 		$user_id = $this->db->insert_id();
 		
 		// Flash Message?

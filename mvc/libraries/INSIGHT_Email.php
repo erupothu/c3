@@ -16,7 +16,6 @@ class INSIGHT_Email extends CI_Email {
 	public function template($template_name, $template_data = array()) {
 		//array_combine(array_map(function($element) { return '%' . $element . '%'; }, array_keys($template_data)), array_values($template_data))
 		$this->message($this->CI->load->view('email/' . $template_name, $template_data, true));
-		//var_dump($this->template_data);
 	}	
 }
 

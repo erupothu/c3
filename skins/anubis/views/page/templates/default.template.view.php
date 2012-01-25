@@ -1,6 +1,6 @@
 <?php $this->load->view('common/header.include.php'); ?>
 
-	<article>
+	<article class="page-content">
 		<?php echo $page->content(); ?>
 	</article>
 

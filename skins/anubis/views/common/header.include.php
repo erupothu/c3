@@ -21,9 +21,11 @@
 		<link rel="author" href="<?php echo site_url('humans.txt'); ?>">
 		<link rel="canonical" href="<?php echo site_url($this->uri->uri_string()); ?>">
 		<link rel="stylesheet" href="<?php echo $this->uri->skin('assets/styles/core.css'); ?>">
+		<link rel="stylesheet" href="<?php echo $this->uri->skin('assets/styles/page.css'); ?>">
 
 		<script src="<?php echo $this->uri->skin('assets/scripts/jquery-1.7.1.min.js'); ?>"></script>
 		<script src="<?php echo $this->uri->skin('assets/scripts/jquery-ui-1.8.16.min.js'); ?>"></script>
+		<script src="<?php echo $this->uri->skin('assets/scripts/jquery.mousewheel-3.0.6.min.js'); ?>"></script>
 		<script src="<?php echo $this->uri->skin('assets/scripts/cufon-1.09i.yui.js'); ?>"></script>
 		
 		<!--[if lt IE 9]>
@@ -47,7 +49,7 @@
 			var scrollPane = $('.news-pane');
 			var scrollContent = $('.news-content');
 			
-			$('#news-latest .slider').slider({
+			var scrollSlider = $('#news-latest .slider').slider({
 				animate: scrollSpeed,
 				range: 'min',
 				min: 1,

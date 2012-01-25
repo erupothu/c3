@@ -642,11 +642,16 @@ class Page_Object {
 		
 		$tidy = new Tidy;
 		return $tidy->repairString($this->page_content, array(
-			'clean' 			=> true,
-			'indent' 			=> true,
-			'indent-spaces' 	=> 4,
-			'drop-empty-paras' 	=> true,
-			'show-body-only'	=> true
+			'clean' 				=> true,
+			'indent' 				=> true,
+			'indent-spaces' 		=> 4,
+			'drop-empty-paras' 		=> true,
+			'show-body-only'		=> true,
+			'preserve-entities'		=> true,
+			'input-encoding'		=> 'utf8',
+			'char-encoding'			=> 'utf8',
+			'output-encoding'		=> 'utf8',
+			'new-blocklevel-tags'	=> 'widget'
 		));
 	}
 }
