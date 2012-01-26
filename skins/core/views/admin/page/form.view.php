@@ -60,7 +60,7 @@
 				}
 				
 				sort($template_arr);
-				var_dump($template_arr);
+				//var_dump($template_arr);
 				
 				?>
 				
