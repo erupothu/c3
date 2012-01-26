@@ -9,9 +9,7 @@ class Admin extends INSIGHT_Admin_Controller {
 	}
 	
 	public function index() {
-		
-		$this->load->view('admin/product/index.view.php', array(
-			
-		));
+		// temp
+		$this->load->view('admin/dashboard/index.view.php');
 	}
 }
