@@ -17,7 +17,9 @@
 		<meta property="og:title" content="">
 		<meta property="og:description" content="">
 		<meta property="og:image" content="">
-	
+		
+		<meta name="robots" content="noindex, nofollow">
+		
 		<link rel="author" href="<?php echo site_url('humans.txt'); ?>">
 		<link rel="canonical" href="<?php echo site_url($this->uri->uri_string()); ?>">
 		<link rel="stylesheet" href="<?php echo $this->uri->skin('assets/styles/core.css'); ?>">
