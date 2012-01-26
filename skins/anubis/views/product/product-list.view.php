@@ -46,16 +46,16 @@
 					<h2><span>COTs Equipment</span></h2>
 					
 					<?php for($i = 1; $i <= 3; $i++): ?>
-					<div class="product clearfix">
+					<div class="product clearfix<?php echo $i == 3 ? ' last-child' : ''; ?>">
 						
-						<a class="thumbnail" href="#">
+						<a class="thumbnail" href="/product/test">
 							<img src="/uploads/product_thumb.jpg" alt="Product Title">
 						</a>
 						
 						<div class="details">
 							
 							<header class="clearfix">
-								<div class="title"><a href="#">Product Name</a></div>
+								<div class="title"><a href="/product/test">Product Name</a></div>
 								<div class="code"><span>Code:</span> 02345</div>
 							</header>
 							
@@ -67,7 +67,7 @@
 									wisi sceler.
 								</p>
 								
-								<a href="#" class="button orange">More Info<span></span></a>
+								<a href="/product/test" class="button orange">More Info<span></span></a>
 								
 							</div>
 						</div>						

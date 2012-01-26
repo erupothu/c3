@@ -27,3 +27,8 @@ body {
 .page-content a:hover {
 	color: #2C3339;
 }
+
+/* Overrides */
+.article-home h1 {
+	color: #fff;
+}

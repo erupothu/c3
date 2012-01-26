@@ -113,16 +113,41 @@
 			</div>
 			
 			<!-- Related Products -->
-			<div class="tab">
-				<span>Related Products</span>
-			</div>
+			<div id="related">
+				
+				<div class="tab">
+					<span>Related Products</span>
+				</div>
 			
-			<div class="box tabbed">
+				<div class="box tabbed">
 				
-				<ul class="clearfix product-list">
-					<?php echo Modules::run('products/related', 'list-item'); ?>
-				</ul>
+					<div class="product-pane slide-pane">
+					
+						<ul class="clearfix product-list slide-content">
+							<?php echo Modules::run('products/related', 'list-item'); ?>
+							<?php for($n = 1; $n <= 4; $n++): ?>
+							<li class="product-item">
+						
+								<a href="#">
+									<img src="/uploads/news-temp-100x100.jpg" alt="News Temp" style="margin-right: 14px; float: left;">
+								</a>
+						
+								<div style="height: 100px; width: 174px; margin-right: 16px; float: left; position: relative;">
+									<h3 style="margin: 5px 0 5px; padding: 0; color: #E63812;">Product Name</h3>
+									<p style="margin: 0; color: #15191A; max-height: 42px; overflow: hidden;">Pellentesque habitant morbi tristique senectus et netus et </p>
+									<a href="#" class="button orange read-more" title="More Info &gt;" style="position: absolute; bottom: 0;">More Info<span></span></a>
+								</div>
+						
+							</li>
+							<?php endfor; ?>
+						</ul>
+					
+					</div>
 				
+					<div class="slider"></div>
+				
+				</div>
+			
 			</div>
 			<!-- End Related Products -->
 			

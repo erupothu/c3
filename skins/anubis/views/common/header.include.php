@@ -48,43 +48,54 @@
 			
 			// News Scroller.
 			var scrollSpeed = 200;
-			var scrollPane = $('.news-pane');
-			var scrollContent = $('.news-content');
+			//var scrollPane = $('.news-pane');
+			//var scrollContent = $('.news-content');
 			
-			var scrollSlider = $('#news-latest .slider').slider({
+			var scrollSlider = $('.slider').slider({
 				animate: scrollSpeed,
 				range: 'min',
 				min: 1,
-				max: $('#news-latest li').length - 2,
 				slide: function(event, ui) {
 					
-					if(scrollContent.width() > scrollPane.width()) {
+					// Find Slider Parent.
+					slideParent = $(this).parent();
+					slideContent = slideParent.find('.slide-content');
+					slidePane = slideParent.find('.slide-pane');
+					
+					if(slideContent.width() > slidePane.width()) {
 						
-						scrollContent.animate({ marginLeft: Math.round(
-							-(ui.value - 1) * scrollPane.find('li:eq(0)').width()
+						slideContent.animate({ marginLeft: Math.round(
+							-(ui.value - 1) * slidePane.find('li:eq(0)').width()
 						) + 'px' },	scrollSpeed);
-
+						
 					}
 					else {
 						
-						scrollContent.css('margin-left', 0);
+						slideContent.css('margin-left', 0);
 					}
 				},
 				create: function(event, ui) {
 					
 					$w = 0;
-					scrollPane.find('li').each(function() {
+					slideParent	= $(this).parent();
+					slideParent.find('.slide-content li').each(function() {
 						$w += $(this).width();
 					});
 					
+					// Work out number of visible items.
+					slideVisible = Math.round(slideParent.find('.slide-pane').width() / slideParent.find('.slide-content li:eq(0)').width());
+					
+					// Set the maximum.
+					$(this).slider('option', 'max', slideParent.find('.slide-content li').length - (slideVisible - 1));
+					
 					// Set the scroller to the correct width.
-					scrollContent.css({ width: $w + 'px' });
+					slideParent.find('.slide-content').css({ width: $w + 'px' });
+					
+					if(slideParent.find('.slide-content li').length <= slideVisible) {
+						$(this).slider('destroy');
+					}
 				}
 			});
-			
-			if($('#news-latest li').length < 4) {
-				$('#news-latest .slider').hide();
-			}
 		});
 		
 		</script>

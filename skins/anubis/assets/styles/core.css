@@ -240,6 +240,10 @@ html, body {
 	padding-bottom: 0;
 }
 
+.product.last-child .button {
+	bottom: 8px;
+}
+
 #products h2 {
 	display: block;
 	height: 40px;
@@ -607,6 +611,34 @@ a.grey span {
 	cursor: default;
 	z-index: 2;
 	position: absolute;
+}
+
+
+.slide-pane {
+	overflow: hidden;
+	margin: 8px 12px;
+}
+
+.slide-content {
+	list-style: none;
+	padding: 0;
+}
+
+.slide-content li {
+	display: block;
+	float: left;
+	margin: 0;
+	padding: 0;
+}
+
+
+/* Related products */
+.product-item {
+	width: 308px;
+}
+
+#related {
+	margin-bottom: 16px;
 }
 
 

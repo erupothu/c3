@@ -45,9 +45,9 @@
 		
 		<div class="box tabbed">
 			
-			<div class="news-pane">
+			<div class="news-pane slide-pane">
 				
-				<ul class="clearfix news-content">
+				<ul class="clearfix news-content slide-content">
 					<?php echo Modules::run('news/retrieve', 'list-item'); ?>
 				</ul>
 				

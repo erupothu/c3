@@ -9,23 +9,10 @@ class Product extends INSIGHT_HMVC_Controller {
 	}
 	
 	public function index() {
-		
-		// Dispatch page data to the required template.
-		//$this->load->view('templates/' . $template . '.template.view.php', array(
-		//	'page' 		=> $page
-		//));
-		
-		$this->load->view('test.php');
+		$this->load->view('product-list.view.php');
 	}
 	
-	private function _404() {
-		
-		// Send out a 404 header.
-		//$this->output->set_status_header('404');
-		
-		// Load the 404 view.
-		//$this->load->view('common/errors/404.view.php', array(
-		//	'request'	=> $this->uri->uri_string()
-		//));
+	public function test() {
+		$this->load->view('test.php');
 	}
 }
