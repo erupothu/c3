@@ -27,7 +27,7 @@ class Contact extends INSIGHT_HMVC_Controller {
 			$this->email->send();
 			
 			// We should forward them to a success page.
-			die('Forward to success page.  Email sent.  @TODO!');
+			die('Email sent.  @TODO: ' . anchor('/', 'Forward to a success page.'));
 		}
 		
 		$this->load->view('form.view.php');

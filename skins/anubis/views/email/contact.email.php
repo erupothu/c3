@@ -4,33 +4,37 @@
 	
 	<table border="0" cellspacing="0">
 		<tr>
-			<td width="120">Name:</td>
+			<td valign="top" width="120">Name:</td>
 			<td><?php echo $contact_name; ?></td>
 		</tr>
 		<tr>
-			<td>Company:</td>
+			<td valign="top">Company:</td>
 			<td><?php echo $contact_company; ?></td>
 		</tr>
 		<tr>
-			<td>Email:</td>
+			<td valign="top">Email:</td>
 			<td><?php echo $contact_email; ?></td>
 		</tr>
 		<tr>
-			<td>Telephone:</td>
+			<td valign="top">Telephone:</td>
 			<td><?php echo $contact_telephone; ?></td>
 		</tr>
+		<?php if(!empty($contact_enquiry_type)): ?>
 		<tr>
-			<td>Enquiry Type:</td>
+			<td valign="top">Enquiry Type:</td>
 			<td><?php echo $contact_enquiry_type; ?></td>
 		</tr>
+		<?php endif; ?>
 		<tr>
-			<td>Enquiry:</td>
+			<td valign="top">Enquiry:</td>
 			<td><?php echo $contact_enquiry; ?></td>
 		</tr>
+		<?php if($contact_marketing == 1): ?>
 		<tr>
-			<td>Marketing:</td>
-			<td><?php echo $contact_marketing; ?></td>
+			<td valign="top">Marketing:</td>
+			<td>User has opted out of receiving email marketing</td>
 		</tr>
+		<?php endif; ?>
 	</table>
 
 <?php $this->load->view('email/footer.email.php'); ?>

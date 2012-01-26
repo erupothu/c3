@@ -83,7 +83,9 @@
 				width: '560px',
 				resize_maxWidth: '100%',
 				startupShowBorders: false,
-				autoParagraph: false
+				autoParagraph: false,
+				fillEmptyBlocks: false
+				
 				//filebrowserUploadUrl: '/admin/image/upload_ck'
 			};
 		

@@ -730,8 +730,32 @@ fieldset {
 	width: 200px;
 }
 
-.row select {
+.row textarea {
+	width: 200px;
+	min-height: 120px;
+	font-size: 1.0em;
+	border: solid 1px #bdbdbd;
+	margin: 2px 0px;
+	padding: 4px 3px;
+	display: block;
+}
 
+.row.checkbox {
+	margin: 16px 0;
+}
+
+.row.checkbox span {
+	float: left;
+	margin-right: 6px;
+	position: relative;
+	top: 1px;
+}
+
+.row.checkbox label {
+	margin-left: 4px;
+	width: 300px;
+	float: left;
+	line-height: 1.25em;
 }
 
 .row label { 
@@ -743,6 +767,11 @@ fieldset {
 
 .row-error label {
 	color: #E7551E;
+}
+
+.contact_notes {
+	color: #999;
+	line-height: 1.0em !important;
 }
 
 /* FORM ERRORS */

@@ -35,9 +35,9 @@
 				<label for="contact_enquiry_type">Enquiry Type</label>
 				<span><select id="contact_enquiry_type" name="contact_enquiry_type">
 					<option value="">---select---</option>
-					<option value="1">Risk Management</option>
-					<option value="2">Training</option>
-					<option value="3">Special Projects</option>
+					<option value="Risk Management">Risk Management</option>
+					<option value="Training">Training</option>
+					<option value="Special Projects">Special Projects</option>
 				</select></span>
 			</div>
 			
@@ -46,8 +46,8 @@
 				<span><textarea name="contact_enquiry" id="contact_enquiry"><?php echo $this->form_validation->value('contact_enquiry'); ?></textarea>
 			</div>
 			
-			<div class="row<?php echo $this->form_validation->earmark('contact_marketing'); ?>">
-				<input type="checkbox" name="contact_marketing" id="contact_marketing" value="0"<?php echo $this->form_validation->checked('contact_marketing', '0'); ?>>
+			<div class="row clearfix checkbox<?php echo $this->form_validation->earmark('contact_marketing'); ?>">
+				<span><input type="checkbox" name="contact_marketing" id="contact_marketing" value="1"<?php echo $this->form_validation->checked('contact_marketing', '1'); ?>></span>
 				<label for="contact_marketing">
 					Please tick this box if you do not wish to receive any form of contact from Anubis via email.
 				</label>
