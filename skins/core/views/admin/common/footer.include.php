@@ -169,6 +169,14 @@
 						breakBeforeClose: true,
 						breakAfterClose: true
 					});
+					
+					editor.dataProcessor.writer.setRules('li', {
+						indent: true,
+				        breakBeforeOpen: true,
+						breakAfterOpen: false,
+						breakBeforeClose: false,
+						breakAfterClose: true
+					});
 				}
 			});
 			

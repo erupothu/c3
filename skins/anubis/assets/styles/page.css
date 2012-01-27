@@ -2,6 +2,10 @@ body {
 	font: normal 13px/1.5em 'Arial', sans-serif normal;
 }
 
+body.page-content {
+	margin: 5px 6px !important;
+}
+
 .page-content {
 	margin: 6px 12px 12px;
 	color: #333333;

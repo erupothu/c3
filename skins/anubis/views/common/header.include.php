@@ -43,8 +43,16 @@
 			
 			// Font Replacement.
 			Cufon.replace('h2 > span, a.button', { fontFamily: 'NeoSans-700' });
-			Cufon.replace('#secondary li a, h1, h2:not(header h2), .tab, span.title', { fontFamily: 'NeoSans-500', hover: true });
+			Cufon.replace('#secondary li a, h1, h2:not(header h2), .tab, span.title, #cart th', { fontFamily: 'NeoSans-500', hover: true });
 			Cufon.replace('.left-column em', { fontFamily: 'NeoSans-400' });
+			
+			
+			// Trigger forms.
+			$('form .submit').click(function(e) {
+				$(this).parents('form').submit();
+				e.preventDefault();
+			});
+			
 			
 			// News Scroller.
 			var scrollSpeed = 200;

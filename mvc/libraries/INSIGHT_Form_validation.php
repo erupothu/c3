@@ -395,6 +395,11 @@ class INSIGHT_Form_Validation extends CI_Form_Validation {
 		return true;
 	}
 	
+	public function format_sprintf(&$string, $format) {		
+		return $string = sprintf($format, $string);
+	}
+	
+	/*
 	public function format(&$string, $method) {
 		
 		$possible_params = explode(',', $method);
@@ -409,6 +414,7 @@ class INSIGHT_Form_Validation extends CI_Form_Validation {
 		$string = call_user_func_array(array($this->formatter, $object_method), $possible_params);
 		return $string;				
 	}
+	*/
 	
 	private function db_count_occurrences($database_table, $database_field, $database_string) {
 		

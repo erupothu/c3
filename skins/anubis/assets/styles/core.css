@@ -198,6 +198,7 @@ html, body {
 
 .product .title {
 	float: left;
+	color: #E53812;
 }
 
 .product .title a {
@@ -552,7 +553,7 @@ a.grey {
 	background: url(../../assets/images/button.grey-left.png) no-repeat left top;	
 }
 
-a.orange span {
+a.orange span, button.orange span {
 	background: url(../../assets/images/button.orange-right.png) no-repeat right top;
 }
 
@@ -639,6 +640,47 @@ a.grey span {
 
 #related {
 	margin-bottom: 16px;
+}
+
+
+/* CART */
+.cart-container {
+	padding: 6px 8px;
+	margin-bottom: 16px;
+}
+
+#cart {
+	margin: 0;
+	width: 100%;
+	background: url(../../assets/images/cart.header.png) repeat-x 3px 3px;
+}
+
+#cart th {
+	height: 38px;
+	line-height: 28px;
+	color: #fff;
+	background: url(../../assets/images/cart.separator-grey.png) no-repeat right center;
+	text-transform: uppercase;
+	position: relative;
+	right: -2px;
+	padding-right: 2px;
+}
+
+#cart th:last-child {
+	background: none;
+}
+
+#cart tbody td {
+	border: solid 1px #ccc;
+	padding: 6px;
+}
+
+#cart td.money { 
+	text-align: right; 
+}
+
+#cart td.code, #cart td.quantity { 
+	text-align: center;
 }
 
 

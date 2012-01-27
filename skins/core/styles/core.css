@@ -215,6 +215,10 @@ table .empty {
 	padding: 3px 2px;
 }
 
+.row input.money {
+
+}
+
 .row label { 
 	width: 180px;
 	display: block;
