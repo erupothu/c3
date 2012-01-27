@@ -127,7 +127,7 @@
 						<?php endif; ?>
 						<li class="last-child">
 							<ul>
-								<li><a href="/cart">Shopping Cart <span>&nbsp;0 items</span></a></li>
+								<li><a href="/cart">Shopping Cart <span>&nbsp;<?php echo Modules::run('cart/meta', 'size'); ?></span></a></li>
 								<li class="highlight"><a href="/cart/checkout">Checkout</a></li>
 								<li class="last-child"><a href="#">Credit Application</a></li>	
 							</ul>

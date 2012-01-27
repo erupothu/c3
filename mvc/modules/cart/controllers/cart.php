@@ -132,8 +132,16 @@ class Cart extends INSIGHT_HMVC_Controller {
 		redirect('cart');
 	}
 	
-	public function size() {
-		return $this->cart->size();
+	public function meta($key) {
+		
+		switch($key) {
+			
+			case 'size': {
+				return sprintf('%d item%s', $this->cart->size(), $this->cart->size() == 1 ? '' : 's');
+				break;
+			}
+		}
+
 	}
 	
 	public function checkout() {
