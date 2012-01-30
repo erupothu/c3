@@ -1,9 +1,9 @@
 
 	<div class="clearfix">
 	
-		<?php if(isset($product)): ?>
+		<?php /* if(isset($product)): ?>
 		<pre style="border: solid 1px #cccccc; padding: 20px; background: #fff; margin-bottom: 1.0em;"><?php print_r($product); ?></pre>
-		<?php endif; ?>
+		<?php endif; */ ?>
 	
 		<form method="post" action="<?php echo $this->uri->uri_string(); ?>">
 			<fieldset>
