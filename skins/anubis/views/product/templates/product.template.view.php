@@ -50,8 +50,8 @@
 						<div class="images" style="width: 224px; margin-right: 16px; float: left;">
 							
 							<div class="image" style="position: relative; background: #ffffff; width: 222px; height: 222px; border: solid 1px #ccc; margin-bottom: 8px;">
-								<img src="/uploads/product.jpg" alt="Product" style="display: block; margin: 6px;">
-								<a href="javascript:alert('Zoom');" style="display: block; background: url(<?php echo $this->uri->skin('assets/images/ui.zoom.png'); ?>) no-repeat bottom right; width: 51px; height: 51px; position: absolute; bottom: -1px; right: -1px; text-indent: -999em;">Zoom</a>
+								<img src="/uploads/product.jpg" alt="<?php echo $product->name(); ?>" style="display: block; margin: 6px;">
+								<a class="lightbox" href="/uploads/product.jpg" title="<?php echo $product->name(); ?>" style="display: block; background: url(<?php echo $this->uri->skin('assets/images/ui.zoom.png'); ?>) no-repeat bottom right; width: 51px; height: 51px; position: absolute; bottom: -1px; right: -1px; text-indent: -999em;">Zoom</a>
 							</div>
 						
 							<div class="thumbnails">

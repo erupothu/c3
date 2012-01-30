@@ -24,19 +24,22 @@
 		<link rel="canonical" href="<?php echo site_url($this->uri->uri_string()); ?>">
 		<link rel="stylesheet" href="<?php echo $this->uri->skin('assets/styles/core.css'); ?>">
 		<link rel="stylesheet" href="<?php echo $this->uri->skin('assets/styles/page.css'); ?>">
-
-		<script src="<?php echo $this->uri->skin('assets/scripts/jquery-1.7.1.min.js'); ?>"></script>
-		<script src="<?php echo $this->uri->skin('assets/scripts/jquery-ui-1.8.16.min.js'); ?>"></script>
-		<script src="<?php echo $this->uri->skin('assets/scripts/jquery.mousewheel-3.0.6.min.js'); ?>"></script>
-		<script src="<?php echo $this->uri->skin('assets/scripts/cufon-1.09i.yui.js'); ?>"></script>
+		<link rel="stylesheet" href="<?php echo $this->uri->skin('assets/styles/fancybox.css'); ?>">
 		
 		<!--[if lt IE 9]>
 		<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
 		<![endif]-->
+
+		<script src="<?php echo $this->uri->skin('assets/scripts/jquery-1.7.1.min.js'); ?>"></script>
+		<script src="<?php echo $this->uri->skin('assets/scripts/jquery-ui-1.8.16.min.js'); ?>"></script>
+		<script src="<?php echo $this->uri->skin('assets/scripts/jquery.mousewheel-3.0.6.min.js'); ?>"></script>
+		<script src="<?php echo $this->uri->skin('assets/scripts/jquery.fancybox-2.0.4.pack.js'); ?>"></script>
 		
+		<script src="<?php echo $this->uri->skin('assets/scripts/cufon-1.09i.yui.js'); ?>"></script>
 		<script src="<?php echo $this->uri->skin('assets/scripts/neosans-400.font.js'); ?>"></script>
 		<script src="<?php echo $this->uri->skin('assets/scripts/neosans-500.font.js'); ?>"></script>
 		<script src="<?php echo $this->uri->skin('assets/scripts/neosans-700.font.js'); ?>"></script>
+		
 		<script>
 		
 		$(function() {
@@ -104,6 +107,16 @@
 					}
 				}
 			});
+			
+			$('.lightbox').fancybox({
+				padding: 12,
+				wrapCSS: 'zoom',
+				openEffect: 'elastic',
+				openSpeed: 'fast',
+				closeBtn: false,
+				closeClick: true
+			});
+			
 		});
 		
 		</script>
