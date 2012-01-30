@@ -6,17 +6,22 @@
 			<thead>
 				<tr>
 					<th>ID</th>
+					<th>&mdash;</th>
 					<th>Title</th>
+					<th>Author</th>
 					<th>Published</th>
+					<th>&nbsp;</th>
 				</tr>
 			</thead>
 			<tbody>
 				<?php foreach($articles as $article): ?>
 				<tr>
 					<td class="center"><?php echo $article->id(); ?></td>
+					<td><?php echo anchor($article->permalink(), 'Preview', array('title' => sprintf("Preview '%s'", $article->title()), 'class' => 'icon icon-preview')); ?></td>
 					<td><?php echo anchor('admin/news/update/' . $article->id(), $article->title()); ?></td>
+					<td><?php echo $article->author(); ?></td>
 					<td><?php echo $article->published(); ?></td>
-					<td><span clas="icon icon-locked">Locked</span></td>
+					<td>Delete</td>
 				</tr>
 				<?php endforeach; ?>
 				<?php if(count($articles) === 0): ?>

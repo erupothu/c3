@@ -31,11 +31,13 @@ class News_Model extends CI_Model {
 		return $this->db->insert_id();
 	}
 	
+	
 	public function retrieve() {
 		
 		$this->db->select('news.*');
 		$this->db->select('user.user_firstname as news_author_firstname');
 		$this->db->select('user.user_lastname as news_author_lastname');
+		$this->db->select('LENGTH(news.news_data_full) as news_length');
 		$this->db->from('news');
 		$this->db->join('user', 'user.user_id = news.news_author_id');
 		$this->db->where('NOW() >= news.news_date_published');
@@ -44,6 +46,7 @@ class News_Model extends CI_Model {
 		
 		return $news_result->result('News_Object');
 	}
+	
 	
 	public function update($news_id) {
 		
@@ -59,7 +62,6 @@ class News_Model extends CI_Model {
 		// Flash Message
 		$this->session->set_flashdata('admin/message', sprintf('News article "%s" has been updated', $this->form_validation->value('news_title')));
 		
-		// Return the insert ID.
 		return $this->db->affected_rows() === 1;
 	}
 	

@@ -60,12 +60,12 @@
 			
 		</div>
 		
+		<?php if($this->cart->size() > 0): ?>
 		<div class="buttons" style="float: right; margin-bottom: 16px;">
 			<a href="/cart/update" class="button grey" style="float: left;">Update<span></span></a>
 			<a href="/cart/empty" class="button grey" style="float: left; margin-left: 8px;">Empty Basket<span></span></a>
-			<?php if($this->cart->size() > 0): ?>
 			<a href="/cart/checkout" class="button orange" style="float: left; margin-left: 8px;">Proceed<span></span></a>
-			<?php endif; ?>
 		</div>
+		<?php endif; ?>
 		
 <?php $this->load->view('common/footer.include.php'); ?>

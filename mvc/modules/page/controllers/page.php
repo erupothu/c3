@@ -15,7 +15,7 @@ class Page extends INSIGHT_HMVC_Controller {
 	 * @return void
 	 */
 	public function index() {
-
+		
 		// Check to see if this page exists.
 		if(!$page = $this->page->load($this->uri->uri_string())) {
 			return $this->_404();

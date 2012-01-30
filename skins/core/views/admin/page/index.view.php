@@ -30,7 +30,7 @@
 			</tbody>	
 		</table>
 		
-		<div class="pagination" style="margin-top: 15px;">
+		<div class="pagination" style="margin-top: 15px; display: none;">
 			<ul>
 				<li><a href="#">1</a></li>
 				<li><a href="#">2</a></li>

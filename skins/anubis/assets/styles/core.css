@@ -245,6 +245,7 @@ html, body {
 	bottom: 8px;
 }
 
+
 #products h2 {
 	display: block;
 	height: 40px;
@@ -253,6 +254,10 @@ html, body {
 	line-height: 35px;
 	margin: 0;
 	padding: 0;
+}
+
+#products h2 a {
+	color: #ffffff;
 }
 
 #products h2 span {

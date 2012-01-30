@@ -38,30 +38,30 @@ class Admin extends INSIGHT_Admin_Controller {
 		}
 		
 		$this->load->view('admin/product/create.view.php', array(
-			'categories' => $this->category->retrieve()
+			'categories' 	=> $this->category->retrieve()
 		));
 	}
 
-	/*
-	public function update($page_id) {
+
+	public function update($product_id) {
 		
-		if($this->form_validation->run('admin-page-form')) {
-			$this->page->update($page_id);
-			return redirect('admin/page');
+		if($this->form_validation->run('admin-product-form')) {
+			$this->product->update($product_id);
+			return redirect('admin/product');
 		}
 
-		$this->load->view('admin/page/update.view.php', array(
-			'page' 	=> $this->page->retrieve_by_id($page_id)	// , 'page_id', true
+		$this->load->view('admin/product/update.view.php', array(
+			'categories' 	=> $this->category->retrieve(),
+			'product' 		=> $this->product->retrieve_by_id($product_id)
 		));
 	}
 	
-	
-	public function delete($page_id) {
+
+	public function delete($product_id) {
 		
-		if(!$this->page->delete($page_id))
+		if(!$this->product->delete($product_id))
 			show_error('Could not delete page.');
 			
-		return redirect('admin/page');
+		return redirect('admin/product');
 	}
-	*/
 }

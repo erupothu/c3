@@ -18,9 +18,9 @@
 					<th>ID</th>
 					<th>&mdash;</th>
 					<th>Name</th>
-					<th>Permalink</th>
-					<th>Preview</th>
-					<th>Status</th>
+					<th>Category</th>
+					<th>Code</th>
+					<th>Price (<abbr title="Great British Pounds">&pound;GBP)</abbr></th>
 					<th>Last Updated</th>
 					<th>&nbsp;</th>
 				</tr>
@@ -28,13 +28,14 @@
 			<tbody>
 				<?php foreach($products as $product): ?>
 				<tr>
-					<td><?php echo $product->id(); ?></td>
-					<td>-</td>
-					<td><?php echo $product->name(); ?></td>
-					<td><?php echo $product->permalink(); ?></td>
+					<td class="center"><?php echo $product->id(); ?></td>
+					<td><?php echo anchor($product->permalink(), 'Preview', array('title' => sprintf("Preview '%s'", $product->name()), 'class' => 'icon icon-preview')); ?></td>
+					<td><?php echo anchor('admin/product/update/' . $product->id(), $product->name()); ?></td>
+					<td><?php echo $product->category(); ?></td>
 					<td><?php echo $product->code(); ?></td>
-					<td><?php echo $product->price(); ?></td>
-					<td>Update Link</td>
+					<td class="right"><?php echo $product->price(); ?></td>
+					<td><?php echo $product->updated(); ?></td>
+					<td>Delete</td>
 				</tr>
 				<?php endforeach; ?>
 			</tbody>	

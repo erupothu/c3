@@ -296,6 +296,10 @@ fieldset {
 	margin: 0 auto;
 }
 
+.icon-preview {
+	background-position: 0 -48px;
+	margin: 0 auto;
+}
 
 /* meta */
 /*a.meta-image {

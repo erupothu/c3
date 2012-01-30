@@ -43,7 +43,7 @@
 				
 				<div id="products" style="margin: 8px;">
 					
-					<h2><span><?php echo $product->category(); ?></span></h2>
+					<h2><a href="/product"><span><?php echo $product->category(); ?></span></a></h2>
 				
 					<div class="product full-details clearfix">
 						

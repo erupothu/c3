@@ -27,7 +27,7 @@ $config = array(
 		array(
 			'field'	=> 'product_category_id',
 			'label'	=> 'Category',
-			'rules'	=> ''
+			'rules'	=> 'required|is_natural_no_zero'
 		),
 		array(
 			'field'	=> 'product_description',

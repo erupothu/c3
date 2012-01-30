@@ -34,10 +34,7 @@ class Product_Model extends CI_Model {
 		// Return the insert ID.
 		return $this->db->insert_id();
 	}
-	
-	public function update() {
-		
-	}
+
 	
 	public function retrieve() {
 		
@@ -48,17 +45,52 @@ class Product_Model extends CI_Model {
 		
 		return $product_result->result('Product_Object');
 	}
+
+	public function update($product_id) {
+
+		$product_update = new DateTime;
+		$product_change = array(
+			'product_category_id'	=> $this->form_validation->value('product_category_id'),
+			'product_code'			=> $this->form_validation->value('product_code'),
+			'product_name'			=> $this->form_validation->value('product_name', '', false),
+//			'product_slug'			=> '',
+			'product_description'	=> $this->form_validation->value('product_description', null, false),
+			'product_specification'	=> $this->form_validation->value('product_specification', null, false),
+			'product_price'			=> $this->form_validation->value('product_price'),
+//			'product_enabled'		=> 1,
+			'product_date_updated'	=> $product_update->format('Y-m-d H:i:s')
+		);
+
+		$this->db->update('product', $product_change, array('product_id' => $product_id));
+
+		// Flash Message
+		$this->session->set_flashdata('admin/message', sprintf('Product entitled "%s" has been updated', $this->form_validation->value('product_name')));
+
+		// True on update, else false.
+		return $this->db->affected_rows() === 1;
+	}
 	
 	public function delete() {
 		
 	}
 	
-	public function retrieve_by_slug($slug) {
+	public function retrieve_by_id($product_id) {
 		
 		$this->db->select('*');
 		$this->db->from('product p');
 		$this->db->join('product_category c', 'p.product_category_id = c.category_id', 'left');
-		$this->db->where('p.product_slug', $slug);
+		$this->db->where('p.product_id', $product_id);
+		$product_result = $this->db->get();
+		
+		return $product_result->row(0, 'Product_Object');
+	}
+	
+	public function retrieve_by_slug($product_slug) {
+		
+		$this->db->select('*');
+		$this->db->from('product p');
+		$this->db->join('product_category c', 'p.product_category_id = c.category_id', 'left');
+		$this->db->where('p.product_slug', $product_slug);
 		$product_result = $this->db->get();
 		
 		return $product_result->row(0, 'Product_Object');
@@ -81,7 +113,11 @@ class Product_Model extends CI_Model {
 class Product_Object {
 	
 	public function id() {
-		return $this->product_id;
+		return (int)$this->product_id;
+	}
+	
+	public function category_id() {
+		return (int)$this->product_category_id;
 	}
 	
 	public function category() {
@@ -123,7 +159,17 @@ class Product_Object {
 		return $this->product_price;
 	}
 	
-	public function created() {
+	public function created($format = 'd/m/Y H:i') {
+		$dt = DateTime::createFromFormat('Y-m-d H:i:s', $this->product_date_created);
+		return false !== $format ? $dt->format($format) : $dt;
+	}
+	
+	public function updated($format = 'd/m/Y H:i') {
 		
+		if(is_null($this->product_date_updated))
+			return $this->created($format);
+		
+		$dt = DateTime::createFromFormat('Y-m-d H:i:s', $this->product_date_updated);
+		return false !== $format ? $dt->format($format) : $dt;
 	}
 }
