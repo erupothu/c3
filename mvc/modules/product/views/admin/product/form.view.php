@@ -5,7 +5,7 @@
 		<pre style="border: solid 1px #cccccc; padding: 20px; background: #fff; margin-bottom: 1.0em;"><?php print_r($product); ?></pre>
 		<?php endif; */ ?>
 	
-		<form method="post" action="<?php echo $this->uri->uri_string(); ?>">
+		<form method="post" action="<?php echo $this->uri->uri_string(); ?>" enctype="multipart/form-data">
 			<fieldset>
 			
 				<?php if($this->form_validation->has_errors()): ?>
@@ -48,6 +48,11 @@
 				<div class="row required<?php $this->form_validation->earmark('product_price'); ?>">				
 					<label for="product_price">Price</label>
 					<span><input type="text" class="money" name="product_price" id="product_price" value="<?php echo $this->form_validation->value('product_price', isset($product) ? $product->price() : ''); ?>"></span>
+				</div>
+				
+				<div class="row required<?php $this->form_validation->earmark('file_upload'); ?>">				
+					<label for="file_upload">PDF Download</label>
+					<span><input type="file" class="upload upload-single" name="file_upload" id="file_upload"></span>
 				</div>
 
 				<div class="row button-row">

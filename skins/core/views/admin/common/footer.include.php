@@ -26,6 +26,8 @@
 		<script src="<?php echo $this->uri->skin('scripts/libs/ckeditor-r7356/adapters/jquery.js'); ?>"></script>
 		-->
 		
+		<script src="<?php echo $this->uri->skin('scripts/libs/uploadify-3.0.0/jquery.uploadify-3.0.0.min.js'); ?>"></script>
+		
 		<script src="<?php echo $this->uri->skin('scripts/libs/fileuploader-1.0.0/fileuploader-1.0.0.js'); ?>"></script>
 		<script src="<?php echo $this->uri->skin('scripts/libs/fancybox-1.3.4/jquery.fancybox-1.3.4.min.js'); ?>"></script>
 		<script>
@@ -413,13 +415,60 @@
 			}).click(false);
 			*/
 			
+			/*uploader	: '/skin/core/scripts/uploadify-3.0.0/uploadify.swf',
+			cancelImg	: '/skin/core/scripts/uploadify-3.0.0/cancel.png',
+			script 		: '/admin/product/upload',
+			folder		: '/uploads',
+			auto		: false,
+			onError		: function(e) {
+				console.log(e);
+				
+								$(function() {				
+								$('#file_upload').uploadify({ 
+								 'uploader'  : '/uploadify/uploadify.swf',  
+								'script'    : '/uploadify/uploadify.php', 
+								 'cancelImg' : '/uploadify/cancel.png', 
+								 'folder'    : '/uploads', 
+								 'removeCompleted' : true, 
+								 'sizeLimit'   : 102400});		
+									});				
+			}*/
 			
-			
+			/* http://uploadify.wdwebdesign.com.br/ */
+			$('.upload-single').uploadify({
+				debug: false,
+				auto: true,
+				swf: '/skins/core/scripts/libs/uploadify-3.0.0/uploadify.swf',
+				cancelImage: '/skins/core/images/sprite.png',
+				buttonText: 'Select PDF',
+				multi: false,
+				uploader: '/admin/product/upload',
+				removeCompleted: false,
+				fileTypeExts: '*.pdf',
+				progressData: 'all',
+				postData: {
+					whatever: 1,
+					something: 'string',
+					testing: [ 'a', 'b', 'c' ]
+				},
+				onInit: function() {
+					console.log('rockballs.');
+				},
+				onUploadSuccess: function(file, data, response) {
 
+					// Return is JSON.
+					data = $.parseJSON(data);
+					
+					console.log($(this), file, data, response);
+					
+					$('#' + $(this).attr('queueID')).after('<a href="' + data.path + '" class="uploaded-pdf-preview" title="Preview"><span>Preview</span></a>', {});
+				}
+			});
+			
+			// Date Selections.
 			$('.date-picker').datepicker({
 				dateFormat	: 'yy-mm-dd',
 				onSelect	: function(text, inst) {
-					
 				}
 			});
 			
@@ -428,8 +477,6 @@
 				$dp.datepicker('show');
 				e.preventDefault();
 			});
-
-
 		});
 		
 		</script>

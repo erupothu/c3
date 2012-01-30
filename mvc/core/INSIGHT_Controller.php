@@ -34,9 +34,13 @@ class INSIGHT_Admin_Controller extends INSIGHT_HMVC_Controller {
 		$this->required_auth = $required_auth;
 		$this->required_perm = $required_perm;
 		
+		// Is this a multipart data query?
+		$this->multipartdata = (false !== $this->input->server('CONTENT_TYPE') && substr($this->input->server('CONTENT_TYPE'), 0, 19) == 'multipart/form-data');
+		
 		$this->load->library('form_validation');
 		
-		if($this->required_auth && (!is_object($this->{$this->user_identifier}) || !$this->{$this->user_identifier}->authenticated() || $this->{$this->user_identifier}->cannot('ADMINISTRATION_VIEW'))) {
+		// Is this user authorised?
+		if(false === $this->multipartdata && $this->required_auth && (!is_object($this->{$this->user_identifier}) || !$this->{$this->user_identifier}->authenticated() || $this->{$this->user_identifier}->cannot('ADMINISTRATION_VIEW'))) {
 			return redirect('admin/login');
 		}
 	}

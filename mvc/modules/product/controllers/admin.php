@@ -64,4 +64,10 @@ class Admin extends INSIGHT_Admin_Controller {
 			
 		return redirect('admin/product');
 	}
+	
+	
+	public function upload() {
+		echo json_encode(array('success' => true, 'path' => '/uploads/example.pdf'));
+	}
+	
 }

@@ -14,6 +14,10 @@
 		<link rel="stylesheet" href="<?php echo $this->uri->skin('scripts/libs/jcrop-0.9.9/jquery.jcrop-0.9.9.css'); ?>" />
 		<link rel="stylesheet" href="<?php echo $this->uri->skin('scripts/libs/fileuploader-1.0.0/fileuploader-1.0.0.css'); ?>" />
 		<link rel="stylesheet" href="<?php echo $this->uri->skin('scripts/libs/fancybox-1.3.4/jquery.fancybox-1.3.4.css'); ?>" />
+		
+		<link rel="stylesheet" href="<?php echo $this->uri->skin('scripts/libs/uploadify-3.0.0/uploadify.css'); ?>" />
+		
+		
 		<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.7/themes/smoothness/jquery-ui.css" />
 		<script src="<?php echo $this->uri->skin('scripts/modernizr-2.0.6.min.js'); ?>"></script>
 	</head>

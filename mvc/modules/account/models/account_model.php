@@ -52,6 +52,12 @@ class Account_Model extends CI_Model {
 	
 	public function retrieve() {
 		
+		$this->db->select('*');
+		$this->db->from('user u');
+		$this->db->order_by('u.user_id asc');
+		$user_result = $this->db->get();
+		
+		return $user_result->result('Account_Object');
 	}
 	
 	public function update() {
@@ -59,6 +65,20 @@ class Account_Model extends CI_Model {
 	}
 	
 	public function delete() {
+		
+	}
+	
+	public function retrieve_by_id($account_id) {
+		
+		$this->db->select('*');
+		$this->db->from('user u');
+		$this->db->where('u.user_id', $account_id);
+		$user_result = $this->db->get();
+		
+		return $user_result->row(0, 'Account_Object');
+	}
+	
+	public function retrieve_by_email($account_email) {
 		
 	}
 	
@@ -108,4 +128,37 @@ class Account_Model extends CI_Model {
 
 class Account_Object {
 	
+	public function id() {
+		return (int)$this->user_id;
+	}
+	
+	public function email() {
+		return $this->user_email;
+	}
+	
+	public function name() {
+		return trim(sprintf('%s %s', $this->user_firstname, $this->user_lastname));
+	}
+	
+	public function marketing() {
+		return $this->user_marketing == 1;
+	}
+	
+	public function company() {
+		return $this->user_company;
+	}
+	
+	public function created($format = 'd/m/Y H:i') {
+		$dt = DateTime::createFromFormat('Y-m-d H:i:s', $this->user_date_created);
+		return false !== $format ? $dt->format($format) : $dt;
+	}
+	
+	public function seen($format = 'd/m/Y H:i') {
+		
+		if(is_null($this->user_date_lastseen))
+			return 'Never seen.';
+		
+		$dt = DateTime::createFromFormat('Y-m-d H:i:s', $this->user_date_lastseen);
+		return false !== $format ? $dt->format($format) : $dt;
+	}
 }
