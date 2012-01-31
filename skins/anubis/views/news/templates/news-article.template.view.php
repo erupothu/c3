@@ -33,21 +33,27 @@
 				<div class="spacing">
 
 					<article>
-						
-						<header style="height: 153px; position: relative; background: url(/uploads/header.temp.about-us.jpg) no-repeat top center;">
+
+						<header style="height: 153px; position: relative; background: url(/uploads/header.temp.about-us.jpg) no-repeat top center; margin-bottom: 0.5em;">
 							<h1 class="title" style="font-size: 20px; text-transform: uppercase; position: absolute; bottom: 0; right: 0; display: block; padding: 12px 14px; color: #fff; margin: 0;"><?php echo $article->title(); ?></h1>
 						</header>
 						
-						<div class="content">
-							<?php echo $article->content(); ?>
-						</div>
+						<div class="news">
+							
+							<div class="content">
+								<?php echo $article->content(); ?>
+							</div>
 						
-						<div class="meta">
-							<div class="published">Published on <time pubdate datetime="<?php echo $article->published('Y-m-d'); ?>"><?php echo $article->published('dS F Y'); ?></time></div>
-							<div class="author">by <?php echo $article->author(); ?></div>
+							<div class="content meta clearfix">
+								<div class="published">Published <time pubdate datetime="<?php echo $article->published('Y-m-d'); ?>"><?php echo $article->published('F Y'); ?></time></div>
+								<div class="author">by <?php echo $article->author(); ?></div>
+							</div>
+							
+							<div class="content" style="margin-top: 1.5em;">
+								<a href="/news">&larr; Back to News</a>
+							</div>
+							
 						</div>
-						
-						<a href="/news">&larr; Back to News</a>
 						
 					</article>
 					
