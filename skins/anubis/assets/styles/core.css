@@ -527,6 +527,32 @@ html, body {
 	text-align: right;
 }
 
+.news {
+	padding: 1.0em 0;
+}
+
+.news .content {
+	padding: 0 1.0em;
+}
+
+.news .content a {
+	color: #E7551E;
+}
+
+.news .content h2 {
+	margin: 0 0 0.25em;
+}
+
+.news .content a:hover {
+	color: #2C3339;
+}
+
+.news .author {
+	float: left;
+	color: #888;
+}
+
+
 a.button {
 	display: block;
 	height: 23px;
@@ -898,7 +924,7 @@ body > footer .inner li {
 	float: left;
 }
 
-body > footer .outer .first-child .first-child {
+body > footer .outer .first-child .first-child, body > footer .outer .first-child .first-child a {
 	color: #E7551E;
 	font-weight: bold;
 }

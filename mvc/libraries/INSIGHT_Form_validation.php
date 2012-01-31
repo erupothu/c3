@@ -59,7 +59,7 @@ class INSIGHT_Form_Validation extends CI_Form_Validation {
 		
 		if(is_array($set_value)) {
 		
-			$return_values = $auto_encode ? array_map('htmlspecialchars', $set_value) : $set_value;
+			$return_values = $auto_encode ? array_map('htmlspecialchars', $set_value, array(ENT_COMPAT, 'UTF-8', false)) : $set_value;
 			
 			if(!isset($this->_field_points[$field])) {
 				$this->_field_points[$field] = 0;

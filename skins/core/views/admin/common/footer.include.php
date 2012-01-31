@@ -436,12 +436,13 @@
 			
 			/* http://uploadify.wdwebdesign.com.br/ */
 			$('.upload-single').uploadify({
-				debug: false,
+				debug: true,
 				auto: true,
 				swf: '/skins/core/scripts/libs/uploadify-3.0.0/uploadify.swf',
 				cancelImage: '/skins/core/images/sprite.png',
 				buttonText: 'Select PDF',
 				multi: false,
+				file_post_name: 'upload',
 				uploader: '/admin/product/upload',
 				removeCompleted: false,
 				fileTypeExts: '*.pdf',

@@ -67,7 +67,23 @@ class Admin extends INSIGHT_Admin_Controller {
 	
 	
 	public function upload() {
-		echo json_encode(array('success' => true, 'path' => '/uploads/example.pdf'));
+		
+		$upload = array(
+			'upload_path'	=> 'uploads',
+			'allowed_types'	=> 'pdf',
+			'overwrite'		=> false,
+			'encrypt_name'	=> false,
+			'remove_spaces'	=> true
+		);
+		
+		$success = true;
+		$this->load->library('upload', $upload);
+		if(!$this->upload->do_upload('upload')) {
+			$success = false;
+		}
+		
+		
+		echo json_encode(array('files' => $_FILES, 'success' => $success, 'errs' => $this->upload->display_errors(), 'path' => '/uploads/example.pdf', 'data' => $this->upload->data()));
 	}
 	
 }

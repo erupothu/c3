@@ -221,7 +221,7 @@ class News_Object {
 	}
 	
 	public function title() {
-		return htmlentities($this->news_title);
+		return $this->news_title;
 	}
 	
 	public function size() {

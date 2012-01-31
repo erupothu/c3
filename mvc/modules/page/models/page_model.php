@@ -574,9 +574,9 @@ class Page_Object {
 		return (int)$this->page_parent_id;
 	}
 	
-	public function active() {
-		return CI::$APP->uri->uri_string() === $this->permalink();
-	}	
+	public function active($uri = null) {
+		return CI::$APP->uri->uri_string() === (!is_null($uri) ? $uri : $this->permalink());
+	}
 	
 	// Tree methods.
 	public function tree_left() {

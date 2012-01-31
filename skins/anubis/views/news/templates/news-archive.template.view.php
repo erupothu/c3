@@ -10,8 +10,6 @@
 					
 					<h2><span>News</span></h2>
 					
-					&nbsp;
-					
 				</div>
 				
 			</div>
@@ -20,6 +18,13 @@
 				<a href="/training-and-operations" title="Training &amp; Operations">
 					<img src="<?php echo $this->uri->skin('assets/images/boxes/training-and-operations.jpg'); ?>" alt="Training &amp; Operations">
 					<span class="strip"><em>Training &amp; Operations</em></span>
+				</a>
+			</div>
+			
+			<div class="box box-special-projects">
+				<a href="/special-projects">
+					<img src="<?php echo $this->uri->skin('assets/images/boxes/special-projects.jpg'); ?>" alt="Special Projects">
+					<span class="strip"><em>Special Projects</em></span>
 				</a>
 			</div>
 		
@@ -36,11 +41,20 @@
 					</header>
 					
 					<?php foreach($articles as $article): ?>
-					<article>
+					<article class="news">
 						<div class="content clearfix">
 							<h2><a href="<?php echo $article->permalink(); ?>"><?php echo $article->title(); ?></a></h2>
+							<div class="published">
+								<span>Published:</span> <time datetime="<?php echo $article->published('Y-m-d'); ?>"><?php echo $article->published('F Y'); ?></time>
+							</div>
+							
 							<p><?php echo $article->excerpt(210); ?></p>
-							<a href="<?php echo $article->permalink(); ?>" class="button read-more orange" style="float: right; margin-top: 0px;">Read More<span></span></a>
+							
+							<div class="meta">
+								<div class="author"><span>Posted by:</span> <?php echo $article->author(); ?></div>
+								<a href="<?php echo $article->permalink(); ?>" class="button read-more orange" style="float: right; margin-top: 0px;">Read More<span></span></a>
+							</div>
+							
 						</div>
 					</article>
 					<?php endforeach; ?>
