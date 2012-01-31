@@ -145,6 +145,6 @@ class Cart extends INSIGHT_HMVC_Controller {
 	}
 	
 	public function checkout() {
-		die('Checkout process here');
+		$this->load->view('templates/checkout.view.php');
 	}
 }

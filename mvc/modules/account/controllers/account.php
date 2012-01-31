@@ -97,4 +97,9 @@ class Account extends INSIGHT_HMVC_Controller {
 		
 		redirect();
 	}
+	
+	
+	public function credit_application() {
+		$this->load->view('credit-application.view.php');
+	}
 }

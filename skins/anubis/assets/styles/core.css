@@ -360,6 +360,7 @@ html, body {
 	overflow: visible;
 }
 
+
 #secondary {
 	margin: 0;
 	padding: 0;
@@ -385,6 +386,22 @@ html, body {
 	padding: 0 15px;
 	display: block;
 	height: 39px;
+}
+
+#secondary > li.selected a:after {
+	content: '';
+	background: url(../../assets/images/menu.sub.pointer.png) no-repeat bottom center;
+	width: 100%;
+	height: 10px;
+	position: absolute;
+	top: 39px;
+	left: 0;
+	display: block;
+}
+
+#secondary > li.grey.selected a:after {
+	top: 42px;
+	background: url(../../assets/images/menu.sub.pointer.png) no-repeat top center;
 }
 
 #secondary li.grey {

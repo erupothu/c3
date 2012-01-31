@@ -28,7 +28,7 @@
 							<li class="first-child"><a href="/">Home</a></li>
 							<li><a href="/about-us">About Us</a></li>
 							<li><a href="/news">News</a></li>
-							<li><a href="#">Credit Application</a></li>
+							<li><a href="/account/credit-application">Credit Application</a></li>
 							<li><a href="/contact-us">Contact Us</a></li>
 							<li class="last-child"><a href="/training-and-operations">Training &amp; Operations</a></li>
 						</ul>

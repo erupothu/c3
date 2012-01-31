@@ -142,7 +142,7 @@
 							<ul>
 								<li><a href="/cart">Shopping Cart <span>&nbsp;<?php echo Modules::run('cart/meta', 'size'); ?></span></a></li>
 								<li class="highlight"><a href="/cart/checkout">Checkout</a></li>
-								<li class="last-child"><a href="#">Credit Application</a></li>	
+								<li class="last-child"><a href="/account/credit-application">Credit Application</a></li>	
 							</ul>
 						</li>
 					</ul>
@@ -156,8 +156,8 @@
 					<div class="menu-center constrain">
 						
 						<ul id="secondary">
-							<li class="first-child"><a href="/">Home</a></li>
-							<li>
+							<li class="first-child<?php echo !$this->uri->segment(1) ? ' selected' : ''; ?>"><a href="/">Home</a></li>
+							<li<?php echo $this->uri->segment(1) == 'about-us' ? ' class="selected"' : ''; ?>>
 								<a href="/about-us">About Us</a>
 								<ul class="sub-menu">
 									<li><a href="/about-us/management-team">Management Team</a></li>
@@ -165,10 +165,10 @@
 									<li><a href="/about-us/employment-opportunities">Employment Opportunities</a></li>
 								</ul>
 							</li>
-							<li class="grey"><a href="/training-and-operations"><span>Training &amp; Operations</span></a></li>
-							<li class="grey"><a href="/special-projects"><span>Special Projects</span></a></li>
-							<li><a href="/news">News</a></li>
-							<li class="last-child">
+							<li class="grey<?php echo $this->uri->segment(1) == 'training-and-operations' ? ' selected' : ''; ?>"><a href="/training-and-operations"><span>Training &amp; Operations</span></a></li>
+							<li class="grey<?php echo $this->uri->segment(1) == 'special-projects' ? ' selected' : ''; ?>"><a href="/special-projects"><span>Special Projects</span></a></li>
+							<li<?php echo $this->uri->segment(1) == 'news' ? ' class="selected"' : ''; ?>><a href="/news">News</a></li>
+							<li class="last-child<?php echo $this->uri->segment(1) == 'contact-us' ? ' selected' : ''; ?>">
 								<a href="/contact-us">Contact Us</a>
 								<ul class="sub-menu">
 									<li><a href="/contact-us/contact-form">Contact Form</a></li>
@@ -177,7 +177,7 @@
 								</ul>
 							</li>
 						</ul>
-						
+												
 					</div>
 					
 				</div>
