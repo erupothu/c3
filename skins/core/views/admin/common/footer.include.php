@@ -439,7 +439,7 @@
 			
 			/* http://uploadify.wdwebdesign.com.br/ */
 			$('.upload-single').uploadify({
-				debug: true,
+				debug: <?php echo ENVIRONMENT == 'development' ? 'true' : 'false'; ?>,
 				auto: true,
 				swf: '/skins/core/scripts/libs/uploadify-3.0.0/uploadify.swf',
 				cancelImage: '/skins/core/images/sprite.png',
