@@ -7,13 +7,13 @@
 			<div class="box box-submenu">
 				
 				<div style="margin: 8px;">
-					<h2><span>Technical Equipment</span></h2>
+					<h2><a href="/product/technical-equipment"><span>Technical Equipment</span></a></h2>
 					
 					<ul id="sub-menu">
-						<li class="first-child"><a href="#">COTS Equipment</a></li>
-						<li><a href="#">Tracking (Aquilia)</a></li>
-						<li><a href="#">Audio Equipment</a></li>
-						<li><a href="#">Video Equipment</a></li>
+						<li class="first-child"><a href="/product/technical-equipment/cots-equipment">COTS Equipment</a></li>
+						<li><a href="/product/technical-equipment/tracking-aquilia">Tracking (Aquilia)</a></li>
+						<li><a href="/product/technical-equipment/audio">Audio Equipment</a></li>
+						<li><a href="/product/technical-equipment/video">Video Equipment</a></li>
 						<li class="last-child"><a href="#">Technical Assistance</a></li>
 					</ul>
 				</div>
@@ -23,13 +23,13 @@
 			<div class="box box-submenu">
 				
 				<div style="margin: 8px;">
-					<h2><span>Training</span></h2>
+					<h2><a href="/product/training"><span>Training</span></a></h2>
 					
 					<ul id="sub-menu">
-						<li class="first-child"><a href="#">COTS Course</a></li>
-						<li><a href="#">Surveillance</a></li>
-						<li><a href="#">Technical Surveillance</a></li>
-						<li class="last-child"><a href="#">CTR Course</a></li>
+						<li class="first-child"><a href="/product/training/cots-course">COTS Course</a></li>
+						<li><a href="/product/training/surveillance">Surveillance</a></li>
+						<li><a href="/product/training/technical-surveillance">Technical Surveillance</a></li>
+						<li class="last-child"><a href="/product/training/ctr-course">CTR Course</a></li>
 					</ul>
 				</div>
 				
@@ -42,7 +42,7 @@
 			<div class="box">
 				
 				<div id="products" style="margin: 8px;">
-					
+
 					<h2><span><?php echo $category->name(); ?></span></h2>
 					
 					<?php foreach($category->products() as $i => $product): ?>
@@ -72,6 +72,11 @@
 						
 					</div>
 					<?php endforeach; ?>
+					<?php if(count($category->products()) == 0): ?>
+					<div class="empty" style="height: 150px; line-height: 150px; text-align: center;">
+						There are no items in this category.
+					</div>
+					<?php endif; ?>
 				</div>
 				
 			</div>

@@ -12,7 +12,9 @@ $route['404_override'] 					= 'page';
 $route['sitemap']						= 'page/sitemap';
 $route['sitemap.?([a-zA-Z.]+)?']		= 'page/sitemap/generate/$1';
 
-$route['product/([^/]+)']				= 'product/view/$1';
+/* TEMP ROUTES */
+$route['special-projects/(technical-equipment|training)'] = 'product/$1';
+/* END NASTY TEMP ROUTES :( */
 
 /* Administration */
 $route['admin']							= 'admin/main';

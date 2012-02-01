@@ -480,7 +480,7 @@ class NestedSet_Model extends CI_Model {
 		return $element_root == 0 ? $tree_objects : current($tree_objects);
 	}
 	
-	private function build_tree($data) {
+	protected function build_tree($data) {
 		
 		$depths = array();
 		$pointer = array();

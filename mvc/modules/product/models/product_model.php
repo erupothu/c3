@@ -133,7 +133,7 @@ class Product_Object {
 	}
 	
 	public function permalink() {
-		return site_url(array('product', $this->product_slug));
+		return site_url(array('product', 'view', $this->product_slug));
 	}
 
 	public function excerpt($length = 160, $cleaned = true) {

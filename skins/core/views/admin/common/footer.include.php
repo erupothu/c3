@@ -62,14 +62,15 @@
 					{ name: 'styles', items: [ 'Format' ] },
 					{ name: 'basicstyles', items: [ 'Bold', 'Italic', 'Strike' ] },
 					{ name: 'lists', items: [ 'BulletedList', 'NumberedList', '-','Outdent','Indent', '-', 'Blockquote' ] },
+					{ name: 'spelling', items: [ 'atd-ckeditor' ]},
 					'/',
 					{ name: 'justify', items: [ 'JustifyLeft', 'JustifyCenter', 'JustifyRight' ] },
 					{ name: 'insert', items: [ 'Link', 'Unlink', 'Anchor', 'SpecialChar' ] },
 					{ name: 'document', items: [ 'Source' ] },
-					{ name: 'editing', items : [ 'SpellChecker', 'C3Widgets' ] },
+					{ name: 'editing', items : [ 'C3Widgets' ] },
 				],
 				removePlugins: 'elementspath',
-				extraPlugins: 'C3Widgets',
+				extraPlugins: 'C3Widgets,atd-ckeditor',
 				stylesSet: [
 					{ name: 'Normal', element: 'p' },
 					{ name: 'Heading', element : 'h2', styles : { } },
@@ -86,7 +87,9 @@
 				resize_maxWidth: '100%',
 				startupShowBorders: false,
 				autoParagraph: false,
-				fillEmptyBlocks: false
+				fillEmptyBlocks: false,
+				
+				atd_rpc: '/admin/page/temp'
 				
 				//filebrowserUploadUrl: '/admin/image/upload_ck'
 			};

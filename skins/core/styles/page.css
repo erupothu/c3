@@ -3,3 +3,22 @@ widget {
 	display: block;
 	padding: 3px;
 }
+
+/* Spelling Integration - After the Deadline */
+.hiddenSpellError {
+	background: url(../images/error.spelling.png) repeat-x bottom left;
+	padding-bottom: 2px;
+	cursor: default;
+}
+
+.hiddenGrammarError {
+	background: url(../images/error.grammar.png) repeat-x bottom left;
+	padding-bottom: 2px;
+	cursor: default;
+}
+
+.hiddenSuggestion {
+	background: url(../images/error.suggestion.png) repeat-x bottom left;
+	padding-bottom: 2px;
+	cursor: default;
+}
