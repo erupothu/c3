@@ -87,9 +87,8 @@
 								<div class="price"><span>Price:</span> &pound;<?php echo $product->price(); ?></div>
 								<div class="buttons" style="float: right;">
 									<form action="/cart/add" method="post">
-										
 										<input type="hidden" name="product_id" id="product_id" value="<?php echo $product->id(); ?>">
-										<input type="hidden" name="product_module" id="product_module" value="<?php echo $this->router->fetch_module(); ?>">
+										<input type="hidden" name="product_module" id="product_module" value="<?php echo $this->router->fetch_class(); ?>">
 										<input type="hidden" name="product_quantity" id="product_quantity" value="1">
 										
 										<noscript><input type="submit" value="Add to Cart"></noscript>

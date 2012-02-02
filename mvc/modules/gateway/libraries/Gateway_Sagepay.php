@@ -86,6 +86,16 @@ class Gateway_Sagepay extends INSIGHT_Gateway {
 
 	public function test() {
 		
+		// TEMP GET CART ITEMS.
+		$this->cart = Cart_Object::init();
+		
+		$lines = array();
+		foreach($this->cart->contents(true) as $item) {
+			$lines[] = sprintf('%s:%d:%s:%s:%s:%0.2f', $item->name(), $item->quantity(), $item->price(), '0.00', $item->price(), $item->total());
+		}
+		
+		$this->test_data['Basket'] = sprintf('%d:%s', count($lines), implode(':', $lines));
+		
 		$array = array();
 		foreach($this->test_data as $k => $v) {
 			
@@ -94,33 +104,36 @@ class Gateway_Sagepay extends INSIGHT_Gateway {
 			
 			$array[] = $k . '=' . $v;
 		}
+		
 		$plain = implode('&', $array);
 		
 		// enc.
 		$enc = $this->encrypt($plain);
 		
-		echo $plain . '<br />';
-		echo $enc . '<br /><br />';
+		//echo $plain . '<br />';
+		//echo $enc . '<br /><br />';
 		
 		$dec = $this->decrypt($enc);
 		
-		echo $dec;
+		//echo $dec;
 		
 		?>
 		
-		
 		<form action="https://test.sagepay.com/simulator/vspformgateway.asp" method="post" id="gateway" name="gateway"> 
-			<input type="hidden" name="navigate" value="" />
+			<input type="hidden" name="navigate" value="">
 			<input type="hidden" name="VPSProtocol" value="2.23">
 			<input type="hidden" name="TxType" value="PAYMENT">
 			<input type="hidden" name="Vendor" value="<? echo $this->sage_vendor_name ?>">
 			<input type="hidden" name="Crypt" value="<? echo $enc ?>">
-			<input type="submit" value="Purchase!">
+			<label for="gateway_submit">Click this button if your browser fails to redirect you</label>
+			<input type="submit" id="gateway_submit" name="gateway_submit" value="Proceed">
 		</form>
 		
+		<script>
+		document.getElementById('gateway').submit();
+		</script>
 		
 		<?php
-		
 	}
 	
 	

@@ -718,7 +718,12 @@ a.grey span {
 	background: none;
 }
 
-#cart tbody td {
+#cart tfoot td {
+	position: relative;
+	top: -2px;
+}
+
+#cart tbody td, #cart tfoot td {
 	border: solid 1px #ccc;
 	padding: 6px;
 }

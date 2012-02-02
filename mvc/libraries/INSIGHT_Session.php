@@ -20,7 +20,7 @@ class INSIGHT_Session extends CI_Session {
 			return $_SESSION;
 		
 		$pointer = &$_SESSION;
-		foreach($explode = explode('/', $path) as $e => $segment) {
+		foreach($explode = array_filter(explode('/', $path), function($_segment) { return !empty($_segment); }) as $e => $segment) {
 			
 			if(!isset($pointer[$segment]))
 				return false;
@@ -31,6 +31,9 @@ class INSIGHT_Session extends CI_Session {
 				return $find_data;
 			}
 			
+			if(!is_array($pointer))
+				return false;
+				
 			$pointer = &$pointer[$segment];
 		}
 		

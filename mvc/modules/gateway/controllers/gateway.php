@@ -9,18 +9,35 @@ class Gateway extends INSIGHT_HMVC_Controller {
 	}
 	
 	public function index() {
-		echo $this->gateway->test();
+		$this->load->module('cart');
+		$this->gateway->test();
 	}
 	
+	
+	/**
+	 * success
+	 *
+	 * @return void
+	 */
 	public function success() {
 		
 		$crypt = $this->input->get('crypt');
 		$data = $this->gateway->tokenize($crypt, true);
 		
-		var_dump($data);
+		echo '<pre>';
+		print_r($data);
 		
+		echo sha1($crypt);
+		echo '</pre>';
+	
 	}
 	
+	
+	/**
+	 * failure
+	 *
+	 * @return void
+	 */
 	public function failure() {
 		
 		$crypt = $this->input->get('crypt');
@@ -28,5 +45,4 @@ class Gateway extends INSIGHT_HMVC_Controller {
 		
 		var_dump($data);
 	}
-	
 }

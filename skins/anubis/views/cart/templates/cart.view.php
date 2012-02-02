@@ -11,7 +11,7 @@
 		
 		<!-- Cart -->
 		<div class="cart-container box">
-			
+
 			<table id="cart">
 				<colgroup>
 					<col style="width: 50px;" />
@@ -38,21 +38,22 @@
 					</tr>
 				</tfoot>
 				<tbody>
-					<?php foreach($this->cart->contents() as $hash => $item): ?>
+					<?php foreach($this->cart->contents() as $item): ?>
 					<tr>
 						<td class="item">
 							<a class="thumbnail right" href="#">
-								<img src="/uploads/product_thumb.jpg" alt="Product Title" style="display: block; width: 50px; height: 50px;">
+								<img src="/uploads/product_thumb.jpg" alt="<?php echo $item->name(); ?>" style="display: block; width: 50px; height: 50px;">
 							</a>
 						</td>
 						<td class="description">
-							<a href="/cart/remove/<?php echo $hash; ?>">x</a>
-							<a href="#">Example Product</a>
+							<a href="/cart/remove/<?php echo $item->hash(); ?>">[Remove]</a>
+							<?php echo anchor($item->permalink(), $item->name()); ?>
+							<span><?php echo '&nbsp;'; //$item->description(); ?></span>
 						</td>
-						<td class="code">02345</td>
-						<td class="quantity"><?php echo $item['quantity']; ?></td>
-						<td class="price money">199.99</td>
-						<td class="total money">199.99</td>
+						<td class="code"><?php echo $item->code(); ?></td>
+						<td class="quantity"><?php echo $item->quantity(); ?></td>
+						<td class="price money"><?php echo $item->price(); ?></td>
+						<td class="total money"><?php echo $item->total(); ?></td>
 					</tr>
 					<?php endforeach; ?>
 				</tbody>

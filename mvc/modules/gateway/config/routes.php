@@ -1,3 +1,3 @@
 <?php
 
-$route['gateway/success(.*)'] = 'gateway/success';
+$route = array();

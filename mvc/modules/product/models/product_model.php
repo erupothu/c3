@@ -6,8 +6,27 @@ class Product_Model extends CI_Model {
 		
 		parent::__construct();
 		
-		$this->load->model('category_model', 'category');
+		if($this->router->fetch_module() == 'product') {
+			$this->load->model('category_model', 'category');
+		}
 	}
+	
+	
+	public function test($product_ids, $mapped_object = 'Product_Object') {
+		
+		if(!is_array($product_ids)) {
+			return $this->__function__(array($product_ids));
+		}
+		
+		$this->db->select('*');
+		$this->db->from('product p');
+		$this->db->join('product_category c', 'p.product_category_id = c.category_id', 'left');
+		$this->db->where_in('p.product_id', $product_ids);
+		$product_result = $this->db->get();
+		
+		return $product_result->result($mapped_object);
+	}
+	
 	
 	public function create() {
 		
@@ -110,10 +129,38 @@ class Product_Model extends CI_Model {
 
 }
 
-class Product_Object {
+interface Cart_Object_Interface {
+	
+	public function id();
+	public function hash();
+	public function name();
+	public function image();
+	public function description();
+	public function code();
+	public function price();
+	public function permalink();
+	public function quantity();
+}
+
+class Cart_Item_Object {
+	
+	public function quantity() {
+		return max(0, CI::$APP->session->get(sprintf('cart/items/%s/quantity', $this->hash())));
+	}
+	
+	public function total() {
+		return $this->quantity() * $this->price();
+	}
+}
+
+class Product_Object extends Cart_Item_Object {
 	
 	public function id() {
 		return (int)$this->product_id;
+	}
+	
+	public function hash() {
+		return md5('product' . $this->id());
 	}
 	
 	public function category_id() {
@@ -122,6 +169,10 @@ class Product_Object {
 	
 	public function category() {
 		return $this->category_name;
+	}
+	
+	public function image() {
+		return '';
 	}
 	
 	public function name() {

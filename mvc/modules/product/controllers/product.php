@@ -34,6 +34,7 @@ class Product extends INSIGHT_HMVC_Controller {
 	}
 	
 	public function view($product_slug) {
+
 		$product = $this->product->retrieve_by_slug($product_slug);
 		$this->load->view('templates/product.template.view.php', array('product' => $product));
 	}
