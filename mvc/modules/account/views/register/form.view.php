@@ -50,13 +50,13 @@
 				<label for="account_country">Country</label>
 				<span><select name="account_country" id="account_country">
 					<option value="">Select Country</option>
-					<?php $countries = $this->config->item('countries'); if(false !== $this->config->item('important') && count($this->config->item('important')) > 0): ?>
+					<?php $countries = $this->config->item('alpha-2', 'countries'); if(isset($countries['important']) && count($countries['important']) > 0): ?>
 					<option value="">----------------</option>
-					<?php foreach($this->config->item('important') as $iso_code): ?>
-					<option value="<?php echo $iso_code; ?>"<?php echo $this->form_validation->selected('account_country', $iso_code); ?>><?php echo htmlentities($countries[$iso_code], ENT_COMPAT, 'UTF-8', false); ?></option>
+					<?php foreach($countries['important'] as $iso_code): ?>
+					<option value="<?php echo $iso_code; ?>"<?php echo $this->form_validation->selected('account_country', $iso_code); ?>><?php echo htmlentities($countries['countries'][$iso_code], ENT_COMPAT, 'UTF-8', false); ?></option>
 					<?php endforeach; endif; ?>
 					<option value="">----------------</option>
-					<?php foreach($countries as $iso_code => $iso_title): ?>
+					<?php foreach($countries['countries'] as $iso_code => $iso_title): ?>
 					<option value="<?php echo $iso_code; ?>"<?php echo $this->form_validation->selected('account_country', $iso_code); ?>><?php echo htmlentities($iso_title, ENT_COMPAT, 'UTF-8', false); ?></option>
 					<?php endforeach; ?>
 				</select></span>

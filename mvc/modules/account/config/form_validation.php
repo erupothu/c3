@@ -75,6 +75,46 @@ $config = array(
 			'label'	=> 'Email Address',
 			'rules'	=> 'required|valid_email|module_callback[validate_account_recoverable]'
 		)
+	),
+	
+	'account-address-form' => array(
+		
+		array(
+			'field'	=> 'address_label',
+			'label'	=> 'Label',
+			'rules'	=> ''
+		),
+		array(
+			'field'	=> 'address_line1',
+			'label'	=> 'Line 1',
+			'rules'	=> 'required'
+		),
+		array(
+			'field'	=> 'address_line2',
+			'label'	=> 'Line 2',
+			'rules'	=> ''
+		),
+		array(
+			'field'	=> 'address_city',
+			'label'	=> 'City',
+			'rules'	=> 'required'
+		),
+		array(
+			'field'	=> 'address_state',
+			'label'	=> 'State',
+			'rules'	=> 'required'
+		),
+		array(
+			'field'	=> 'address_postcode',
+			'label'	=> 'Postcode',
+			'rules'	=> 'required'
+		),
+		array(
+			'field'	=> 'address_country',
+			'label'	=> 'Country',
+			'rules'	=> 'required'
+		)
+		
 	)
 
 );

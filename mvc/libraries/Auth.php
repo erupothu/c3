@@ -197,6 +197,9 @@ abstract class User {
 		return sprintf('%s %s', $this->user_firstname, $this->user_lastname);
 	}
 	
+	public function email() {
+		return $this->user_email;
+	}
 	
 	public function can($permission = null) {
 		return true;

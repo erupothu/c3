@@ -138,6 +138,7 @@ interface Cart_Object_Interface {
 	public function description();
 	public function code();
 	public function price();
+	public function tax();
 	public function permalink();
 	public function quantity();
 }
@@ -148,8 +149,12 @@ class Cart_Item_Object {
 		return max(0, CI::$APP->session->get(sprintf('cart/items/%s/quantity', $this->hash())));
 	}
 	
+	public function tax() {
+		return sprintf('%0.2f', $this->price(false) * 0.2);
+	}
+	
 	public function total() {
-		return $this->quantity() * $this->price();
+		return $this->quantity() * ($this->price() + $this->tax());
 	}
 }
 
@@ -206,8 +211,13 @@ class Product_Object extends Cart_Item_Object {
 		return $this->product_specification;
 	}
 	
-	public function price() {
-		return $this->product_price;
+	public function price($include_tax = false) {
+		
+		if(!$include_tax) {
+			return $this->product_price;
+		}
+		
+		return $this->tax() + $this->product_price;
 	}
 	
 	public function created($format = 'd/m/Y H:i') {

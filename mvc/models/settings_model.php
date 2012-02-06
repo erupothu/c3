@@ -27,7 +27,19 @@ class Settings_Model extends CI_Model {
 		$this->db->order_by('setting_key asc');
 		$setting_result = $this->db->get();
 		foreach($setting_result->result_array() as $setting) {
-			$this->settings[$setting['setting_key']] = $setting['setting_value'];
+			
+			if(!is_null($setting['setting_module'])) {
+				
+				if(!isset($this->settings[$setting['setting_module']])) {
+					$this->settings[$setting['setting_module']] = array();
+				}
+				
+				$this->settings[$setting['setting_module']][$setting['setting_key']] = $setting['setting_value'];
+			}
+			else {
+				
+				$this->settings[$setting['setting_key']] = $setting['setting_value'];
+			}
 		}
 		
 		return $this->settings;

@@ -9,7 +9,7 @@ class Account extends INSIGHT_HMVC_Controller {
 		$this->load->library('form_validation');
 		$this->load->model('account_model', 'account');
 		
-		$this->load->config('countries');
+		$this->load->config('countries', true);
 	}
 	
 	public function index() {
@@ -21,6 +21,16 @@ class Account extends INSIGHT_HMVC_Controller {
 		$this->load->view('dashboard.view.php');
 	}
 
+
+	public function profile() {
+		
+		if($this->form_validation->run('account-profile-form')) {
+			redirect('account');
+		}
+		
+		$this->load->view('profile.view.php');
+	}
+
 	public function register() {
 
 		if($this->form_validation->run('account-register-form')) {
@@ -30,6 +40,8 @@ class Account extends INSIGHT_HMVC_Controller {
 
 		$this->load->view('register/form.view.php', array());
 	}
+	
+	
 
 	public function recover($hash = null) {
 		

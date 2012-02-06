@@ -3,12 +3,14 @@
 require_once 'Gateway.php';
 
 class Gateway_Sagepay extends INSIGHT_Gateway {
+	
+	protected $raw = array();
+	
+	protected $sage_partner;				// sage partnership id	
+	protected $sage_vendor_name;			// sage vendor name
+	protected $sage_encryption_string;	// sage encryption string
 
-	private $sage_partner;				// sage partnership id	
-	private $sage_vendor_name;			// sage vendor name
-	private $sage_encryption_string;	// sage encryption string
-
-	private $sage_valid_tokens = array(
+	protected $sage_valid_tokens = array(
 		'Status',
 		'StatusDetail',
 		'VendorTxCode',
@@ -29,7 +31,7 @@ class Gateway_Sagepay extends INSIGHT_Gateway {
 	);
 	
 	
-	private $sage_endpoints = array(
+	protected $sage_endpoints = array(
 		'LIVE'		=> 'https://live.sagepay.com/gateway/service/vspform-register.vsp',
 		'TEST'		=> 'https://test.sagepay.com/gateway/service/vspform-register.vsp',
 		'SIMULATOR'	=> 'https://test.sagepay.com/simulator/vspformgateway.asp'
@@ -38,18 +40,20 @@ class Gateway_Sagepay extends INSIGHT_Gateway {
 	
 	public function __construct() {
 		
+		parent::__construct();
+		
 		// temp stuff.
 		$this->sage_vendor_name 		= 'technical9';
 		$this->sage_encryption_string 	= 'g9hVBEtzkPa2wHp0';
 		
 		// temp data array.
 		$this->test_data = array(
-			'VendorTxCode'			=> 'X-anubis-test-' . time(),
+			'VendorTxCode'			=> '',
 			'Amount'				=> '199.99',
 			'Currency'				=> 'GBP',
 			'Description'			=> 'Anubis Ltd',
-			'SuccessURL'			=> site_url(array(CI::$APP->router->fetch_module(), 'success')),
-			'FailureURL'			=> site_url(array(CI::$APP->router->fetch_module(), 'failure')),
+			'SuccessURL'			=> site_url(array(CI::$APP->router->fetch_module(), 'process')),
+			'FailureURL'			=> site_url(array(CI::$APP->router->fetch_module(), 'process')),
 			'CustomerName'			=> 'John Doe',
 			'CustomerEMail'			=> 'jon@creativeinsight.co.uk',
 			'VendorEMail'			=> 'jon@creativeinsight.co.uk',
@@ -62,8 +66,8 @@ class Gateway_Sagepay extends INSIGHT_Gateway {
 			'BillingAddress2'		=> 'Sutton Coldfield',
 			'BillingCity'			=> 'Birmingham',
 			'BillingPostCode'		=> 'B72 1SD',
-			'BillingCountry'		=> 'GB',
 			'BillingState'			=> null,
+			'BillingCountry'		=> 'GB',
 			'BillingPhone'			=> '01213212828',
 			
 			'DeliverySurname'		=> 'Doe',
@@ -72,8 +76,8 @@ class Gateway_Sagepay extends INSIGHT_Gateway {
 			'DeliveryAddress2'		=> 'Sutton Coldfield',
 			'DeliveryCity'			=> 'Birmingham',
 			'DeliveryPostCode'		=> 'B72 1SD',
-			'DeliveryCountry'		=> 'GB',
 			'DeliveryState'			=> null,
+			'DeliveryCountry'		=> 'GB',
 			'DeliveryPhone'			=> '01213212828',
 			
 			'Basket'				=> '4:Pioneer NSDV99 DVD-Surround Sound System:1:424.68:74.32:499.00:499.00:Donnie Darko Directors Cut:3:11.91:2.08:13.99:41.97:Finding Nemo:2:11.05:1.94:12.99:25.98:Delivery:---:---:---:---:4.9',
@@ -82,8 +86,162 @@ class Gateway_Sagepay extends INSIGHT_Gateway {
 			'Apply3DSecure'			=> 0,
 //			'BillingAgreement'		=> 0	// ONLY SET ON PAYPAL.
 		);
+		
+		
+		
+		$this->raw = array(
+			'Currency'			   	=> 'GBP',
+			'Description'		   	=> 'Anubis Associates Ltd',
+			'SuccessURL'		   	=> site_url(array(CI::$APP->router->fetch_module(), 'process')),
+			'FailureURL'		   	=> site_url(array(CI::$APP->router->fetch_module(), 'process')),
+			'VendorEMail'		   	=> 'jon@creativeinsight.co.uk',
+			'SendEMail'			   	=> 1,
+			'eMailMessage'		   	=> 'This is a message that is put into the emails sent',
+			'AllowGiftAid'		   	=> 0,
+			'ApplyAVSCV2'		   	=> 0,
+			'Apply3DSecure'		   	=> 0,
+//			'BillingAgreement'	   	=> 0	// ONLY SET ON PAYPAL.
+		);
+		
+		var_dump(CI::$APP->insight->config('user/gateway'));
+		
+		
+		
+		
+		// temp
+		$this->db = &CI::$APP->db;
 	}
-
+	
+	public function raw() {
+		return $this->raw;
+	}
+	
+	
+	public function get_endpoint() {
+		
+		if(!isset($this->configuration['gateway_sagepay_endpoint']) || !isset($this->sage_endpoints[$this->configuration['gateway_sagepay_endpoint']])) {
+			throw new Gateway_Exception('Invalid endpoint. Must be one of the following: ' . implode(', ', array_keys($this->sage_endpoints)));
+		}
+			
+		return $this->sage_endpoints[$this->configuration['gateway_sagepay_endpoint']];
+	}
+	
+	
+	protected function set_address($key, $address) {
+		
+		if($address instanceof Address_Object) {
+			
+			// Address Objects do not separate the name into two 
+			// segments, so we need to split this here to achieve it.
+			list($address_firstnames, $address_lastname) = preg_split('/\s+/', $address->name(), 2, PREG_SPLIT_NO_EMPTY);
+			
+			$chunk = array(
+				$key . 'Surname'	=> $address_lastname,
+				$key . 'Firstnames'	=> $address_firstnames,
+				$key . 'Address1'	=> $address->line1(),
+				$key . 'Address2'	=> $address->line2(),
+				$key . 'City'		=> $address->city(),
+				$key . 'PostCode'	=> $address->postcode(),
+				$key . 'State'		=> null,
+				$key . 'Country'	=> $address->country(),
+				$key . 'Phone'		=> $address->phone()
+			);
+		}
+		else {
+			
+			$chunk = array(
+				$key . 'Surname'	=> $address['address_lastname'],
+				$key . 'Firstnames'	=> $address['address_firstname'],
+				$key . 'Address1'	=> $address['address_line1'],
+				$key . 'Address2'	=> $address['address_line2'],
+				$key . 'City'		=> $address['address_city'],
+				$key . 'PostCode'	=> $address['address_postcode'],
+				$key . 'State'		=> null,
+				$key . 'Country'	=> $address['address_country'],
+				$key . 'Phone'		=> $address['address_phone']
+			);
+		}
+		
+		// Merge.
+		$this->raw = array_merge($this->raw, $chunk);
+		
+		return $chunk;
+	}
+	
+	public function set_delivery($address) {
+		return $this->set_address('Delivery', $address);
+	}
+	
+	public function set_billing($address) {
+		return $this->set_address('Billing', $address);
+	}
+	
+	public function set_cart() {
+		
+		$cart = Cart_Object::init();
+		
+		$items = array();
+		foreach($cart->contents(true) as $item) {
+			$items[] = sprintf('%s:%s:%s:%s:%s:%0.2f', $item->name(), $item->quantity(), $item->price(), $item->tax(), $item->price(true), $item->total());
+		}
+		
+		$chunk = array(
+			'Amount'	=> $cart->total(),
+			'Currency'	=> 'GBP',
+			'Basket'	=> sprintf('%d:%s', count($items), implode(':', $items))
+		);
+		
+		// Merge.
+		$this->raw = array_merge($this->raw, $chunk);
+	}
+	
+	
+	public function dispatch() {
+		
+		// Register a transaction code.
+		// @TODO:  Move this to a model.
+		//$this->db->select('IFNULL(MAX(t.transaction_id) + 1, 1) as transaction_number', false);
+		//$this->db->from('transaction t');
+		//$transaction_result = $this->db->get();
+		
+		// @TODO
+		// Make this configurable (the key, etc.)
+		// can't use ->LOAD!!! we're not in a CI class.
+		$this->load->model('transaction_model', 'transaction');
+		$this->raw['VendorTxCode'] = sprintf('%-.3s-%06d', 'zANUBIS', $this->transaction->unique());
+		
+		
+		// build...
+		$crypt = $this->build();
+		
+		?>
+		
+		<form action="<?php echo $this->get_endpoint(); ?>" method="post" id="gateway" name="gateway"> 
+			<input type="hidden" name="navigate" value="">
+			<input type="hidden" name="VPSProtocol" value="2.23">
+			<input type="hidden" name="TxType" value="PAYMENT">
+			<input type="hidden" name="Vendor" value="<?php echo $this->sage_vendor_name; ?>">
+			<input type="hidden" name="Crypt" value="<?php echo $crypt; ?>">
+			<label for="gateway_submit">Click this button if your browser fails to redirect you</label>
+			<input type="submit" id="gateway_submit" name="gateway_submit" value="Proceed">
+		</form>
+		
+		<script>
+		document.getElementById('gateway').submit();
+		</script>
+		
+		<?php
+		
+		/*
+		
+		*/
+		
+	}
+	
+	
+	
+	
+	
 	public function test() {
 		
 		// TEMP GET CART ITEMS.
@@ -91,10 +249,54 @@ class Gateway_Sagepay extends INSIGHT_Gateway {
 		
 		$lines = array();
 		foreach($this->cart->contents(true) as $item) {
-			$lines[] = sprintf('%s:%d:%s:%s:%s:%0.2f', $item->name(), $item->quantity(), $item->price(), '0.00', $item->price(), $item->total());
+			$lines[] = sprintf('%s:%s:%s:%s:%s:%0.2f', $item->name(), $item->quantity(), $item->price(), $item->tax(), $item->price(true), $item->total());
 		}
 		
 		$this->test_data['Basket'] = sprintf('%d:%s', count($lines), implode(':', $lines));
+		$this->test_data['Amount'] = $this->cart->total();
+		
+		
+		// Register a transaction code.
+		$this->db->select('IFNULL(MAX(t.transaction_id) + 1, 1) as transaction_number', false);
+		$this->db->from('transaction t');
+		$transaction_result = $this->db->get();
+		
+		$transaction_code = sprintf('%-.3s-%06d', 'zANUBIS', $transaction_result->row('transaction_number'));
+		$this->test_data['VendorTxCode'] = $transaction_code;
+
+		//delivery_address1	delivery_address2	delivery_town	delivery_county	delivery_postcode
+		
+		
+		// This is going to be a pending transaction now.
+		$order_time = new DateTime;
+		$this->db->insert('order', array(
+			'order_transaction_id'	=> $transaction->transaction_id,
+			'order_user_id'			=> $transaction->transaction_user_id,
+			'order_net'				=> 0.00,
+			'order_tax'				=> 0.00,
+			'order_total'			=> $transaction->transaction_amount,
+			'order_status'			=> 'processing',
+			'order_date_created'	=> $order_time->format('Y-m-d H:i:s')
+		));
+		
+		
+		
+		// Earmark the transaction.
+		$transaction = array(
+			'transaction_order_id'	=> $order_id,
+			'transaction_code'		=> $transaction_code,
+			'transaction_user_id'	=> CI::$APP->user->id(),
+			'transaction_status'	=> 'pending',
+			'transaction_details'	=> 'Awaiting communication from SagePay'
+		);
+		
+		$this->db->insert('transaction', $transaction);
+		$transaction_id = $this->db->insert_id();
+		
+		
+		
+		
+		// BUILD.
 		
 		$array = array();
 		foreach($this->test_data as $k => $v) {
@@ -107,24 +309,22 @@ class Gateway_Sagepay extends INSIGHT_Gateway {
 		
 		$plain = implode('&', $array);
 		
-		// enc.
-		$enc = $this->encrypt($plain);
+		// Encrypt.
+		$crypt = $this->encrypt($plain);
 		
-		//echo $plain . '<br />';
-		//echo $enc . '<br /><br />';
 		
-		$dec = $this->decrypt($enc);
 		
-		//echo $dec;
+		
+		$order_id = $this->db->insert_id();
 		
 		?>
 		
-		<form action="https://test.sagepay.com/simulator/vspformgateway.asp" method="post" id="gateway" name="gateway"> 
+		<form action="<?php echo $this->get_endpoint(); ?>" method="post" id="gateway" name="gateway"> 
 			<input type="hidden" name="navigate" value="">
 			<input type="hidden" name="VPSProtocol" value="2.23">
 			<input type="hidden" name="TxType" value="PAYMENT">
-			<input type="hidden" name="Vendor" value="<? echo $this->sage_vendor_name ?>">
-			<input type="hidden" name="Crypt" value="<? echo $enc ?>">
+			<input type="hidden" name="Vendor" value="<?php echo $this->sage_vendor_name; ?>">
+			<input type="hidden" name="Crypt" value="<?php echo $crypt; ?>">
 			<label for="gateway_submit">Click this button if your browser fails to redirect you</label>
 			<input type="submit" id="gateway_submit" name="gateway_submit" value="Proceed">
 		</form>
@@ -136,6 +336,8 @@ class Gateway_Sagepay extends INSIGHT_Gateway {
 		<?php
 	}
 	
+	
+
 	
 	
 	/**
@@ -184,6 +386,36 @@ class Gateway_Sagepay extends INSIGHT_Gateway {
 		}
 		
 		return $tokens;
+	}
+	
+
+	/**
+	 * build
+	 *
+	 * @param string $data 
+	 * @param string $crypt 
+	 * @return void
+	 * @author Jon
+	 */
+	protected function build($data = null, $crypt = false) {
+		
+		$array = array();
+		foreach(is_null($data) ? $this->raw : $data as $k => $v) {
+			
+			if(is_null($v)) {
+				continue;
+			}
+			
+			$array[] = $k . '=' . $v;
+		}
+		
+		$built = implode('&', $array);
+		if(false !== $crypt) {
+			return $built;
+		}
+		
+		// Encrypt.
+		return $this->encrypt($built);
 	}
 	
 	
