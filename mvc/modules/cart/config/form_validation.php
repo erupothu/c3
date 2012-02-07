@@ -19,6 +19,21 @@ $config = array(
 			'label'	=> 'Quantity',
 			'rules'	=> 'required|numeric'
 		)
+	),
+	
+	'cart-checkout-guest' => array(
+		
+		array(
+			'field'	=> 'checkout_name',
+			'label'	=> 'Name',
+			'rules'	=> 'required'
+		),
+		array(
+			'field'	=> 'checkout_email',
+			'label'	=> 'Email',
+			'rules'	=> 'required|valid_email'
+		)
+		
 	)
 	
 );

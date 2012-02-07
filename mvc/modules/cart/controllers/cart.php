@@ -118,11 +118,21 @@ class Cart_Object {
 		return $size;
 	}
 	
-	public function total() {
+	public function tax() {
+		
+		$tax = 0.0;
+		foreach($this->contents() as $item) {
+			$tax += ($item->tax() * $item->quantity());
+		}
+		
+		return sprintf('%0.2f', $tax);
+	}
+	
+	public function total($include_tax = true) {
 		
 		$total = 0;
 		foreach($this->contents() as $item) {
-			$total += $item->total();
+			$total += $item->total($include_tax);
 		}
 		
 		return sprintf('%0.2f', $total);
@@ -242,6 +252,11 @@ class Cart extends INSIGHT_HMVC_Controller {
 	
 	public function checkout() {
 		
+		if($this->cart->size() == 0) {
+			$this->session->set_flashdata('core/message', 'Your cart is currently empty.');
+			return redirect('cart');
+		}
+		
 		// Load Gateway.
 		$gateway_class = sprintf('%2$sGateway_%1$s', ucfirst(CI::$APP->insight->config('user/gateway/gateway_class')), $this->router->fetch_module() == 'gateway' ? '' : 'gateway/');
 		$this->load->library($gateway_class, CI::$APP->insight->config('user/gateway'), 'gateway');
@@ -249,48 +264,28 @@ class Cart extends INSIGHT_HMVC_Controller {
 		//var_dump($this->user);
 		//var_dump($this->input->post());
 
-		$address_id = $this->input->post('delivery_address_id');
-	
+		$delivery_address_id = $this->input->post('delivery_address_id');
+		$billing_address_id	= $this->input->post('billing_address_id');
+		
 		$this->load->model('account/address_model', 'address');
 		
-		if(false !== $address_id) {
-			$delivery_address = $this->address->retrieve_by_id($address_id);
-		
-			list($delivery_firstnames, $delivery_surname) = preg_split('/\s+/', $delivery_address->name(), 2, PREG_SPLIT_NO_EMPTY);
-		
-		
-			$data = array(
+		if(false !== $delivery_address_id) {
 			
-				// Customer Data
-				'CustomerName'			=> $this->user->name(),
-				'CustomerEMail'			=> $this->user->email(),
-			
-				// Delivery Data
-				'DeliverySurname'		=> $delivery_surname,
-				'DeliveryFirstnames'	=> $delivery_firstnames,
-				'DeliveryAddress1'		=> $delivery_address->line1(),
-				'DeliveryAddress2'		=> $delivery_address->line2(),
-				'DeliveryCity'			=> $delivery_address->city(),
-				'DeliveryPostCode'		=> $delivery_address->postcode(),
-				'DeliveryState'			=> null,
-				'DeliveryCountry'		=> $delivery_address->country(),
-				'DeliveryPhone'			=> '01213212828',
-			
-				// Billing Data
-			);
-		
-			
+			// Addresses
+			$billing_address = $this->address->retrieve_by_id($billing_address_id);
+			$delivery_address = $this->address->retrieve_by_id($delivery_address_id);
+						
 			// gateway set delivery address
 			$this->gateway->set_delivery($delivery_address);
 			
 			// gateway set billing address
+			$this->gateway->set_billing($billing_address);
 			
-			// gateway set basket
-			// gateway set amount
+			// gateway set basket & amount
 			$this->gateway->set_cart();
 			
 			// gateway process?
-			$this->gateway->dispatch();
+			return $this->gateway->dispatch();
 		}
 		
 		$this->load->view('templates/checkout.view.php', array(

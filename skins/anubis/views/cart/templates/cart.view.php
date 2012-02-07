@@ -33,6 +33,14 @@
 				</thead>
 				<tfoot>
 					<tr class="sub-total">
+						<td colspan="5">Sub-Total</td>
+						<td class="tax money"><?php echo $this->cart->total(false); ?></td>
+					</tr>
+					<tr class="tax-total">
+						<td colspan="5">VAT @ 20%</td>
+						<td class="tax money"><?php echo $this->cart->tax(); ?></td>
+					</tr>
+					<tr class="grand-total">
 						<td colspan="5">Total <span>(excluding delivery charge)</span></td>
 						<td class="total money"><?php echo $this->cart->total(); ?></td>
 					</tr>
@@ -53,7 +61,7 @@
 						<td class="code"><?php echo $item->code(); ?></td>
 						<td class="quantity"><?php echo $item->quantity(); ?></td>
 						<td class="price money"><?php echo $item->price(); ?></td>
-						<td class="total money"><?php echo $item->total(); ?></td>
+						<td class="total money"><?php echo $item->total(false); ?></td>
 					</tr>
 					<?php endforeach; ?>
 				</tbody>
@@ -62,10 +70,12 @@
 		</div>
 		
 		<?php if($this->cart->size() > 0): ?>
-		<div class="buttons" style="float: right; margin-bottom: 16px;">
-			<a href="/cart/update" class="button grey" style="float: left;">Update<span></span></a>
-			<a href="/cart/empty" class="button grey" style="float: left; margin-left: 8px;">Empty Basket<span></span></a>
-			<a href="/cart/checkout" class="button orange" style="float: left; margin-left: 8px;">Proceed<span></span></a>
+		<div class="buttons clearfix">
+			<div style="float: right; margin-bottom: 16px;">
+				<a href="/cart/update" class="button grey" style="float: left;">Update<span></span></a>
+				<a href="/cart/empty" class="button grey" style="float: left; margin-left: 8px;">Empty Basket<span></span></a>
+				<a href="/cart/checkout" class="button orange" style="float: left; margin-left: 8px;">Proceed<span></span></a>
+			</div>
 		</div>
 		<?php endif; ?>
 		

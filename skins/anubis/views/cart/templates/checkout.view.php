@@ -11,6 +11,15 @@
 			
 			<?php if($this->user->authenticated()): ?>
 			
+				<div class="row">
+					<label for="billing_address_id">Billing Address</label>
+					<span><select name="billing_address_id" id="billing_address_id">
+						<?php foreach($addresses as $address): ?>
+						<option value="<?php echo $address->id(); ?>"><?php echo $address->label(); ?> (<?php echo $address->line1() . ', ' . $address->city(); ?>)</option>
+						<?php endforeach; ?>
+					</select></span>
+				</div>
+			
 			<div class="row">
 				<label for="delivery_address_id">Delivery Address</label>
 				<span><select name="delivery_address_id" id="delivery_address_id">

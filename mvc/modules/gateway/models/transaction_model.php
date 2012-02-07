@@ -6,7 +6,20 @@ class Transaction_Model extends CI_Model {
 		parent::__construct();
 	}
 	
-	public function create() {}
+	public function create($order_id, $code = null) {
+		
+		// Earmark the transaction.
+		$transaction = array(
+			'transaction_order_id'	=> $order_id,
+			'transaction_code'		=> $code,
+			'transaction_user_id'	=> CI::$APP->user->id(),
+			'transaction_status'	=> 'pending'
+		);
+		
+		$this->db->insert('transaction', $transaction);
+		return $this->db->insert_id();
+	}
+	
 	public function retrieve() {}
 	public function update() {}
 	public function delete() {}

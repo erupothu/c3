@@ -150,11 +150,11 @@ class Cart_Item_Object {
 	}
 	
 	public function tax() {
-		return sprintf('%0.2f', $this->price(false) * 0.2);
+		return $this->price(false) * 0.2;
 	}
 	
-	public function total() {
-		return $this->quantity() * ($this->price() + $this->tax());
+	public function total($include_tax = true) {
+		return $this->quantity() * $this->price($include_tax);
 	}
 }
 

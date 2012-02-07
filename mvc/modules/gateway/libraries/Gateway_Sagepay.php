@@ -4,6 +4,8 @@ require_once 'Gateway.php';
 
 class Gateway_Sagepay extends INSIGHT_Gateway {
 	
+	const SAGEPAY_VPS_PROTOCOL = '2.23';
+	
 	protected $raw = array();
 	
 	protected $sage_partner;				// sage partnership id	
@@ -92,8 +94,8 @@ class Gateway_Sagepay extends INSIGHT_Gateway {
 		$this->raw = array(
 			'Currency'			   	=> 'GBP',
 			'Description'		   	=> 'Anubis Associates Ltd',
-			'SuccessURL'		   	=> site_url(array(CI::$APP->router->fetch_module(), 'process')),
-			'FailureURL'		   	=> site_url(array(CI::$APP->router->fetch_module(), 'process')),
+			'SuccessURL'		   	=> site_url(array('gateway', 'process')),
+			'FailureURL'		   	=> site_url(array('gateway', 'process')),
 			'VendorEMail'		   	=> 'jon@creativeinsight.co.uk',
 			'SendEMail'			   	=> 1,
 			'eMailMessage'		   	=> 'This is a message that is put into the emails sent',
@@ -103,7 +105,7 @@ class Gateway_Sagepay extends INSIGHT_Gateway {
 //			'BillingAgreement'	   	=> 0	// ONLY SET ON PAYPAL.
 		);
 		
-		var_dump(CI::$APP->insight->config('user/gateway'));
+		//var_dump(CI::$APP->insight->config('user/gateway'));
 		
 		
 		
@@ -207,35 +209,62 @@ class Gateway_Sagepay extends INSIGHT_Gateway {
 		// @TODO
 		// Make this configurable (the key, etc.)
 		// can't use ->LOAD!!! we're not in a CI class.
-		$this->load->model('transaction_model', 'transaction');
-		$this->raw['VendorTxCode'] = sprintf('%-.3s-%06d', 'zANUBIS', $this->transaction->unique());
+		CI::$APP->load->model('Gateway/transaction_model', 'transaction');
+		$this->transaction = &CI::$APP->transaction;
+		
+		if(!isset($this->configuration['gateway_sagepay_vendor']) || !isset($this->configuration['gateway_encryption_key'])) {
+			throw new Gateway_Exception(__CLASS__ . ' requires a valid Vendor and Encryption String to be present.');
+		}
+		
+
+		$transaction_cart	= Cart_Object::init();
+		
+		// Gateway configuration fallbacks
+		$transaction_type	= isset($this->configuration['gateway_sagepay_transaction_type']) && in_array(strtoupper($this->configuration['gateway_sagepay_transaction_type']), array('PAYMENT', 'DEFERRED', 'AUTHENTICATE')) ? strtoupper($this->configuration['gateway_sagepay_transaction_type']) : 'PAYMENT';
+		$transaction_stub 	= isset($this->configuration['gateway_order_stub']) ? $this->configuration['gateway_order_stub'] : strtoupper(substr($host = parse_url(site_url(), PHP_URL_HOST), 0, strpos($host, '.')));		
+		$transaction_format	= isset($this->configuration['gateway_order_format']) ? $this->configuration['gateway_order_format'] : '%-.3s-%06d';
+		$transaction_code	= sprintf($transaction_format, $transaction_stub, $this->transaction->unique());
+		$transaction_vendor	= $this->configuration['gateway_sagepay_vendor'];
+
 		
 		
-		// build...
-		$crypt = $this->build();
+		$order_time = new DateTime;
+		$order = array(
+			'order_user_id'				=> CI::$APP->user->id(),
+			'order_delivery_name'		=> trim(sprintf('%s %s', $this->raw['DeliveryFirstnames'], $this->raw['DeliverySurname'])),
+			'order_delivery_address1'	=> $this->raw['DeliveryAddress1'],
+			'order_delivery_address2'	=> $this->raw['DeliveryAddress2'],
+			'order_delivery_city'		=> $this->raw['DeliveryCity'],
+			'order_delivery_state'		=> $this->raw['DeliveryState'],
+			'order_delivery_postcode'	=> $this->raw['DeliveryPostCode'],
+			'order_delivery_country'	=> $this->raw['DeliveryCountry'],
+			'order_net'					=> $transaction_cart->total(false),
+			'order_tax'					=> $transaction_cart->tax(),
+			'order_total'				=> $transaction_cart->total(),
+			'order_status'				=> 'processing',
+			'order_date_created'		=> $order_time->format('Y-m-d H:i:s')
+		);
 		
-		?>
+		$order_id = CI::$APP->db->insert('order', $order);
 		
-		<form action="<?php echo $this->get_endpoint(); ?>" method="post" id="gateway" name="gateway"> 
-			<input type="hidden" name="navigate" value="">
-			<input type="hidden" name="VPSProtocol" value="2.23">
-			<input type="hidden" name="TxType" value="PAYMENT">
-			<input type="hidden" name="Vendor" value="<?php echo $this->sage_vendor_name; ?>">
-			<input type="hidden" name="Crypt" value="<?php echo $crypt; ?>">
-			<label for="gateway_submit">Click this button if your browser fails to redirect you</label>
-			<input type="submit" id="gateway_submit" name="gateway_submit" value="Proceed">
-		</form>
 		
-		<script>
-		document.getElementById('gateway').submit();
-		</script>
+		// Earmark transaction.
+		$transaction_id = $this->transaction->create($order_id, $transaction_code);
 		
-		<?php
+		// Append TxCode.
+		$this->raw['VendorTxCode'] = $transaction_code;
 		
-		/*
 		
-		*/
+		// Output form.
+		$output = Modules::run('gateway/output', 'chunks/sagepay.form.chunk.php', array(
+			'transaction_endpoint'	=> $this->get_endpoint(),
+			'transaction_payload'	=> $this->build(),
+			'transaction_type'		=> $transaction_type,
+			'transaction_vendor'	=> $transaction_vendor,
+			'auto_submit'			=> true
+		));
 		
+		return CI::$APP->output->set_output($output);
 	}
 	
 	

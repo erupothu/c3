@@ -69,7 +69,7 @@ class Insight {
 				
 				if($module_folder->isDot() || !$module_folder->isDir())
 					continue;
-
+				
 				// Is this an administrable module?  Does it have an admin controller?
 				if(file_exists($module_folder->getPathname() . DIRECTORY_SEPARATOR . 'controllers/admin' . EXT)) {
 					$modules[$module_folder->getBasename()] = ucfirst($module_folder->getBasename());

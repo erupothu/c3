@@ -18,7 +18,7 @@
 							<?php if(property_exists(CI::$APP, 'administrator') && CI::$APP->router->fetch_module() == 'page'): ?>
 							<li class="first-child edit-child" style="padding-right: 6px;"><?php echo anchor($page->link(Page_Object::LINK_ADMIN_UPDATE), 'Edit Page'); ?></li>
 							<?php endif; ?>
-							<li class="first-child last-child"><a href="/legal/copyright">Anubis Associates Ltd. <?php echo date('Y'); ?> &copy;</a></li>
+							<li class="first-child last-child"><a href="/legal/copyright">Anubis Associates Ltd <?php echo date('Y'); ?> &copy;</a></li>
 						</ul>
 						
 					</li>

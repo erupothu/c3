@@ -110,7 +110,7 @@ class Address_Object {
 	
 	// @TODO
 	public function phone() {
-		return '01213212828';
+		return '';
 	}
 	
 	public function __toString() {

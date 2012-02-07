@@ -37,6 +37,8 @@ class Gateway extends INSIGHT_HMVC_Controller {
 		if($transaction->transaction_status !== 'pending') {
 			
 			var_dump($transaction);
+			var_dump($data);
+			
 			die('Transaction has been set as: ' . $transaction->transaction_status . '!  Cannot proceed');
 		}
 		
@@ -94,7 +96,7 @@ class Gateway extends INSIGHT_HMVC_Controller {
 		
 		
 		
-		
+		// Move to transaction model.
 		$this->db->update('transaction', array(
 			'transaction_status' 			=> $data['Status'] == 'OK' ? 'success' : 'failure',
 			'transaction_amount'			=> $data['Amount'],
@@ -102,92 +104,27 @@ class Gateway extends INSIGHT_HMVC_Controller {
 			'transaction_match_address'		=> $data['AddressResult'],
 			'transaction_match_postcode'	=> $data['PostCodeResult'],
 			'transaction_3dsecure_status'	=> $data['3DSecureStatus'],
-			'transaction_3dsecure_cavv'		=> $data['CAVV'],
+			'transaction_3dsecure_cavv'		=> isset($data['CAVV']) ? $data['CAVV'] : null,
 			'transaction_card_type'			=> $data['CardType'],
 			'transaction_card_ending'		=> $data['Last4Digits'],
 			'transaction_gateway_status'	=> $data['Status'],
 			'transaction_gateway_details'	=> $data['StatusDetail']
 		), array('transaction_id' => $transaction->transaction_id));
 		
-
-		//redirect('account/order/' . $order_id);
-		//var_dump($data);
 		
 		// Forward.
-		die('Done');
+		redirect('cart');
 	}
 	
 	
-	
-	
-	/*
-	public function success() {
-		
-		$crypt = $this->input->get('crypt');
-		$data = $this->gateway->tokenize($crypt, true);
-		
-		echo '<pre>';
-		print_r($data);
-		
-		echo sha1($crypt);
-		echo '</pre>';
-	
-		// find the transaction
-		$this->db->select('*');
-		$this->db->from('transaction t');
-		$this->db->where('t.transaction_code', $data['VendorTxCode']);
-		$transaction_result = $this->db->get();
-		
-		$transaction = $transaction_result->row();
-		var_dump($transaction_result->row());
-		
-		//
-		$this->db->update('transaction', array(
-			'transaction_amount'			=> $data['Amount'],
-			'transaction_match_cv2'			=> $data['CV2Result'],
-			'transaction_match_address'		=> $data['AddressResult'],
-			'transaction_match_postcode'	=> $data['PostCodeResult'],
-			'transaction_3dsecure_status'	=> $data['3DSecureStatus'],
-			'transaction_3dsecure_cavv'		=> $data['CAVV'],
-			'transaction_card_type'			=> $data['CardType'],
-			'transaction_card_ending'		=> $data['Last4Digits'],
-			'transaction_status' 			=> 'success',
-			'transaction_details'			=> $data['StatusDetail']
-		), array('transaction_id' => $transaction->transaction_id));
-		
-	
+	/**
+	 * output
+	 *
+	 * @param string $view 
+	 * @param string $data 
+	 * @return void
+	 */
+	public function output($view, $data = array()) {
+		$this->load->view($view, $data);
 	}
-
-	public function failure() {
-		
-		$crypt = $this->input->get('crypt');
-		$data = $this->gateway->tokenize($crypt, true);
-		
-		var_dump($data);
-		
-		// find the transaction
-		$this->db->select('*');
-		$this->db->from('transaction t');
-		$this->db->where('t.transaction_code', $data['VendorTxCode']);
-		$transaction_result = $this->db->get();
-		
-		$transaction = $transaction_result->row();
-		var_dump($transaction_result->row());
-		
-		//
-		$this->db->update('transaction', array(
-			'transaction_amount'			=> $data['Amount'],
-			'transaction_match_cv2'			=> $data['CV2Result'],
-			'transaction_match_address'		=> $data['AddressResult'],
-			'transaction_match_postcode'	=> $data['PostCodeResult'],
-			'transaction_3dsecure_status'	=> $data['3DSecureStatus'],
-			'transaction_3dsecure_cavv'		=> $data['CAVV'],
-			'transaction_card_type'			=> $data['CardType'],
-			'transaction_card_ending'		=> $data['Last4Digits'],
-			'transaction_status' 			=> 'failure',
-			'transaction_details'			=> $data['StatusDetail']
-		), array('transaction_id' => $transaction->transaction_id));
-
-	}
-	*/
 }
