@@ -43,6 +43,8 @@ class Account extends INSIGHT_HMVC_Controller {
 	
 	
 
+	
+
 	public function recover($hash = null) {
 		
 		if(!is_null($hash)) {

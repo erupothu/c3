@@ -124,6 +124,25 @@ class Account_Model extends CI_Model {
 	public function format_clean_name($name_string = '') {
 		return preg_replace_callback('/(^|\'|\s|\-)[a-z]/', function($part) { return strtoupper($part[0]); }, $name_string);
 	}
+	
+	
+	public function export() {
+
+		$this->db->select('user_firstname as "First Name"');
+		$this->db->select('user_lastname as "Last Name"');		
+		$this->db->select('user_email as "Email Address"');
+		$this->db->select('user_company as "Company Name"');
+		$this->db->select('user_telephone as "Telephone"');
+		$this->db->select('IF(user_marketing = 1, "Yes", "No") as "Opt-In Marketing"', false);
+		$this->db->select('DATE_FORMAT(user_date_created, "%d/%m/%Y %H:%i") as "Date Registered"', false);
+		$this->db->select('DATE_FORMAT(user_date_lastseen, "%d/%m/%Y %H:%i") as "Date Last Seen"', false);
+		$this->db->from('user');
+		$this->db->order_by('user_date_created desc');
+		$account_rresult = $this->db->get();
+		
+		$this->load->dbutil();
+		return $this->dbutil->csv_from_result($account_rresult);
+	}
 }
 
 class Account_Object {

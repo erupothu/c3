@@ -2,6 +2,44 @@
 
 		<h2>Orders</h2>
 		
-		<pre><?php print_r($order); ?></pre>
+		<div class="clearfix">
+		<pre style="float: left;"><?php print_r($order); ?></pre>
+		
+		<div style="float: right; width: 305px;">
+			
+			<h3 style="padding: 0 0 0.5em 0.25em">Delivery Address</h3>
+			<div style="width: 265px; background: #fff url(/skins/core/images/test.png) repeat-x top left; box-shadow: 1px 3px 5px #cecece; margin-bottom: 2.5em; border: solid 4px #fff;">
+			
+				<div style="padding: 22px 12px 8px; line-height: 1.5em;">
+					<?php echo $order->delivery_address(); ?>
+				</div>
+			
+			</div>
+			
+			<form method="post" action="<?php echo $this->uri->uri_string(); ?>">
+				<fieldset>
+					
+					<div class="row">
+						<label for="order_status">Order Status</label>
+						<span><select name="order_status" id="order_status">
+							<option>Processing</option>
+							<option>Completed</option>
+						</select></span>
+					</div>
+					
+					<div class="row">
+						<label for="order_tracking_code">Tracking Code</label>
+						<span><input type="text" name="order_tracking_code" id="order_tracking_code" value="JD0002298912327410"></span>
+					</div>
+					
+					<div class="button-row">
+						<input type="submit" value="Update">
+					</div>
+
+				</fieldset>
+			</form>
+			
+		</div>
+		
 		
 <?php $this->load->view('admin/common/footer.include.php'); ?>

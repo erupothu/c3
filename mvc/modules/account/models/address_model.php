@@ -67,6 +67,35 @@ class Address_Model extends CI_Model {
 
 class Address_Object {
 	
+	static public function create($data, $key = 'address') {
+		
+		if(is_object($data)) {
+			$data = get_object_vars($data);
+		}
+		
+		$address = new self;
+		foreach(array('name', 'line1', 'line2', 'city', 'state', 'postcode', 'country', 'phone', 'address1', 'address2') as $field) {
+			
+			$element = $key . '_' . $field;
+			
+			// Some tables may have special names.
+			if(in_array($field, array('address1', 'address2'))) {
+				$remapped = 'address_line' . substr($field, -1);
+			}
+			else {
+				$remapped = 'address_' . $field;	
+			}
+			
+			$address->$remapped = isset($data[$element]) ? $data[$element] : null;
+
+		}
+		
+		if(count(get_object_vars($address)) == 0)
+			die('bad data');
+			
+		return $address;		
+	}
+	
 	public function id() {
 		return (int)$this->address_id;
 	}
@@ -100,8 +129,10 @@ class Address_Object {
 	}
 	
 	public function country($iso_code = true) {
-		
+
+		CI::$APP->load->config('countries', true);
 		$configuration = CI::$APP->config->item('countries');
+
 		if(!$iso_code && isset($configuration['alpha-' . strlen($this->address_country)]['countries'][$this->address_country]))
 			return $configuration['alpha-' . strlen($this->address_country)]['countries'][$this->address_country];
 		
@@ -115,7 +146,7 @@ class Address_Object {
 	
 	public function __toString() {
 
-		$parts = array($this->line1(), $this->line2(), $this->city(), $this->state(), $this->postcode(), $this->country(false));
+		$parts = array(sprintf('<span class="address_name">%s</span>', $this->name()), $this->line1(), $this->line2(), $this->city(), $this->state(), $this->postcode(), $this->country(false));
 		$address = implode('<br />', array_filter($parts, function($part) { return !empty($part); }));
 
 		return $address;

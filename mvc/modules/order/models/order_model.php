@@ -48,6 +48,9 @@ class Order_Model extends CI_Model {
 	}
 }
 
+// temp
+require_once APPPATH . 'modules/account/models/address_model.php';
+
 class Order_Object {
 	
 	public function id() {
@@ -84,4 +87,14 @@ class Order_Object {
 		$date = DateTime::createFromFormat(DATE_MYSQL, $this->order_date_created);
 		return $date->format('d/m/Y');
 	}
+	
+	
+	public function delivery_address() {
+		
+		if(!isset($this->order_delivery_address)) {
+			return Address_Object::create($this, 'order_delivery');
+		}
+		
+	}
+	
 }

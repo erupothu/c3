@@ -245,8 +245,8 @@ class Gateway_Sagepay extends INSIGHT_Gateway {
 			'order_date_created'		=> $order_time->format('Y-m-d H:i:s')
 		);
 		
-		$order_id = CI::$APP->db->insert('order', $order);
-		
+		CI::$APP->db->insert('order', $order);
+		$order_id = CI::$APP->db->insert_id();		
 		
 		// Earmark transaction.
 		$transaction_id = $this->transaction->create($order_id, $transaction_code);

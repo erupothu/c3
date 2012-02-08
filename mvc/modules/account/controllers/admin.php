@@ -21,4 +21,9 @@ class Admin extends INSIGHT_Admin_Controller {
 			'account' => $this->account->retrieve_by_id($account_id)
 		));
 	}
+	
+	public function export() {
+		$this->load->helper('download');
+		force_download(sprintf('%s-accounts.csv', strtolower($this->insight->config('display/title'))), $this->account->export());
+	}
 }

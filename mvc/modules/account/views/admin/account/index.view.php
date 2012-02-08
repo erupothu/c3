@@ -41,7 +41,7 @@
 		</table>
 		
 		<ul class="admin-options">
-			<li><?php echo anchor('admin/page/create', 'New Page', array('class' => 'button')); ?></li>
+			<li><?php echo anchor('admin/account/export', 'CSV Export', array('class' => 'button')); ?></li>
 		</ul>
 
 <?php $this->load->view('admin/common/footer.include.php'); ?>
