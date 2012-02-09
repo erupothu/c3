@@ -153,6 +153,10 @@
 					
 					<h2>&quot;<span>Exceeding Expectations</span>&quot;</h2>
 					
+					<span class="date">
+						<?php echo sprintf('%s %s %s', strtoupper(date('l')), date('jS'), strtoupper(date('F'))); ?>
+					</span>
+					
 					<div class="menu-center constrain">
 						
 						<ul id="secondary">

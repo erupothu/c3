@@ -21,7 +21,7 @@ $config = array(
 		)
 	),
 	
-	'cart-checkout-guest' => array(
+	'cart-checkout' => array(
 		
 		array(
 			'field'	=> 'checkout_name',

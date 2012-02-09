@@ -85,6 +85,11 @@ $config = array(
 			'rules'	=> ''
 		),
 		array(
+			'field'	=> 'address_name',
+			'label'	=> 'Name',
+			'rules'	=> ''
+		),
+		array(
 			'field'	=> 'address_line1',
 			'label'	=> 'Line 1',
 			'rules'	=> 'required'

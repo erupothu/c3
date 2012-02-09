@@ -44,6 +44,13 @@ html, body {
 	height: 100%;
 }
 
+#container > header .date {
+	color: #E7551E;
+	position: absolute;
+	right: 0;
+	bottom: 44px;
+}
+
 #container > header {
 	background: url(../../assets/images/header.background.png) repeat-x top left;
 	height: 182px;

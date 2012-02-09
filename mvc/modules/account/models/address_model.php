@@ -27,6 +27,25 @@ class Address_Model extends CI_Model {
 		return $this->db->insert_id();
 	}
 	
+	public function create_from_object(Address_Object $address, $user_id) {
+		
+		$address_date = new DateTime;
+		$address_item = array(
+			'address_user_id'		=> $user_id,
+			'address_label'			=> $address->label(),
+			'address_name'			=> $address->name(),
+			'address_line1'			=> $address->line1(),
+			'address_line2'			=> $address->line2(),
+			'address_city'			=> $address->city(),
+			'address_state'			=> $address->state(),
+			'address_postcode'		=> $address->postcode(),
+			'address_country'		=> $address->country(true),
+			'address_date_created'	=> $address_date->format('Y-m-d H:i:s')
+		);
+		
+		$this->db->insert('address', $address_item);
+		return $this->db->insert_id();
+	}
 	
 	public function retrieve($user_id = null) {
 		
@@ -43,7 +62,6 @@ class Address_Model extends CI_Model {
 	public function update() {
 		
 	}
-	
 	
 	public function delete($address_id) {
 		
@@ -79,20 +97,19 @@ class Address_Object {
 			$element = $key . '_' . $field;
 			
 			// Some tables may have special names.
-			if(in_array($field, array('address1', 'address2'))) {
+			if(in_array($field, array('address1', 'address2')) && array_key_exists($element, $data)) {
 				$remapped = 'address_line' . substr($field, -1);
 			}
 			else {
 				$remapped = 'address_' . $field;	
 			}
-			
-			$address->$remapped = isset($data[$element]) ? $data[$element] : null;
 
+			$address->$remapped = isset($data[$element]) ? $data[$element] : null;
 		}
 		
 		if(count(get_object_vars($address)) == 0)
 			die('bad data');
-			
+		
 		return $address;		
 	}
 	

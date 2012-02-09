@@ -8,7 +8,7 @@ class Order_Model extends CI_Model {
 	
 	public function create() {}
 	
-	public function retrieve() {
+	public function retrieve($with_items = false) {
 		
 		$this->db->select('o.*');
 		$this->db->select('u.*');
@@ -20,7 +20,15 @@ class Order_Model extends CI_Model {
 		$this->db->group_by('o.order_id');
 		$order_result = $this->db->get();
 		
-		return $order_result->result('Order_Object');
+		$order = $order_result->result('Order_Object');
+		
+		//if(!$with_items) {
+			return $order;
+		//}
+		
+		// Append Items.
+		//$this->load->item('product/product_model', 'product');
+		//$this->product->satan();
 	}
 	
 	
@@ -32,7 +40,7 @@ class Order_Model extends CI_Model {
 	public function delete() {}
 
 
-	public function retrieve_by_id($order_id) {
+	public function retrieve_by_id($order_id, $with_items = true) {
 		
 		$this->db->select('o.*');
 		$this->db->select('u.*');
@@ -43,8 +51,18 @@ class Order_Model extends CI_Model {
 		$this->db->where('o.order_id', $order_id);
 		$order_result = $this->db->get();
 		
-		return $order_result->row(0, 'Order_Object');
+		$order = $order_result->row(0, 'Order_Object');
 		
+		if(!$with_items) {
+			return $order;
+		}
+		
+		// Append Items.
+		$this->load->model('product/product_model', 'product');
+		$items = $this->product->test(array(1,2,3,4,5,6,7,8,9,10));
+		
+		$order->set_items($items);
+		return $order;
 	}
 }
 
@@ -52,6 +70,8 @@ class Order_Model extends CI_Model {
 require_once APPPATH . 'modules/account/models/address_model.php';
 
 class Order_Object {
+	
+	private $order_items = array();
 	
 	public function id() {
 		return $this->order_id;
@@ -62,7 +82,11 @@ class Order_Object {
 		return $this->transaction_code;
 	}
 	
-	public function name() {
+	public function customer_type() {
+		return $this->order_user_id == 0 ? 'Guest' : 'Registered';
+	}
+	
+	public function customer_name() {
 		return isset($this->user_firstname) ? trim(sprintf('%s %s', $this->user_firstname, $this->user_lastname)) : $this->order_delivery_name;		
 	}
 	
@@ -88,13 +112,18 @@ class Order_Object {
 		return $date->format('d/m/Y');
 	}
 	
+	public function items() {
+		return $this->order_items;
+	}
+	
+	public function set_items($items) {
+		$this->order_items = $items;
+	}
 	
 	public function delivery_address() {
 		
 		if(!isset($this->order_delivery_address)) {
 			return Address_Object::create($this, 'order_delivery');
 		}
-		
 	}
-	
 }

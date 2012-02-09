@@ -265,6 +265,17 @@ class INSIGHT_Form_Validation extends CI_Form_Validation {
 		return !isset($this->_config_rules[$group]) ? false : $this->_config_rules[$group];
 	}
 	
+	
+	public function add_rules($group, $additional_rules, $overwrite = false) {
+		
+		if($overwrite || !isset($this->_config_rules[$group])) {
+			return $this->_config_rules[$group] = $additional_returns;
+		}
+		
+		return $this->_config_rules[$group] = array_merge($this->_config_rules[$group], $additional_rules);
+	}
+	
+	
 	public function checkbox_bit(&$checkbox_value, $checkbox_field) {
 		return is_null($checkbox_value) ? 0 : 1;
 	}

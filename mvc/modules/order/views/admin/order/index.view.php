@@ -16,7 +16,7 @@
 			<thead>
 				<tr>
 					<th>ID</th>
-					<th>&mdash;</th>
+					<th>Type</th>
 					<th>Transaction Code</th>
 					<th>Customer</th>
 					<th>Net</th>
@@ -31,9 +31,9 @@
 				<?php foreach($orders as $order): ?>
 				<tr>
 					<td class="center"><?php echo $order->id(); ?></td>
-					<td>.</td>
+					<td><?php echo $order->customer_type(); ?></td>
 					<td><?php echo $order->code(); ?></td>
-					<td><?php echo $order->name(); ?></td>
+					<td><?php echo $order->customer_name(); ?></td>
 					<td class="right"><?php echo $order->net(); ?></td>
 					<td class="right"><?php echo $order->tax(); ?></td>
 					<td class="right"><?php echo $order->total(); ?></td>

@@ -257,17 +257,116 @@ class Cart extends INSIGHT_HMVC_Controller {
 			return redirect('cart');
 		}
 		
+		// Account Holder Checkout
+		if($this->user->authenticated()) {
+			
+			
+		}
+		// Guest Checkout
+		else {
+			
+			// Do we allow guest checkouts?
+			if(!$this->insight->config('user/cart/cart_guest_checkout')) {
+				$this->session->set_flashdata('core/message', 'You must log-in to check out.');
+				return redirect('account/log-in');
+			}
+			
+		}
+		
+		
+		
 		// Load Gateway.
 		$gateway_class = sprintf('%2$sGateway_%1$s', ucfirst(CI::$APP->insight->config('user/gateway/gateway_class')), $this->router->fetch_module() == 'gateway' ? '' : 'gateway/');
 		$this->load->library($gateway_class, CI::$APP->insight->config('user/gateway'), 'gateway');
 		
-		//var_dump($this->user);
-		//var_dump($this->input->post());
+		
+		
+		
+		$this->load->model('account/address_model', 'address');
+		
+		// Do we need to validate additional addresses?
+		$address_keys = array();
+		
+		if(false !== $this->input->post('address_keys')) {
+			
+			$address_config = array();
+			$account_config = $this->load->config('account/form_validation', true, false);
+			
+			// Loop over each detected address and add additional rules.
+			foreach($address_keys = preg_replace('/_$/', '', $this->input->post('address_keys')) as $address_key) {
 
+				foreach($account_config['account-address-form'] as $i => $item) {
+
+					$address_config[] = array(
+						'field'	=> $address_key . '_' . $item['field'],
+						'label'	=> ucfirst($address_key) . ' ' . $item['label'],
+						'rules'	=> $item['rules']
+					);
+				}
+			}
+			
+			// Append the newly created rules.
+			$this->form_validation->add_rules('cart-checkout', $address_config);
+		}
+		
+		
+		
+		
+		
+		if($this->form_validation->run('cart-checkout')) {
+			
+			
+			
+			if($this->user->authenticated()) {
+				
+				die('time to test auth');
+				// If we have additional addresses, save these against the account.
+				
+				// Load the addresses.
+				$billing_address = $this->address->retrieve_by_id($billing_address_id);
+				$delivery_address = $this->address->retrieve_by_id($delivery_address_id);
+
+				// gateway set delivery address
+				$this->gateway->set_delivery($delivery_address);
+
+				// gateway set billing address
+				$this->gateway->set_billing($billing_address);
+			}
+			// Guest Checkout
+			else {
+				
+				// Set customer details.
+				$this->gateway->set_detail('CustomerName', $this->form_validation->value('checkout_name'));
+				$this->gateway->set_detail('CustomerEMail', $this->form_validation->value('checkout_email'));
+				
+				$addresses = array();
+				foreach($address_keys as $address_key) {
+					$addresses[$address_key] = Address_Object::create($this->form_validation->all_values(), $address_key . '_address');
+				}
+				
+				$billing_address = Address_Object::create($this->form_validation->all_values(), 'billing_address');
+				$delivery_address = Address_Object::create($this->form_validation->all_values(), 'delivery_address');
+				
+				
+				// gateway set delivery address
+				$this->gateway->set_delivery($delivery_address);
+
+				// gateway set billing address
+				$this->gateway->set_billing($billing_address);
+			}
+			
+
+			// gateway set basket & amount
+			$this->gateway->set_cart();			
+			
+			// gateway process?
+			return $this->gateway->dispatch();
+		}
+		
 		$delivery_address_id = $this->input->post('delivery_address_id');
 		$billing_address_id	= $this->input->post('billing_address_id');
 		
-		$this->load->model('account/address_model', 'address');
+		
 		
 		if(false !== $delivery_address_id) {
 			

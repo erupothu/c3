@@ -2,12 +2,20 @@
 
 		<h2>Checkout</h2>
 		
-		
-		
-		
-		
+		<?php if(false !== $this->session->flashdata('core/message', false)): ?>
+		<div class="flash-message">
+			<?php echo $this->session->flashdata('core/message'); ?>
+			<a class="icon-close" href="javascript:;">x</a>
+		</div>
+		<?php endif; ?>
 		
 		<form method="post" action="<?php echo $this->uri->uri_string(); ?>">
+			
+			<?php if($this->form_validation->has_errors()): ?>
+			<div class="row form-errors">
+				<?php echo $this->form_validation->errors(); ?>
+			</div>
+			<?php endif; ?>
 			
 			<?php if($this->user->authenticated()): ?>
 			
@@ -33,85 +41,29 @@
 			
 			<fieldset>
 				
-				<div class="row">
-					<label for="">Name</label>
-					<span><input type="text" name="" id="" value=""></span>
+				<div class="row<?php echo $this->form_validation->earmark('checkout_name'); ?>">
+					<label for="checkout_name">Name</label>
+					<span><input type="text" name="checkout_name" id="checkout_name" value="<?php echo $this->form_validation->value('checkout_name'); ?>"></span>
 				</div>
 			
-				<div class="row">
-					<label for="">Email</label>
-					<span><input type="text" name="" id="" value=""></span>
+				<div class="row<?php echo $this->form_validation->earmark('checkout_email'); ?>">
+					<label for="checkout_email">Email</label>
+					<span><input type="text" name="checkout_email" id="checkout_email" value="<?php echo $this->form_validation->value('checkout_email'); ?>"></span>
 				</div>
 				
+			</fieldset>
+			
+			<fieldset class="addresses">
+				<?php echo Modules::run('account/address/render', 'delivery', 'Delivery Address'); ?>
+				<?php echo Modules::run('account/address/render', 'billing', 'Billing Address'); ?>
 			</fieldset>
 			
 			<?php endif; ?>
 			
-			
-			
-			<fieldset>
-				
-				<div class="panel delivery-address">
-					
-					<h3>Delivery Address</h3>
-					
-					<div class="row">
-						<label for="">Name</label>
-						<span><input type="text" name="" id="" value=""></span>
-					</div>
-					
-					<div class="row">
-						<label for="">Address</label>
-						<span><input type="text" name="" id="" value=""></span>
-					</div>
-				
-					<div class="row">
-						<label for="">Address 2</label>
-						<span><input type="text" name="" id="" value=""></span>
-					</div>
-				
-					<div class="row">
-						<label for="">Town/City</label>
-						<span><input type="text" name="" id="" value=""></span>
-					</div>
-				
-					<div class="row">
-						<label for="">State/County</label>
-						<span><input type="text" name="" id="" value=""></span>
-					</div>
-				
-					<div class="row">
-						<label for="">ZIP/Postcode</label>
-						<span><input type="text" name="" id="" value=""></span>
-					</div>
-				
-					<div class="row required<?php echo $this->form_validation->earmark('account_country'); ?>">
-						<label for="account_country">Country</label>
-						<span><select name="account_country" id="account_country" style="width: 208px;">
-							<option value="">Select Country</option>
-							<?php $countries = $this->config->item('alpha-2', 'countries'); if(isset($countries['important']) && count($countries['important']) > 0): ?>
-							<option value="">----------------</option>
-							<?php foreach($countries['important'] as $iso_code): ?>
-							<option value="<?php echo $iso_code; ?>"<?php echo $this->form_validation->selected('account_country', $iso_code); ?>><?php echo htmlentities($countries['countries'][$iso_code], ENT_COMPAT, 'UTF-8', false); ?></option>
-							<?php endforeach; endif; ?>
-							<option value="">----------------</option>
-							<?php foreach($countries['countries'] as $iso_code => $iso_title): ?>
-							<option value="<?php echo $iso_code; ?>"<?php echo $this->form_validation->selected('account_country', $iso_code); ?>><?php echo htmlentities($iso_title, ENT_COMPAT, 'UTF-8', false); ?></option>
-							<?php endforeach; ?>
-						</select></span>
-					</div>
-				
-				</div>
-				
-			</fieldset>
-			
-			
-			<div>
-				<input type="submit" class="button" value="Checkout!">
+			<div class="buttons row">
+				<input type="submit" class="button" value="Checkout">
 			</div>
 			
 		</form>
-		
-		
-		
+	
 <?php $this->load->view('common/footer.include.php'); ?>

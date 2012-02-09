@@ -2,6 +2,13 @@
 
 	<h2>Login to Anubis</h2>
 
+	<?php if(false !== $this->session->flashdata('core/message', false)): ?>
+	<div class="flash-message">
+		<?php echo $this->session->flashdata('core/message'); ?>
+		<a class="icon-close" href="javascript:;">x</a>
+	</div>
+	<?php endif; ?>
+
 	<form method="post" action="<?php echo $this->uri->uri_string(); ?>">
 		
 		<?php if($this->form_validation->has_errors()): ?>

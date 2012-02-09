@@ -129,6 +129,15 @@ class Gateway_Sagepay extends INSIGHT_Gateway {
 	}
 	
 	
+	public function set_detail($key, $value, $silent = true) {
+		
+		if(isset($this->raw[$key]) && !$silent) {
+			throw new GatewayException('Value for "' . $key . '" has already been set. Cannot overwrite.');
+		}
+		
+		return $this->raw[$key] = $value;
+	}
+	
 	protected function set_address($key, $address) {
 		
 		if($address instanceof Address_Object) {
