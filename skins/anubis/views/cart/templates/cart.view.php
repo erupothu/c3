@@ -31,6 +31,7 @@
 						<th>Total</th>
 					</tr>
 				</thead>
+				<?php if($this->cart->size() > 0): ?>
 				<tfoot>
 					<tr class="sub-total">
 						<td colspan="5">Sub-Total</td>
@@ -45,6 +46,7 @@
 						<td class="total money"><?php echo $this->cart->total(); ?></td>
 					</tr>
 				</tfoot>
+				<?php endif; ?>
 				<tbody>
 					<?php foreach($this->cart->contents() as $item): ?>
 					<tr>
