@@ -48,49 +48,6 @@ class Gateway_Sagepay extends INSIGHT_Gateway {
 		$this->sage_vendor_name 		= 'technical9';
 		$this->sage_encryption_string 	= 'g9hVBEtzkPa2wHp0';
 		
-		// temp data array.
-		$this->test_data = array(
-			'VendorTxCode'			=> '',
-			'Amount'				=> '199.99',
-			'Currency'				=> 'GBP',
-			'Description'			=> 'Anubis Ltd',
-			'SuccessURL'			=> site_url(array(CI::$APP->router->fetch_module(), 'process')),
-			'FailureURL'			=> site_url(array(CI::$APP->router->fetch_module(), 'process')),
-			'CustomerName'			=> 'John Doe',
-			'CustomerEMail'			=> 'jon@creativeinsight.co.uk',
-			'VendorEMail'			=> 'jon@creativeinsight.co.uk',
-			'SendEMail'				=> 1,
-			'eMailMessage'			=> 'This is a message that is put into the emails sent',
-			
-			'BillingSurname'		=> 'Doe',
-			'BillingFirstnames'		=> 'John',
-			'BillingAddress1'		=> '31 Coleshill Street',
-			'BillingAddress2'		=> 'Sutton Coldfield',
-			'BillingCity'			=> 'Birmingham',
-			'BillingPostCode'		=> 'B72 1SD',
-			'BillingState'			=> null,
-			'BillingCountry'		=> 'GB',
-			'BillingPhone'			=> '01213212828',
-			
-			'DeliverySurname'		=> 'Doe',
-			'DeliveryFirstnames'	=> 'John',
-			'DeliveryAddress1'		=> '31 Coleshill Street',
-			'DeliveryAddress2'		=> 'Sutton Coldfield',
-			'DeliveryCity'			=> 'Birmingham',
-			'DeliveryPostCode'		=> 'B72 1SD',
-			'DeliveryState'			=> null,
-			'DeliveryCountry'		=> 'GB',
-			'DeliveryPhone'			=> '01213212828',
-			
-			'Basket'				=> '4:Pioneer NSDV99 DVD-Surround Sound System:1:424.68:74.32:499.00:499.00:Donnie Darko Directors Cut:3:11.91:2.08:13.99:41.97:Finding Nemo:2:11.05:1.94:12.99:25.98:Delivery:---:---:---:---:4.9',
-			'AllowGiftAid'			=> 0,
-			'ApplyAVSCV2'			=> 0,
-			'Apply3DSecure'			=> 0,
-//			'BillingAgreement'		=> 0	// ONLY SET ON PAYPAL.
-		);
-		
-		
-		
 		$this->raw = array(
 			'Currency'			   	=> 'GBP',
 			'Description'		   	=> 'Anubis Associates Ltd',
@@ -101,21 +58,26 @@ class Gateway_Sagepay extends INSIGHT_Gateway {
 			'eMailMessage'		   	=> 'This is a message that is put into the emails sent',
 			'AllowGiftAid'		   	=> 0,
 			'ApplyAVSCV2'		   	=> 0,
-			'Apply3DSecure'		   	=> 0,
-//			'BillingAgreement'	   	=> 0	// ONLY SET ON PAYPAL.
+			'Apply3DSecure'		   	=> 0
 		);
-		
-		//var_dump(CI::$APP->insight->config('user/gateway'));
-		
-		
-		
-		
+
 		// temp
 		$this->db = &CI::$APP->db;
 	}
 	
+	
 	public function raw() {
 		return $this->raw;
+	}
+
+	
+	public function hash() {
+		
+		// Strip out billing, delivery & customer details
+		// this is because these can be changed on the SAME order.
+		// we have to strip out the VendorTxCode since this changes on a transaction basis.
+		$hash = array_intersect_key($this->raw, array_flip(array_filter(array_keys($this->raw), function($k) { return !preg_match('/^(delivery|billing|customer|vendortxcode)/i', $k); })));
+		return md5(CI::$APP->input->ip_address() . '[' . CI::$APP->user->id() . ']' . implode('', $hash));
 	}
 	
 	
@@ -234,34 +196,66 @@ class Gateway_Sagepay extends INSIGHT_Gateway {
 		$transaction_format	= isset($this->configuration['gateway_order_format']) ? $this->configuration['gateway_order_format'] : '%-.3s-%06d';
 		$transaction_code	= sprintf($transaction_format, $transaction_stub, $this->transaction->unique());
 		$transaction_vendor	= $this->configuration['gateway_sagepay_vendor'];
-
 		
 		
-		$order_time = new DateTime;
-		$order = array(
-			'order_user_id'				=> CI::$APP->user->id(),
-			'order_delivery_name'		=> trim(sprintf('%s %s', $this->raw['DeliveryFirstnames'], $this->raw['DeliverySurname'])),
-			'order_delivery_address1'	=> $this->raw['DeliveryAddress1'],
-			'order_delivery_address2'	=> $this->raw['DeliveryAddress2'],
-			'order_delivery_city'		=> $this->raw['DeliveryCity'],
-			'order_delivery_state'		=> $this->raw['DeliveryState'],
-			'order_delivery_postcode'	=> $this->raw['DeliveryPostCode'],
-			'order_delivery_country'	=> $this->raw['DeliveryCountry'],
-			'order_net'					=> $transaction_cart->total(false),
-			'order_tax'					=> $transaction_cart->tax(),
-			'order_total'				=> $transaction_cart->total(),
-			'order_status'				=> 'processing',
-			'order_date_created'		=> $order_time->format('Y-m-d H:i:s')
-		);
-		
-		CI::$APP->db->insert('order', $order);
-		$order_id = CI::$APP->db->insert_id();		
-		
-		// Earmark transaction.
-		$transaction_id = $this->transaction->create($order_id, $transaction_code);
 		
 		// Append TxCode.
-		$this->raw['VendorTxCode'] = $transaction_code;
+		$this->set_detail('VendorTxCode', $transaction_code, false);		
+		
+		// Create Order (if it doesn't exist).
+		CI::$APP->db->select('order_id');
+		CI::$APP->db->from('order');
+		CI::$APP->db->where('order_hash', $this->hash());
+		CI::$APP->db->where('order_status', 'pending');
+		$order_result = CI::$APP->db->get();
+		if($order_result->num_rows() == 1) {
+			$order_id = $order_result->row('order_id');
+		}
+		else {
+			
+			$order_time = new DateTime;
+			$order = array(
+				'order_user_id'				=> CI::$APP->user->id(),
+				'order_delivery_name'		=> trim(sprintf('%s %s', $this->raw['DeliveryFirstnames'], $this->raw['DeliverySurname'])),
+				'order_delivery_address1'	=> $this->raw['DeliveryAddress1'],
+				'order_delivery_address2'	=> $this->raw['DeliveryAddress2'],
+				'order_delivery_city'		=> $this->raw['DeliveryCity'],
+				'order_delivery_state'		=> $this->raw['DeliveryState'],
+				'order_delivery_postcode'	=> $this->raw['DeliveryPostCode'],
+				'order_delivery_country'	=> $this->raw['DeliveryCountry'],
+				'order_net'					=> $transaction_cart->total(false),
+				'order_tax'					=> $transaction_cart->tax(),
+				'order_total'				=> $transaction_cart->total(),
+				'order_hash'				=> $this->hash(),
+				'order_status'				=> 'pending',
+				'order_date_created'		=> $order_time->format('Y-m-d H:i:s')
+			);
+
+			CI::$APP->db->insert('order', $order);
+			$order_id = CI::$APP->db->insert_id();
+			
+			
+			// Add Purchases to Order.
+			foreach($transaction_cart->contents() as $item) {
+
+				$purchase = array(
+					'purchase_order_id' 	=> $order_id,
+					'purchase_module'   	=> $item->type(),
+					'purchase_module_id'	=> $item->id(),
+					'purchase_name'     	=> $item->name(),
+					'purchase_quantity' 	=> $item->quantity(),
+					'purchase_price'		=> $item->price(),
+					'purchase_tax'			=> $item->tax(),
+					'purchase_total'    	=> $item->price(true)
+				);
+
+				CI::$APP->db->insert('order_purchase', $purchase);
+			}
+		}
+		
+		
+		// Create Transaction.
+		$transaction_id = $this->transaction->create($order_id, $transaction_code);
 		
 		
 		// Output form.

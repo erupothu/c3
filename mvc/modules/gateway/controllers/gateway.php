@@ -112,6 +112,12 @@ class Gateway extends INSIGHT_HMVC_Controller {
 		), array('transaction_id' => $transaction->transaction_id));
 		
 		
+		// Set order as processing
+		if($data['Status'] == 'OK') {
+			$this->db->update('order', array('order_status' => 'processing'), array('order_id' => $transaction->transaction_order_id));
+		}
+		
+		
 		// Forward.
 		redirect('cart');
 	}

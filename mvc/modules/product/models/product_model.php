@@ -145,6 +145,16 @@ interface Cart_Object_Interface {
 
 class Cart_Item_Object {
 	
+	protected $type = '';
+	
+	public function type() {
+		return $this->type;
+	}
+	
+	public function hash() {
+		return md5($this->type() . $this->id());
+	}
+	
 	public function quantity() {
 		return max(0, CI::$APP->session->get(sprintf('cart/items/%s/quantity', $this->hash())));
 	}
@@ -160,14 +170,12 @@ class Cart_Item_Object {
 
 class Product_Object extends Cart_Item_Object {
 	
+	protected $type = 'product';
+	
 	public function id() {
 		return (int)$this->product_id;
 	}
-	
-	public function hash() {
-		return md5('product' . $this->id());
-	}
-	
+
 	public function category_id() {
 		return (int)$this->product_category_id;
 	}

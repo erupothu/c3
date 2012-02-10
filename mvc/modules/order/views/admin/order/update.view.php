@@ -6,27 +6,68 @@
 			
 			<div class="left" style="float: left;">
 				
-				Change this from Products to Order_Products (extend?)
+				<h3 style="padding: 0 0 0.5em 0.25em">Order Details</h3>
+				
 				<table>
 					<thead>
-						<th>&nbsp;</th>
-						<th>Code</th>
-						<th>Name</th>
-						<th>Price</th>
+						<tr>
+							<th>&nbsp;</th>
+							<th>Code</th>
+							<th>Name</th>
+							<th>Quantity</th>
+							<th>Price</th>
+							<th>Tax</th>
+							<th>Price Each</th>
+							<th>Price Total</th>
+						</tr>
 					</thead>
+					<tfoot>
+						<tr>
+							<td colspan="3">Sub-Total</td>
+							<td class="center"><?php echo count($order); ?></td>
+							<td class="money right">0.00</td>
+							<td class="money right"><?php echo $order->tax(); ?></td>
+							<td class="money right">0.00</td>
+							<td class="money right">0.00</td>
+						</tr>
+						<tr>
+							<td colspan="7">Shipping?</td>
+							<td class="money right">0.00</td>
+						</tr>
+						<tr>
+							<td colspan="7">Total</td>
+							<td class="money right"><?php echo $order->total(); ?></td>
+						</tr>
+						
+					</tfoot>
 					<tbody>
 						<?php foreach($order->items() as $item): ?>
 						<tr>
-							<td><?php echo $item->image(); ?></td>
+							<td>
+								<a class="thumbnail" href="#">
+									<img src="/uploads/product_thumb.jpg" alt="Title" style="display: block; width: 32px; height: 32px;">
+								</a>
+							</td>
 							<td><?php echo $item->code(); ?></td>
 							<td><?php echo $item->name(); ?></td>
-							<td><?php echo $item->price(); ?></td>
+							<td class="center"><?php echo $item->quantity(); ?></td>
+							<td class="right"><?php echo $item->price(); ?></td>
+							<td class="right"><?php echo $item->tax(); ?></td>
+							<td class="right"><?php echo $item->total(); ?></td>
+							<td class="right"><?php echo $item->total() * $item->quantity(); ?></td>
 						</tr>
 						<?php endforeach; ?>
 					</tbody>
 				</table>
 			
-			<pre><?php //print_r($order); ?></pre>
+
+				<h3 style="padding: 0 0 0.5em 0.25em; margin-top: 2.0em;">Transaction Details</h3>
+				<pre><?php foreach($order as $i => $k): ?><?php if(false == strstr($i, 'transaction_')) continue; echo $i . ' => ' . $k . PHP_EOL; ?><?php endforeach; ?></pre>
+				
+				
+				<h3 style="padding: 0 0 0.5em 0.25em; margin-top: 2.0em;">Failed Transactions</h3>
+				<p>None</p>
+				
 			</div>
 			
 			<div style="float: right; width: 305px;">
@@ -42,14 +83,13 @@
 			
 				<form method="post" action="<?php echo $this->uri->uri_string(); ?>">
 					<fieldset>
-					
+
 						<div class="row">
 							<label for="order_status">Order Status</label>
 							<span><select name="order_status" id="order_status">
-								<option>Processing</option>
-								<option>Shipping Delayed</option>
-								<option>Shipped</option>
-								<option>Completed</option>
+								<?php foreach(array('pending', 'processing', 'shipping delayed', 'completed', 'refunded', 'cancelled') as $status): ?>
+								<option value="<?php echo $status; ?>"<?php echo $this->form_validation->selected('order_status', $status, $order->status()); ?>><?php echo ucwords($status); ?></option>
+								<?php endforeach; ?>
 							</select></span>
 						</div>
 					

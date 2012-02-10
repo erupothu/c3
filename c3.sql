@@ -153,11 +153,12 @@ CREATE TABLE `order` (
   `order_tax` decimal(7,2) unsigned NOT NULL,
   `order_total` decimal(7,2) unsigned NOT NULL,
   `order_shipping_code` varchar(18) DEFAULT NULL,
+  `order_hash` char(32) NOT NULL,
   `order_status` enum('pending','processing') NOT NULL,
   `order_date_created` datetime NOT NULL,
   PRIMARY KEY (`order_id`),
   KEY `order_status` (`order_status`)
-) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -166,8 +167,40 @@ CREATE TABLE `order` (
 
 LOCK TABLES `order` WRITE;
 /*!40000 ALTER TABLE `order` DISABLE KEYS */;
-INSERT INTO `order` VALUES (5,1,'Creative Insight','31 Coleshill Street','Sutton Coldfield','Birmingham',NULL,'B72 1SD','GB',199.98,40.00,239.98,NULL,'processing','2012-02-08 09:35:35'),(2,1,'Creative Insight','31 Coleshill Street','Sutton Coldfield','Birmingham',NULL,'B72 1SD','UK',0.00,0.00,0.00,NULL,'processing','2012-02-07 12:40:36'),(3,1,'Creative Insight','31 Coleshill Street','Sutton Coldfield','Birmingham',NULL,'B72 1SD','UK',0.00,0.00,0.00,NULL,'processing','2012-02-07 12:41:52'),(4,1,'Creative Insight','31 Coleshill Street','Sutton Coldfield','Birmingham',NULL,'B72 1SD','GB',339.93,67.99,407.92,NULL,'processing','2012-02-07 15:05:43'),(6,1,'Creative Insight','31 Coleshill Street','Sutton Coldfield','Birmingham',NULL,'B72 1SD','GB',199.98,40.00,239.98,NULL,'processing','2012-02-08 10:00:03');
+INSERT INTO `order` VALUES (5,1,'Creative Insight','31 Coleshill Street','Sutton Coldfield','Birmingham',NULL,'B72 1SD','GB',199.98,40.00,239.98,NULL,'','processing','2012-02-08 09:35:35'),(2,1,'Creative Insight','31 Coleshill Street','Sutton Coldfield','Birmingham',NULL,'B72 1SD','UK',0.00,0.00,0.00,NULL,'','processing','2012-02-07 12:40:36'),(3,1,'Creative Insight','31 Coleshill Street','Sutton Coldfield','Birmingham',NULL,'B72 1SD','UK',0.00,0.00,0.00,NULL,'','processing','2012-02-07 12:41:52'),(4,1,'Creative Insight','31 Coleshill Street','Sutton Coldfield','Birmingham',NULL,'B72 1SD','GB',339.93,67.99,407.92,NULL,'','processing','2012-02-07 15:05:43'),(6,1,'Creative Insight','31 Coleshill Street','Sutton Coldfield','Birmingham',NULL,'B72 1SD','GB',199.98,40.00,239.98,NULL,'','processing','2012-02-08 10:00:03'),(7,0,'',NULL,NULL,NULL,NULL,NULL,NULL,399.96,79.99,479.95,NULL,'','processing','2012-02-09 15:40:22'),(8,0,'Jon Ellis-Jones','31 Coleshill Street','Sutton Coldfield','Birmingham',NULL,'B72 1SD','GB',399.96,79.99,479.95,NULL,'','processing','2012-02-09 16:51:06'),(9,0,'Jon Ellis-Jones','31 Coleshill Street','Sutton Coldfield','Birmingham',NULL,'B72 1SD','GB',399.96,79.99,479.95,NULL,'','processing','2012-02-09 16:51:58'),(10,1,'Creative Insight','31 Coleshill Street','Sutton Coldfield','Birmingham',NULL,'B72 1SD','GB',399.96,79.99,479.95,NULL,'','processing','2012-02-09 16:54:06'),(11,0,'Jon Ellis-Jones','105 Sherborne Loft','33 Grosvenor Street West','Birmingham',NULL,'B168HW','GB',339.93,67.99,407.92,NULL,'9c7c62d89567bb9a03b1a9213882f729','processing','2012-02-10 12:39:44'),(12,1,'Jon Ellis-Jones','105 Sherborne Lofts','33 Grosvenor Street West','Birmingham',NULL,'B16 8HW','GB',339.93,67.99,407.92,NULL,'4cee651a84ff47e0b89f866fdce5f774','processing','2012-02-10 14:10:13'),(13,1,'Creative Insight','31 Coleshill Street','Sutton Coldfield','Birmingham',NULL,'B72 1SD','GB',339.93,67.99,407.92,NULL,'403a61924d2dca4c005e2d1011e5df3f','pending','2012-02-10 14:10:51'),(14,1,'Jon Ellis-Jones','105 Sherborne Lofts','33 Grosvenor Street West','Birmingham',NULL,'B16 8HW','GB',339.93,67.99,407.92,NULL,'aa3fdfc2d9e35a0545f2a16f87d3cbef','pending','2012-02-10 14:37:11'),(15,1,'Jon Ellis-Jones','105 Sherborne Lofts','33 Grosvenor Street West','Birmingham',NULL,'B16 8HW','GB',339.93,67.99,407.92,NULL,'ca77553b956897423909d03c26c09e33','pending','2012-02-10 14:43:19'),(16,1,'Jon Ellis-Jones','105 Sherborne Lofts','33 Grosvenor Street West','Birmingham',NULL,'B16 8HW','GB',339.93,67.99,407.92,NULL,'153373772f30a7398f339991a6ae8576','processing','2012-02-10 14:57:51');
 /*!40000 ALTER TABLE `order` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `order_purchase`
+--
+
+DROP TABLE IF EXISTS `order_purchase`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `order_purchase` (
+  `purchase_id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `purchase_order_id` mediumint(8) unsigned NOT NULL,
+  `purchase_module` varchar(32) NOT NULL,
+  `purchase_module_id` mediumint(8) unsigned NOT NULL,
+  `purchase_name` varchar(128) NOT NULL,
+  `purchase_quantity` mediumint(8) unsigned NOT NULL DEFAULT '1',
+  `purchase_price` decimal(7,2) unsigned NOT NULL,
+  `purchase_tax` decimal(7,2) unsigned NOT NULL,
+  `purchase_total` decimal(7,2) unsigned NOT NULL,
+  PRIMARY KEY (`purchase_id`),
+  KEY `purchase_module_id` (`purchase_module_id`)
+) ENGINE=MyISAM AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `order_purchase`
+--
+
+LOCK TABLES `order_purchase` WRITE;
+/*!40000 ALTER TABLE `order_purchase` DISABLE KEYS */;
+INSERT INTO `order_purchase` VALUES (1,11,'product',1,'Title',1,139.95,27.99,167.94),(2,11,'product',2,'Jons Product',2,99.99,20.00,119.99),(3,12,'product',1,'Title',1,139.95,27.99,167.94),(4,12,'product',2,'Jons Product',2,99.99,20.00,119.99),(5,13,'product',1,'Title',1,139.95,27.99,167.94),(6,13,'product',2,'Jons Product',2,99.99,20.00,119.99),(7,14,'product',1,'Title',1,139.95,27.99,167.94),(8,14,'product',2,'Jons Product',2,99.99,20.00,119.99),(9,15,'product',1,'Title',1,139.95,27.99,167.94),(10,15,'product',2,'Jons Product',2,99.99,20.00,119.99),(11,16,'product',1,'Title',1,139.95,27.99,167.94),(12,16,'product',2,'Jons Product',2,99.99,20.00,119.99);
+/*!40000 ALTER TABLE `order_purchase` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -338,7 +371,7 @@ CREATE TABLE `setting` (
 
 LOCK TABLES `setting` WRITE;
 /*!40000 ALTER TABLE `setting` DISABLE KEYS */;
-INSERT INTO `setting` VALUES ('seo_block_robots',NULL,'1'),('gateway_class','gateway','Sagepay'),('gateway_sagepay_vendor','gateway','technical9'),('gateway_encryption_key','gateway','g9hVBEtzkPa2wHp0'),('gateway_sagepay_endpoint','gateway','SIMULATOR'),('gateway_sagepay_transaction_type','gateway','PAYMENT'),('gateway_order_format','gateway','%-.3s-%06d'),('gateway_order_stub','gateway','zANUBIS');
+INSERT INTO `setting` VALUES ('seo_block_robots',NULL,'1'),('gateway_class','gateway','Sagepay'),('gateway_sagepay_vendor','gateway','technical9'),('gateway_encryption_key','gateway','g9hVBEtzkPa2wHp0'),('gateway_sagepay_endpoint','gateway','SIMULATOR'),('gateway_sagepay_transaction_type','gateway','PAYMENT'),('gateway_order_format','gateway','%-.3s-%06d'),('gateway_order_stub','gateway','zANUBIS'),('cart_guest_checkout','cart','1');
 /*!40000 ALTER TABLE `setting` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -367,7 +400,7 @@ CREATE TABLE `transaction` (
   `transaction_gateway_details` text,
   PRIMARY KEY (`transaction_id`),
   KEY `transaction_order_id` (`transaction_order_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=22 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=33 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -376,7 +409,7 @@ CREATE TABLE `transaction` (
 
 LOCK TABLES `transaction` WRITE;
 /*!40000 ALTER TABLE `transaction` DISABLE KEYS */;
-INSERT INTO `transaction` VALUES (1,0,'zAN-000001',0,'pending',0.00,'UNKNOWN','UNKNOWN','UNKNOWN',NULL,NULL,NULL,NULL,NULL,NULL),(2,0,'zAN-000002',0,'pending',0.00,'UNKNOWN','UNKNOWN','UNKNOWN',NULL,NULL,NULL,NULL,NULL,'REJECTED message generated by Simulator'),(3,0,'zAN-000003',0,'pending',0.00,'UNKNOWN','UNKNOWN','UNKNOWN',NULL,NULL,NULL,NULL,NULL,NULL),(4,0,'zAN-000004',0,'pending',0.00,'UNKNOWN','UNKNOWN','UNKNOWN',NULL,NULL,NULL,NULL,NULL,NULL),(5,0,'zAN-000005',0,'pending',0.00,'UNKNOWN','UNKNOWN','UNKNOWN',NULL,NULL,NULL,NULL,NULL,NULL),(6,0,'zAN-000006',0,'pending',0.00,'UNKNOWN','UNKNOWN','UNKNOWN',NULL,NULL,NULL,NULL,NULL,NULL),(7,0,'zAN-000007',0,'pending',0.00,'UNKNOWN','UNKNOWN','UNKNOWN',NULL,NULL,NULL,NULL,NULL,NULL),(8,0,'zAN-000008',0,'pending',0.00,'UNKNOWN','UNKNOWN','UNKNOWN',NULL,NULL,NULL,NULL,NULL,NULL),(9,0,'zAN-000009',0,'pending',0.00,'UNKNOWN','UNKNOWN','UNKNOWN',NULL,NULL,NULL,NULL,NULL,NULL),(10,0,'zAN-000010',0,'pending',0.00,'UNKNOWN','UNKNOWN','UNKNOWN',NULL,NULL,NULL,NULL,NULL,NULL),(11,0,'zAN-000011',0,'pending',0.00,'UNKNOWN','UNKNOWN','UNKNOWN',NULL,NULL,NULL,NULL,NULL,'NOTAUTHED message generated by Simulator'),(12,0,'zAN-000012',0,'pending',119.99,'NOTCHECKED','NOTMATCHED','NOTMATCHED','OK','MN0V2TISD3F4GX30FDTYF1','VISA','2888',NULL,'Successfully Authorised Transaction'),(13,0,'zAN-000013',0,'pending',119.99,'MATCHED','MATCHED','MATCHED','OK','MNEWJU8BTN2CTYK05W9I29','VISA','1630',NULL,'Successfully Authorised Transaction'),(14,0,'zAN-000014',0,'pending',119.99,'MATCHED','MATCHED','MATCHED','OK','MN8UECH8ZHJXOVFIESFDIU','PAYPAL','0000',NULL,'Successfully Authorised Transaction'),(15,0,'zAN-000015',0,'failure',119.99,'MATCHED','MATCHED','MATCHED','OK','MNLF89N0DB4U7WMYJEQXZ7','VISA','2862','REJECTED','REJECTED message generated by Simulator'),(16,0,'',0,'',0.00,'','','',NULL,NULL,NULL,NULL,NULL,NULL),(17,0,'',0,'',0.00,'','','',NULL,NULL,NULL,NULL,NULL,NULL),(18,1,'zAN-000018',1,'success',119.99,'NOTPROVIDED','NOTCHECKED','NOTMATCHED','NOTAUTHED',NULL,'AMEX','5800','OK','Successfully Authorised Transaction'),(19,4,'zAN-000019',1,'success',407.92,'MATCHED','MATCHED','MATCHED','OK','MNPU3VYRMPER4W41VC2LDO','VISA','7822','OK','Successfully Authorised Transaction'),(20,1,'zAN-000020',1,'success',239.98,'MATCHED','MATCHED','MATCHED','OK','MNHYMYPD3IKNWZN5MYJDJK','VISA','8878','OK','Successfully Authorised Transaction'),(21,6,'zAN-000021',1,'success',239.98,'MATCHED','MATCHED','MATCHED','OK','MNCQVBGUKDXHSSWHDF09XE','VISA','5681','OK','Successfully Authorised Transaction');
+INSERT INTO `transaction` VALUES (1,0,'zAN-000001',0,'pending',0.00,'UNKNOWN','UNKNOWN','UNKNOWN',NULL,NULL,NULL,NULL,NULL,NULL),(2,0,'zAN-000002',0,'pending',0.00,'UNKNOWN','UNKNOWN','UNKNOWN',NULL,NULL,NULL,NULL,NULL,'REJECTED message generated by Simulator'),(3,0,'zAN-000003',0,'pending',0.00,'UNKNOWN','UNKNOWN','UNKNOWN',NULL,NULL,NULL,NULL,NULL,NULL),(4,0,'zAN-000004',0,'pending',0.00,'UNKNOWN','UNKNOWN','UNKNOWN',NULL,NULL,NULL,NULL,NULL,NULL),(5,0,'zAN-000005',0,'pending',0.00,'UNKNOWN','UNKNOWN','UNKNOWN',NULL,NULL,NULL,NULL,NULL,NULL),(6,0,'zAN-000006',0,'pending',0.00,'UNKNOWN','UNKNOWN','UNKNOWN',NULL,NULL,NULL,NULL,NULL,NULL),(7,0,'zAN-000007',0,'pending',0.00,'UNKNOWN','UNKNOWN','UNKNOWN',NULL,NULL,NULL,NULL,NULL,NULL),(8,0,'zAN-000008',0,'pending',0.00,'UNKNOWN','UNKNOWN','UNKNOWN',NULL,NULL,NULL,NULL,NULL,NULL),(9,0,'zAN-000009',0,'pending',0.00,'UNKNOWN','UNKNOWN','UNKNOWN',NULL,NULL,NULL,NULL,NULL,NULL),(10,0,'zAN-000010',0,'pending',0.00,'UNKNOWN','UNKNOWN','UNKNOWN',NULL,NULL,NULL,NULL,NULL,NULL),(11,0,'zAN-000011',0,'pending',0.00,'UNKNOWN','UNKNOWN','UNKNOWN',NULL,NULL,NULL,NULL,NULL,'NOTAUTHED message generated by Simulator'),(12,0,'zAN-000012',0,'pending',119.99,'NOTCHECKED','NOTMATCHED','NOTMATCHED','OK','MN0V2TISD3F4GX30FDTYF1','VISA','2888',NULL,'Successfully Authorised Transaction'),(13,0,'zAN-000013',0,'pending',119.99,'MATCHED','MATCHED','MATCHED','OK','MNEWJU8BTN2CTYK05W9I29','VISA','1630',NULL,'Successfully Authorised Transaction'),(14,0,'zAN-000014',0,'pending',119.99,'MATCHED','MATCHED','MATCHED','OK','MN8UECH8ZHJXOVFIESFDIU','PAYPAL','0000',NULL,'Successfully Authorised Transaction'),(15,0,'zAN-000015',0,'failure',119.99,'MATCHED','MATCHED','MATCHED','OK','MNLF89N0DB4U7WMYJEQXZ7','VISA','2862','REJECTED','REJECTED message generated by Simulator'),(16,0,'',0,'',0.00,'','','',NULL,NULL,NULL,NULL,NULL,NULL),(17,0,'',0,'',0.00,'','','',NULL,NULL,NULL,NULL,NULL,NULL),(18,1,'zAN-000018',1,'success',119.99,'NOTPROVIDED','NOTCHECKED','NOTMATCHED','NOTAUTHED',NULL,'AMEX','5800','OK','Successfully Authorised Transaction'),(19,4,'zAN-000019',1,'success',407.92,'MATCHED','MATCHED','MATCHED','OK','MNPU3VYRMPER4W41VC2LDO','VISA','7822','OK','Successfully Authorised Transaction'),(20,1,'zAN-000020',1,'success',239.98,'MATCHED','MATCHED','MATCHED','OK','MNHYMYPD3IKNWZN5MYJDJK','VISA','8878','OK','Successfully Authorised Transaction'),(21,6,'zAN-000021',1,'success',239.98,'MATCHED','MATCHED','MATCHED','OK','MNCQVBGUKDXHSSWHDF09XE','VISA','5681','OK','Successfully Authorised Transaction'),(22,7,'zAN-000022',0,'pending',0.00,'UNKNOWN','UNKNOWN','UNKNOWN',NULL,NULL,NULL,NULL,NULL,NULL),(23,8,'zAN-000023',0,'success',479.95,'MATCHED','MATCHED','MATCHED','OK','MNT1ZV272BX68301ZRI6W3','VISA','4832','OK','Successfully Authorised Transaction'),(24,9,'zAN-000024',0,'success',479.95,'MATCHED','MATCHED','MATCHED','OK','MNJWGGAJ1EN1YXHM74GAMY','VISA','9051','OK','Successfully Authorised Transaction'),(25,10,'zAN-000025',1,'success',479.95,'MATCHED','MATCHED','MATCHED','OK','MNC5L8FS64XWR7MECDM0WT','VISA','3129','OK','Successfully Authorised Transaction'),(26,11,'zAN-000026',0,'success',407.92,'MATCHED','MATCHED','MATCHED','OK','MNDPY89Q51SFTQYE6ALWSB','VISA','2547','OK','Successfully Authorised Transaction'),(27,12,'zAN-000027',1,'success',407.92,'MATCHED','MATCHED','MATCHED','OK','MNF2218NWAQQV43758B5PN','VISA','9749','OK','Successfully Authorised Transaction'),(28,13,'zAN-000028',1,'failure',407.92,'MATCHED','MATCHED','MATCHED','OK','MN7Z7D2HW3TNTFL2YV8PP0','VISA','9430','ERROR','ERROR message generated by Simulator'),(29,14,'zAN-000029',1,'pending',0.00,'UNKNOWN','UNKNOWN','UNKNOWN',NULL,NULL,NULL,NULL,NULL,NULL),(30,15,'zAN-000030',1,'pending',0.00,'UNKNOWN','UNKNOWN','UNKNOWN',NULL,NULL,NULL,NULL,NULL,NULL),(31,16,'zAN-000031',1,'pending',0.00,'UNKNOWN','UNKNOWN','UNKNOWN',NULL,NULL,NULL,NULL,NULL,NULL),(32,16,'zAN-000032',1,'success',407.92,'MATCHED','MATCHED','MATCHED','OK','MNHYKB81ACW4WZKH5MP7W1','VISA','8978','OK','Successfully Authorised Transaction');
 /*!40000 ALTER TABLE `transaction` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -446,4 +479,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-02-08 17:37:11
+-- Dump completed on 2012-02-10 17:13:13

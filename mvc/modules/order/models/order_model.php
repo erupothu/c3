@@ -3,10 +3,14 @@
 class Order_Model extends CI_Model {
 	
 	public function __construct() {
+
 		parent::__construct();
+		$this->load->model('purchase_model', 'purchase');
 	}
 	
-	public function create() {}
+	public function create() {
+		
+	}
 	
 	public function retrieve($with_items = false) {
 		
@@ -57,11 +61,12 @@ class Order_Model extends CI_Model {
 			return $order;
 		}
 		
-		// Append Items.
-		$this->load->model('product/product_model', 'product');
-		$items = $this->product->test(array(1,2,3,4,5,6,7,8,9,10));
+		//$this->load->model('product/product_model', 'product');
+		//$items = $this->product->test(array(1,2,3,4,5,6,7,8,9,10));
 		
-		$order->set_items($items);
+		// Append Items.
+		$order->set_items($this->purchase->retrieve_by_order_id($order->id()));
+		
 		return $order;
 	}
 }
@@ -69,7 +74,7 @@ class Order_Model extends CI_Model {
 // temp
 require_once APPPATH . 'modules/account/models/address_model.php';
 
-class Order_Object {
+class Order_Object implements Countable {
 	
 	private $order_items = array();
 	
@@ -125,5 +130,16 @@ class Order_Object {
 		if(!isset($this->order_delivery_address)) {
 			return Address_Object::create($this, 'order_delivery');
 		}
+	}
+	
+	
+	public function count() {
+		
+		$count = 0;
+		foreach($this->order_items as $item) {
+			$count += $item->quantity();
+		}
+		
+		return $count;
 	}
 }
