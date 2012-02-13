@@ -118,7 +118,6 @@ class Page_Model extends NestedSet_Model {
 		// sub-pages, i.e. parent_id between this page's left/right.
 		// @TODO
 		
-		
 		$new_parent_id = $this->form_validation->value('page_parent_id');
 		
 		// Do we need to update the tree?
@@ -134,12 +133,7 @@ class Page_Model extends NestedSet_Model {
 			
 			// Get a list of IDs in the subtree.
 			// These will be excluded from further modification later.
-			$this->db->select('group_concat(pn.page_id) as page_ids');
-			$this->db->from('page pn');
-			$this->db->where(sprintf('pn.page_left between %d and %d', $page->tree_left(), $page->tree_right()));
-			$subtree_result = $this->db->get();
-			$subtree_page_ids = explode(',', $subtree_result->row('page_ids'));
-			
+			$subtree_page_ids = $this->retrieve_nested_ids($page->id());
 			
 			// Right
 			$this->db->set('page_right', 'page_right - ' . $page->tree_width(), false);
@@ -204,6 +198,19 @@ class Page_Model extends NestedSet_Model {
 		return $this->db->affected_rows() === 1;
 	}
 	
+	
+	public function retrieve_nested_ids($node_id) {
+		
+		$this->db->select('group_concat(pn.page_id) as node_ids');
+		$this->db->from('page pn');
+		$this->db->from('page pp');		
+		$this->db->where('pp.page_id', $node_id);		
+		$this->db->where('pn.page_left between pp.page_left and pp.page_right');
+		$subtree_result = $this->db->get();
+		
+		return explode(',', $subtree_result->row('node_ids'));
+	}
+	
 	/*
 	public function delete($page_id) {
 		
@@ -256,6 +263,10 @@ class Page_Model extends NestedSet_Model {
 	/**
 	 * validate_unique_permalink
 	 *
+	 * Validation function intended to stop string paths being 
+	 * non-unique.  Unique strings are useful for things such as
+	 * URLs built from a tree and for hashing.
+	 * 
 	 * @param string $page_slug 
 	 * @param string $reference_field 
 	 * @return boolean
@@ -307,29 +318,45 @@ class Page_Model extends NestedSet_Model {
 		}
 		
 		// Set validation message because we have found a collision.
-		$this->form_validation->set_message('module_callback', sprintf('The %%s must have a unique permalink. This is taken by page "%s"!', $page_result->row(0, 'Page_Object')->title()));
+		$this->form_validation->set_message('module_callback', sprintf('The %%s must have a unique permalink. This is taken by page "%s".', $page_result->row(0, 'Page_Object')->title()));
 		return false;
 	}
 	
-	public function validate_valid_nesting($page_id, $reference_field = 'page_parent_id') {
+	
+	/**
+	 * validate_valid_nesting
+	 * 
+	 * Validation function intended to stop nodes being nested within
+	 * children of themselves.
+	 *
+	 * @param int $node_id 
+	 * @param string $reference_field 
+	 * @return boolean
+	 */
+	public function validate_valid_nesting($node_id, $reference_field = 'page_parent_id') {
 		
-		if(!is_numeric($page_id) || $page_id == 0) {
+		// Ignore this node if it is newly created.
+		if(!is_numeric($node_id) || $node_id == 0) {
 			return true;
 		}
 		
-		if(false === ($parent_id = $this->form_validation->value($reference_field))) {
-			return true;
-		}
-		
-		// Get the current page data.
-		//$page = $this->retrieve_by_id($page_id);
-		//if($page->pa)
-		
-		
-		// Ensure that we are not trying to set this as a child of one of its
-		// sub-pages, i.e. parent_id between this page's left/right.
 		// @TODO
+		// Ignore this page if, for whatever reason, there is no 'parent id' field.
+		// Interestingly, the reference field wasn't in ->form_validation->value(), so
+		// I had to use ->post with XSS clean instead.  Investigate this...
+		if(false === ($parent_id = $this->input->post($reference_field, true))) {
+			return true;
+		}
 		
+		// Is the new parent ID within the list of its children?  If so, we'd
+		// make an infinite loop, so throw this out as invalid.
+		if(in_array($parent_id, $this->retrieve_nested_ids($node_id))) {
+			$this->form_validation->set_message('module_callback', 'The Parent Page cannot be one of this Page\'s children.');
+			$this->form_validation->add_error(null, $reference_field, true);
+			return false;
+		}
+		
+		return true;
 	}
 	
 	
