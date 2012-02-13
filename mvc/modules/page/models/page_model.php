@@ -124,24 +124,22 @@ class Page_Model extends NestedSet_Model {
 		// Do we need to update the tree?
 		if($page->parent() != $new_parent_id) {
 			
+			if($mode !== self::AT_TAIL) {
+				die('Not yet implemented');
+			}
+			
 			// 1. Shrink up the space where this used to belong.
-			$tree_mark = $this->tree_node_right($new_parent_id) + ($new_parent_id == 0 ? 0 : -1);
-			//var_dump($tree_mark);
 			
-			// difference?
-			$difference = ($tree_mark - $page->tree_left()) + 1;
-			//var_dump($difference);exit;
 			
-			// get a list of IDs in the subtree.
+			
+			// Get a list of IDs in the subtree.
+			// These will be excluded from further modification later.
 			$this->db->select('group_concat(pn.page_id) as page_ids');
 			$this->db->from('page pn');
 			$this->db->where(sprintf('pn.page_left between %d and %d', $page->tree_left(), $page->tree_right()));
 			$subtree_result = $this->db->get();
 			$subtree_page_ids = explode(',', $subtree_result->row('page_ids'));
 			
-			//var_dump($subtree_ids);
-			//var_dump($difference);
-			//exit;
 			
 			// Right
 			$this->db->set('page_right', 'page_right - ' . $page->tree_width(), false);
@@ -154,13 +152,10 @@ class Page_Model extends NestedSet_Model {
 			$this->db->update('page');
 			
 			
-			// Find the right-weight of the parent node.  If this is the root, then do 
-			// not drop the weight by one (to find the node's left, or last child's right).
-			//$parent = $this->retrieve_by_id($page->parent());
-			//$tree_mark = $this->tree_node_right($page->parent()) + ($parent_id == 0 ? 0 : -1);
-			//$tree_mark = $this->tree_node_right($new_parent_id) + ($new_parent_id == 0 ? 0 : -1);
+			// 2. Open a space for the sub-tree.
 			
-			// 2. Open a new space?
+			// Get the parent's right, and work out the 'difference' between here and there.
+			$tree_mark 	= $this->tree_node_right($new_parent_id) + ($new_parent_id == 0 ? 0 : -1);
 			
 			// Right
 			$this->db->set('page_right', 'page_right + ' . $page->tree_width(), false);
@@ -174,62 +169,29 @@ class Page_Model extends NestedSet_Model {
 			$this->db->where_not_in('page_id', $subtree_page_ids);
 			$this->db->update('page');
 			
-
+			
 			// 3. Update the old sub-tree
+			$difference = ($tree_mark - $page->tree_left()) + 1;
+			
 			$this->db->set('page_left', 'page_left + ' . $difference, false);
 			$this->db->set('page_right', 'page_right + ' . $difference, false);
 			$this->db->where_in('page_id', $subtree_page_ids);
-			$this->db->update('page');
-			
-			/*
-			$op = $difference >= 0 ? ' + ' : ' - ';
-			foreach($subtree_page_ids as $sub_page_id) {
-				$this->db->set('page_left', 'page_left' . $op . abs($difference), false);
-				$this->db->set('page_right', 'page_right' . $op . abs($difference), false);
-				$this->db->where('page_id', $sub_page_id);
-				$this->db->update('page');
-				echo $this->db->last_query() . '<br />';
-			}
-			*/
-			
-			//die($this->db->last_query());
+			$this->db->update('page');			
 		}
 		
 		
-		
-		
-		/*
-		var_dump($page->tree_width());
-		var_dump($page->parent());
-		var_dump($page);
-		exit;
-		*/
-		
-		/*
-		// Right
-		$this->db->set('page_right', 'page_right - ' . $page->tree_width(), false);
-		$this->db->where('page_right > ' . $page->tree_right());
-		$this->db->update('page');
-		
-		// Left
-		$this->db->set('page_left', 'page_left - ' . $page->tree_width(), false);
-		$this->db->where('page_left > ' . $page->tree_right());
-		$this->db->update('page');
-		*/
-		
-		
-		
+		//22-27.
+		//new left should be 49.
+		//49
+
 		
 		// 4. Update page!
-		
 		$page_update = new DateTime;
 		$page_change = array(
 			'page_name'			=> $this->form_validation->value('page_name', '', false),
 			'page_slug'			=> $this->form_validation->value('page_slug'),
 			'page_content'		=> $this->form_validation->value('page_content', null, false),
 			'page_status'		=> $this->form_validation->value('page_status'),
-//			'page_left'			=> 0,
-//			'page_right'		=> 0,
 			'page_date_updated'	=> $page_update->format('Y-m-d H:i:s')
 		);
 		
