@@ -40,5 +40,4 @@ $config = array(
 			'rules'	=> ''
 		)
 	)
-
 );
