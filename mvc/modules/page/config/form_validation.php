@@ -7,7 +7,7 @@ $config = array(
 		array(
 			'field'	=> 'page_id',
 			'label'	=> 'ID',
-			'rules'	=> ''
+			'rules'	=> 'module_callback[validate_valid_nesting]'
 		),
 		array(
 			'field'	=> 'page_name',

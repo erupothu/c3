@@ -29,7 +29,7 @@ class Page_Model extends NestedSet_Model {
 				limit 1
 		), 0) as page_parent_id', false);
 		
-		$this->db->select('group_concat(pp.page_slug order by pp.page_id separator "") as page_slug_path', false);
+		$this->db->select('group_concat(pp.page_slug order by pp.page_left separator "") as page_slug_path', false);
 		$this->db->select('count(pp.page_id) - 1 as page_depth');
 		$this->db->from('page pn');
 		$this->db->from('page pp');
@@ -41,7 +41,7 @@ class Page_Model extends NestedSet_Model {
 		if($page_result->num_rows() !== 1) {
 			return false;
 		}
-
+		
 		return $page_result->row(0, 'Page_Object');
 	}
 
@@ -110,11 +110,120 @@ class Page_Model extends NestedSet_Model {
 	}
 	
 	
-	public function update($page_id) {
+	public function update($page_id, $mode = self::AT_TAIL) {
+		
+		$page = $this->retrieve_by_id($page_id);
+		
+		// Ensure that we are not trying to set this as a child of one of its
+		// sub-pages, i.e. parent_id between this page's left/right.
+		// @TODO
+		
+		
+		$new_parent_id = $this->form_validation->value('page_parent_id');
+		
+		// Do we need to update the tree?
+		if($page->parent() != $new_parent_id) {
+			
+			// 1. Shrink up the space where this used to belong.
+			$tree_mark = $this->tree_node_right($new_parent_id) + ($new_parent_id == 0 ? 0 : -1);
+			//var_dump($tree_mark);
+			
+			// difference?
+			$difference = ($tree_mark - $page->tree_left()) + 1;
+			//var_dump($difference);exit;
+			
+			// get a list of IDs in the subtree.
+			$this->db->select('group_concat(pn.page_id) as page_ids');
+			$this->db->from('page pn');
+			$this->db->where(sprintf('pn.page_left between %d and %d', $page->tree_left(), $page->tree_right()));
+			$subtree_result = $this->db->get();
+			$subtree_page_ids = explode(',', $subtree_result->row('page_ids'));
+			
+			//var_dump($subtree_ids);
+			//var_dump($difference);
+			//exit;
+			
+			// Right
+			$this->db->set('page_right', 'page_right - ' . $page->tree_width(), false);
+			$this->db->where('page_right > ' . $page->tree_right());
+			$this->db->update('page');
+
+			// Left
+			$this->db->set('page_left', 'page_left - ' . $page->tree_width(), false);
+			$this->db->where('page_left > ' . $page->tree_right());
+			$this->db->update('page');
+			
+			
+			// Find the right-weight of the parent node.  If this is the root, then do 
+			// not drop the weight by one (to find the node's left, or last child's right).
+			//$parent = $this->retrieve_by_id($page->parent());
+			//$tree_mark = $this->tree_node_right($page->parent()) + ($parent_id == 0 ? 0 : -1);
+			//$tree_mark = $this->tree_node_right($new_parent_id) + ($new_parent_id == 0 ? 0 : -1);
+			
+			// 2. Open a new space?
+			
+			// Right
+			$this->db->set('page_right', 'page_right + ' . $page->tree_width(), false);
+			$this->db->where('page_right > ' . $tree_mark);
+			$this->db->where_not_in('page_id', $subtree_page_ids);
+			$this->db->update('page');
+			
+			// Left
+			$this->db->set('page_left', 'page_left + ' . $page->tree_width(), false);
+			$this->db->where('page_left > ' . $tree_mark);
+			$this->db->where_not_in('page_id', $subtree_page_ids);
+			$this->db->update('page');
+			
+
+			// 3. Update the old sub-tree
+			$this->db->set('page_left', 'page_left + ' . $difference, false);
+			$this->db->set('page_right', 'page_right + ' . $difference, false);
+			$this->db->where_in('page_id', $subtree_page_ids);
+			$this->db->update('page');
+			
+			/*
+			$op = $difference >= 0 ? ' + ' : ' - ';
+			foreach($subtree_page_ids as $sub_page_id) {
+				$this->db->set('page_left', 'page_left' . $op . abs($difference), false);
+				$this->db->set('page_right', 'page_right' . $op . abs($difference), false);
+				$this->db->where('page_id', $sub_page_id);
+				$this->db->update('page');
+				echo $this->db->last_query() . '<br />';
+			}
+			*/
+			
+			//die($this->db->last_query());
+		}
+		
+		
+		
+		
+		/*
+		var_dump($page->tree_width());
+		var_dump($page->parent());
+		var_dump($page);
+		exit;
+		*/
+		
+		/*
+		// Right
+		$this->db->set('page_right', 'page_right - ' . $page->tree_width(), false);
+		$this->db->where('page_right > ' . $page->tree_right());
+		$this->db->update('page');
+		
+		// Left
+		$this->db->set('page_left', 'page_left - ' . $page->tree_width(), false);
+		$this->db->where('page_left > ' . $page->tree_right());
+		$this->db->update('page');
+		*/
+		
+		
+		
+		
+		// 4. Update page!
 		
 		$page_update = new DateTime;
 		$page_change = array(
-			'page_author_id'	=> 1,
 			'page_name'			=> $this->form_validation->value('page_name', '', false),
 			'page_slug'			=> $this->form_validation->value('page_slug'),
 			'page_content'		=> $this->form_validation->value('page_content', null, false),
@@ -240,6 +349,26 @@ class Page_Model extends NestedSet_Model {
 		return false;
 	}
 	
+	public function validate_valid_nesting($page_id, $reference_field = 'page_parent_id') {
+		
+		if(!is_numeric($page_id) || $page_id == 0) {
+			return true;
+		}
+		
+		if(false === ($parent_id = $this->form_validation->value($reference_field))) {
+			return true;
+		}
+		
+		// Get the current page data.
+		//$page = $this->retrieve_by_id($page_id);
+		//if($page->pa)
+		
+		
+		// Ensure that we are not trying to set this as a child of one of its
+		// sub-pages, i.e. parent_id between this page's left/right.
+		// @TODO
+		
+	}
 	
 	
 	
@@ -318,6 +447,9 @@ class Page_Model extends NestedSet_Model {
 
 class NestedSet_Model extends CI_Model {
 	
+	const AT_HEAD 	= 0x01;	// Stick at the head
+	const AT_TAIL 	= 0x02;	// Stick at the tail
+	
 	public function __construct() {
 		parent::__construct();
 	}
@@ -389,11 +521,10 @@ class NestedSet_Model extends CI_Model {
 		$this->db->from('page pn');
 		$this->db->from('page pp');
 		$this->db->where('pn.page_id', $item_id);
-		$this->db->select('group_concat(pp.page_slug order by pp.page_id separator "") as page_slug_path', false);
+		$this->db->select('group_concat(pp.page_slug order by pp.page_left separator "") as page_slug_path', false);
 		$this->db->where('pn.page_left between pp.page_left and pp.page_right');
 		$this->db->order_by('pn.page_left');
 		$this->db->group_by('pn.page_id');
-		
 		$page_result = $this->db->get();
 		
 		if($page_result->num_rows() !== 1) {
@@ -426,7 +557,7 @@ class NestedSet_Model extends CI_Model {
 		
 		$this->db->select('pn.page_date_created');
 		$this->db->select('pn.page_date_updated');
-		$this->db->select('group_concat(pp.page_slug order by pp.page_id separator "") as page_slug_path', false);
+		$this->db->select('group_concat(pp.page_slug order by pp.page_left separator "") as page_slug_path', false);
 		
 		$this->db->from('page pp');
 		$this->db->from('page pn');
