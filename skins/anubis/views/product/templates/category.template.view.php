@@ -14,7 +14,7 @@
 						<li><a href="/product/technical-equipment/tracking-aquilia">Tracking (Aquilia)</a></li>
 						<li><a href="/product/technical-equipment/audio">Audio Equipment</a></li>
 						<li><a href="/product/technical-equipment/video">Video Equipment</a></li>
-						<li class="last-child"><a href="#">Technical Assistance</a></li>
+						<li class="last-child"><a href="/special-projects/technical-equipment/technical-assistance">Technical Assistance</a></li>
 					</ul>
 				</div>
 				
@@ -42,7 +42,7 @@
 			<div class="box">
 				
 				<div id="products" style="margin: 8px;">
-
+					
 					<h2><span><?php echo $category->name(); ?></span></h2>
 					
 					<?php foreach($category->products() as $i => $product): ?>
@@ -74,7 +74,7 @@
 					<?php endforeach; ?>
 					<?php if(count($category->products()) == 0): ?>
 					<div class="empty" style="height: 150px; line-height: 150px; text-align: center;">
-						There are no items in this category.
+						Check back soon for possible Anubis <?php echo $category->name(); ?>.
 					</div>
 					<?php endif; ?>
 				</div>
