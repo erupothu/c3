@@ -42,8 +42,10 @@ class Page extends INSIGHT_HMVC_Controller {
 	 */
 	public function output($template, $data = array()) {
 		
-		// Parsey
 		$output = $this->load->view('templates/' . $template . '.template.view.php', $data, true);
+		if(strlen($output) === 0) {
+			return;
+		}
 		
 		libxml_use_internal_errors(true);
 		$dom = new DOMDocument();
@@ -55,11 +57,11 @@ class Page extends INSIGHT_HMVC_Controller {
 			if(!$node->hasAttribute('module')) {
 				continue;
 			}
-						
+			
 			$module_call = sprintf('%s/%s', $node->getAttribute('module'), $node->hasAttribute('method') ? $node->getAttribute('method') : 'index');
 			if(is_null($module_data = Modules::run($module_call))) {
 				
-				// It is a shorttag.  We will likely want to just remove it.
+				// It is a short tag.  We will likely want to just remove it.
 				$nodes->item($n)->parentNode->removeChild($nodes->item($n));
 				continue;
 			}

@@ -1,7 +1,7 @@
 <?php $this->load->view('admin/common/header.include.php'); ?>
 
 		<h2>Pages</h2>
-
+		
 		<table>
 			<colgroup>
 				<col />

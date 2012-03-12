@@ -41,22 +41,28 @@ class News extends INSIGHT_HMVC_Controller {
 		
 		
 		// Iterate over children.
-		iterator_apply($news_iterator, array($this, '_render'), array($news_iterator, 0, $format, $args));
+		iterator_apply($news_iterator, array($this, '_render'), array($news_iterator, isset($args['limit']) ? $args['limit'] : 0, $format, $args));
 	}
 	
 	
 	private function _render($iterator, $limit = 0, $format = '', $args = array()) {
-
+		
 		if($iterator->count() === 0) {
 			return $this->load->view('chunks/news/' . $format . '.empty.chunk.php');
 		}
 		
+		$iterator_position = 0;
 		while($iterator->valid()) {
 			
 			$item = $iterator->current();
 			$this->load->view('chunks/news/' . $format . '.chunk.php', array_merge(array('article' => $item), $args));
-
+			
 			$iterator->next();
+			
+			$iterator_position++;
+			if($limit !== 0 && $iterator_position >= $limit) {
+				break;
+			}
 		}
 	}
 	

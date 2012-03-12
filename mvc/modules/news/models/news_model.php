@@ -81,6 +81,18 @@ class News_Model extends CI_Model {
 		return $this->db->affected_rows() === 1;
 	}
 	
+	
+	public function search($search_term) {
+		
+		$this->db->select('*');
+		$this->db->from('news');
+		$this->db->where(sprintf('match(news_title, news_data_full) AGAINST (\'%s\' IN BOOLEAN MODE)', $search_term));
+		$news_result = $this->db->get();
+		
+		return $news_result->result('News_Object');
+	}
+	
+	
 	public function archive($year, $month = null, $day = null) {
 		
 		$this->db->select('news.*');

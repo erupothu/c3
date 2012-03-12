@@ -1,0 +1,37 @@
+.page-content {
+	font: normal 15px/20px 'Arial', sans-serif;
+}
+
+.page-content h1, .page-content h2 {
+	font-weight: normal;
+	color: #991a2e;
+}
+
+.homepage .page-content h1 {
+	font-size: 3.0em;
+	letter-spacing: -0.03em;
+	margin-bottom: 0.25em;
+}
+
+.page-content h2 {
+	font-weight: bold;
+	font-size: 1.35em;
+	margin-top: 2.0em;
+}
+
+.page-content h3 {
+	
+}
+
+.page-content p {
+	margin: 1.25em 0 1.5em;
+}
+
+.page-content ul {
+	list-style: outside disc;
+	margin-left: 2.5em;
+}
+
+.page-content iframe {
+	
+}

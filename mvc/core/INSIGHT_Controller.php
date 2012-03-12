@@ -31,6 +31,11 @@ class INSIGHT_Admin_Controller extends INSIGHT_HMVC_Controller {
 		// Force the 'core' skin.
 		CI::$APP->load->skin('core');
 		
+		// Stop admin requests from outside of /admin
+		if(0 !== strcasecmp('admin', $this->uri->segment(1))) {
+			//die('bad request');
+		}
+		
 		$this->required_auth = $required_auth;
 		$this->required_perm = $required_perm;
 		

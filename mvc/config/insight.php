@@ -4,17 +4,16 @@ $config = array(
 	
 	'display'	=> array(
 		
-		'skin'		=> 'anubis',
-		'title'		=> 'Anubis'
-		
+		'skin'		=> 'highclare',
+		'title'		=> 'Highclare'
 	),
 	
 	'security'	=> array(
 		
 		// Salt settings
 		'algorithm'				=> 'sha256',
-		'salt_one'				=> 'h192!bGbAsKq.q23',
-		'salt_two'				=> 'asln_kfh9811Qna8',
+		'salt_one'				=> 'qx;[B?-8c|a$~Z2C]D/D:qn(U%XWltuC<z.Zr{?(k)N;4Xa6;g`;<*-eW#OBN!|-',
+		'salt_two'				=> '*.IoNMzpzk-x/8GX+p b_DOF!AbApz|Ae:=b985RyG}zhh!L3X@V9(7YcIhrspNH',
 		
 		// CAPTCHA settings
 		'captcha_enabled'		=> true,	// use captchas?

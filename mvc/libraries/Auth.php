@@ -35,7 +35,7 @@ class Auth {
 		$this->db->where('u.user_email', $unique_identifier);
 		$this->db->where('u.user_password', self::encrypt($password));
 		$this->db->limit(1);
-		
+
 		// Process additional clauses.
 		foreach($additional_clauses as $clause_field => $clause_value) {
 			$this->db->where($clause_field, $clause_value);

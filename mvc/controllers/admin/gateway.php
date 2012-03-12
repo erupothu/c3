@@ -17,7 +17,7 @@ class Gateway extends INSIGHT_Admin_Controller {
 		if($this->form_validation->run('admin-login')) {
 			
 			// Try and log in.
-			if(false !== User_Administrator::login($this->form_validation->value('admin_username'), $this->form_validation->value('admin_password'))) {
+			if(!User_Administrator::login($this->form_validation->value('admin_username'), $this->form_validation->value('admin_password')) instanceof User_Guest) {
 				$this->session->set_flashdata('admin/message', sprintf('Welcome back, %s!', $this->administrator->name()));
 				return redirect('admin');
 			}

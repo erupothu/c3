@@ -7,11 +7,12 @@ if(!defined('SPARKPATH')) {
 	define('SPARKPATH', FCPATH . 'sparks/');
 }
 
+define('MODULEPATH', APPPATH . 'modules/');
 
 /* get module locations from config settings or use the default module location and offset */
 is_array(Modules::$locations = $CFG->item('modules_locations')) OR Modules::$locations = array(
-	APPPATH.'modules/' => '../modules/',
-	SPARKPATH => '../sparks/',
+	MODULEPATH 	=> '../modules/',
+	SPARKPATH 	=> '../sparks/'
 );
 
 /* PHP5 spl_autoload */

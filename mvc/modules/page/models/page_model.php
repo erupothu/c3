@@ -199,6 +199,20 @@ class Page_Model extends NestedSet_Model {
 	}
 	
 	
+	
+	public function search($search_term) {
+		
+		$this->db->select('*');
+		$this->db->from('page');
+		$this->db->where(sprintf('match(page_name, page_content) AGAINST (\'%s\' IN BOOLEAN MODE)', $search_term));
+		$news_result = $this->db->get();
+		
+		return $news_result->result('Page_Object');
+	}
+	
+	
+	
+	
 	public function retrieve_nested_ids($node_id) {
 		
 		$this->db->select('group_concat(pn.page_id) as node_ids');
@@ -717,7 +731,7 @@ class Page_Object {
 	
 	
 	public function created($format = 'd/m/Y H:i') {
-		$dt = DateTime::createFromFormat('Y-m-d H:i:s', $this->page_date_created);
+		$dt = DateTime::createFromFormat(DATE_MYSQL, $this->page_date_created);
 		return false !== $format ? $dt->format($format) : $dt;
 	}
 	
@@ -726,7 +740,7 @@ class Page_Object {
 		if(is_null($this->page_date_updated))
 			return $this->created($format);
 		
-		$dt = DateTime::createFromFormat('Y-m-d H:i:s', $this->page_date_updated);
+		$dt = DateTime::createFromFormat(DATE_MYSQL, $this->page_date_updated);
 		return false !== $format ? $dt->format($format) : $dt;
 	}
 	
