@@ -14,7 +14,7 @@
 						<li><a href="/product/technical-equipment/tracking-aquilia">Tracking (Aquilia)</a></li>
 						<li><a href="/product/technical-equipment/audio">Audio Equipment</a></li>
 						<li><a href="/product/technical-equipment/video">Video Equipment</a></li>
-						<li class="last-child"><a href="#">Technical Assistance</a></li>
+						<li class="last-child"><a href="/special-projects/technical-equipment/technical-assistance">Technical Assistance</a></li>
 					</ul>
 				</div>
 				
@@ -65,7 +65,7 @@
 							</div>
 						</div>
 						
-						<div class="details" style="width: 368px; height: auto;">
+						<div class="details" style="width: 368px; height: auto; min-height: 293px;">
 							
 							<header class="clearfix" style="font-size: 16px; margin-bottom: 8px;">
 								<div class="title"><?php echo $product->name(); ?></div>
@@ -82,26 +82,26 @@
 								<?php echo $product->specification(); ?>
 							</div>
 							
-							<footer class="clearfix" style="display: block; margin: 16px 0 8px;">
-								
-								<div class="price"><span>Price:</span> &pound;<?php echo $product->price(); ?></div>
-								<div class="buttons" style="float: right;">
-									<form action="/cart/add" method="post">
-										<input type="hidden" name="product_id" id="product_id" value="<?php echo $product->id(); ?>">
-										<input type="hidden" name="product_module" id="product_module" value="<?php echo $this->router->fetch_class(); ?>">
-										<input type="hidden" name="product_quantity" id="product_quantity" value="1">
-										
-										<noscript><input type="submit" value="Add to Cart"></noscript>
-										
-										<a href="#" class="button orange submit" style="position: static;">Add to Cart<span></span></a>
-										<a href="#" class="button grey" style="position: static; margin-left: 8px;" onclick="javascript:alert('PDF Download'); return false;">PDF Download<span></span></a>
-										
-									</form>
-								</div>
-								
-							</footer>
-							
 						</div>
+						
+						<footer style="float: right; width: 368px; display: block; margin: 16px 0 8px;">
+							
+							<div class="price"><span>Price:</span> &pound;<?php echo $product->price(); ?></div>
+							<div class="buttons" style="float: right;">
+								<form action="/cart/add" method="post">
+									<input type="hidden" name="product_id" id="product_id" value="<?php echo $product->id(); ?>">
+									<input type="hidden" name="product_module" id="product_module" value="<?php echo $this->router->fetch_class(); ?>">
+									<input type="hidden" name="product_quantity" id="product_quantity" value="1">
+									
+									<noscript><input type="submit" value="Add to Cart"></noscript>
+									
+									<a href="#" class="button orange submit" style="position: static;">Add to Cart<span></span></a>
+									<a href="#" class="button grey" style="position: static; margin-left: 8px;" onclick="javascript:alert('PDF Download'); return false;">PDF Download<span></span></a>
+									
+								</form>
+							</div>
+							
+						</footer>
 						
 					</div>
 				
