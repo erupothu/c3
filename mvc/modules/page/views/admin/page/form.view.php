@@ -17,12 +17,12 @@
 					<?php echo $this->form_validation->errors(); ?>
 				</div>
 				<?php endif; ?>
-		
+				
 				<div class="row required<?php $this->form_validation->earmark('page_name'); ?>">				
 					<label for="page_name">Title</label>
-					<span><input type="text" name="page_name" id="page_name" value="<?php echo $this->form_validation->value('page_name', !isset($page) ? '' : $page->page_name, false); ?>" /></span>
+					<span><input type="text" class="slug_title" name="page_name" id="page_name" value="<?php echo $this->form_validation->value('page_name', !isset($page) ? '' : $page->page_name, false); ?>" data-slug-generate="page_slug" data-slug-module="page" /></span>
 				</div>
-		
+				
 				<div class="row required<?php $this->form_validation->earmark('page_parent_id'); ?>">
 					<label for="page_parent_id">Parent Page</label>
 					<span><select name="page_parent_id" id="page_parent_id">
@@ -30,7 +30,7 @@
 						<?php echo Modules::run('page/admin/retrieve', 'select-options', array('selected' => $this->form_validation->value('page_parent_id', !isset($page) ? '' : $page->parent()))); ?>
 					</select></span>
 				</div>
-		
+				
 				<div class="row required<?php $this->form_validation->earmark('page_slug'); ?>">
 					<label for="page_slug">Permalink</label>
 					<span><input type="text" name="page_slug" id="page_slug" value="<?php echo $this->form_validation->value('page_slug', !isset($page) ? '/' : $page->page_slug, false); ?>" /></span>

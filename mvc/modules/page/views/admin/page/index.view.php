@@ -2,24 +2,23 @@
 
 		<h2>Pages</h2>
 		
-		<table>
+		<table style="width: 100%;">
 			<colgroup>
+				<col style="width: 32px;" />
+				<!--<col style="width: 32px;" />-->
+				<col style="width: 300px;" />
 				<col />
 				<col />
 				<col />
 				<col />
-				<col />
-				<col />
-				<col />
-				<col />
+				<col style="width: 64px;" />
 			</colgroup>
 			<thead>
 				<tr>
 					<th>ID</th>
-					<th>&mdash;</th>
+					<!--<th>&mdash;</th>-->
 					<th>Name</th>
 					<th>Permalink</th>
-					<th>Preview</th>
 					<th>Status</th>
 					<th>Last Updated</th>
 					<th>&nbsp;</th>

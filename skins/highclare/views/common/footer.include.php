@@ -8,13 +8,15 @@
 					<div class="pad">
 						
 						<h2>Ask a Question</h2>
-					
-						<img src="<?php echo $this->uri->skin('assets/images/temp.jpg'); ?>" alt="Temp">
+						
+						<a href="/ask">
+							<img src="<?php echo $this->uri->skin('assets/images/boxes/box-ask.jpg'); ?>" alt="Ask a Question">
+						</a>
 					
 						<p>
 							Feel free to click here and ask us a question. We endeavour 
 							to supply a written answer within 24 hours&hellip;
-							<a href="#">more</a>
+							<a href="/ask">more</a>
 						</p>
 						
 					</div>
@@ -27,12 +29,14 @@
 						
 						<h2>HiPE</h2>
 						
-						<img src="<?php echo $this->uri->skin('assets/images/temp.jpg'); ?>" alt="Temp">
+						<a href="http://www.highclareschool.com/moodle" rel="external" target="_blank">
+							<img src="<?php echo $this->uri->skin('assets/images/boxes/box-hipe.jpg'); ?>" alt="Highclare Pupil Environment">
+						</a>
 						
 						<p>
 							Welcome to the Highclare Pupil Environment (HiPE for 
 							short) – our very own Virtual Learning Environment&hellip;
-							<a href="#">login</a>
+							<a href="http://www.highclareschool.com/moodle" rel="external" target="_blank">login</a>
 						</p>
 					
 					</div>
@@ -44,9 +48,11 @@
 					<div class="pad">
 						
 						<h2>OFSTED &amp; Results</h2>
-					
-						<img src="<?php echo $this->uri->skin('assets/images/temp.jpg'); ?>" alt="Temp">
-					
+						
+						<a href="#">
+							<img src="<?php echo $this->uri->skin('assets/images/boxes/box-ofsted.jpg'); ?>" alt="OFSTED &amp; Results">
+						</a>
+						
 						<p>
 							We strive for Individual Excellence by meeting 
 							the needs of the individual in everything we do&hellip;
@@ -94,29 +100,29 @@
 				
 				<div class="column middle">
 					
-					<form method="post" action="">
+					<form method="post" action="/account/log-in" id="form-login" class="clearfix">
 						<fieldset>
 							
 							<div class="row">
-								<label for="login_type">Select login type</label>
-								<select name="login_type" id="login_type">
-									<option>Parent</option>
-									<option>Past Pupil</option>
-									<option>Staff</option>
+								<label for="account_type">Select login type</label>
+								<select name="account_type" id="account_type">
+									<option value="">Parent</option>
+									<option value="">Past Pupil</option>
+									<option value="">Staff</option>
 								</select>
 							</div>
 							
 							<div class="row">
-								<label for="login_username">Username</label>
-								<input type="password" name="login_username" id="login_username" value="">
+								<label for="account_email">Username</label>
+								<input type="password" name="account_email" class="password" id="account_email" value="">
 							
-								<label for="login_password">Password</label>
-								<input type="password" name="login_password" id="login_password" value="">
+								<label for="account_password">Password</label>
+								<input type="password" name="account_password" class="password" id="account_password" value="">
 								
 								<input type="submit" value="Login">
 							</div>
 							
-							<a href="#">Forgotten Password?</a>
+							<a href="/account/recover">Forgotten Password?</a>
 							
 						</fieldset>
 					</form>
@@ -139,7 +145,7 @@
 								<label for="quicklink" class="title">Quick Links</label>
 								<select id="quicklink" name="quicklink">
 									<option value="">Select a Link</option>
-									<?php echo Modules::run('page/retrieve', 'select-options'); ?>
+									<?php echo Modules::run('page/children', 'select-option'); ?>
 								</select>
 							</fieldset>
 						</form>
@@ -165,7 +171,7 @@
 					<li><a href="#">Privacy Policy</a></li>
 					<li><a href="#">Terms of Use</a></li>
 					<li><a href="#">Site Map</a></li>
-					<li class="last-child"><a href="#">Highclare School <?php echo date('Y'); ?> &copy;</a></li>
+					<li class="last-child"><a href="#" rel="copyright">Highclare School <?php echo date('Y'); ?> &copy;</a></li>
 				</ul>
 				
 			</nav>

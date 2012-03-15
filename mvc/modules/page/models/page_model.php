@@ -1,7 +1,9 @@
 <?php
 
 class Page_Model extends NestedSet_Model {
-
+	
+	private $page_slugs_preslashed = true;
+	
 	public function __construct() {
 		
 		parent::__construct();
@@ -11,7 +13,7 @@ class Page_Model extends NestedSet_Model {
 	
 	public function load($page_slug) {
 		
-		if(strlen($page_slug) === 0 || substr($page_slug, 0, 1) !== '/') {
+		if($this->page_slugs_preslashed && (strlen($page_slug) === 0 || substr($page_slug, 0, 1) !== '/')) {
 			$page_slug = '/' . $page_slug;
 		}
 		
@@ -79,7 +81,7 @@ class Page_Model extends NestedSet_Model {
 		);
 		
 		$this->db->insert('page', $page_insert);
-
+		
 		// Flash Message
 		$this->session->set_flashdata('admin/message', sprintf('Page entitled "%s" has been created', $this->form_validation->value('page_name')));
 		
@@ -202,9 +204,26 @@ class Page_Model extends NestedSet_Model {
 	
 	public function search($search_term) {
 		
-		$this->db->select('*');
-		$this->db->from('page');
-		$this->db->where(sprintf('match(page_name, page_content) AGAINST (\'%s\' IN BOOLEAN MODE)', $search_term));
+		$this->db->select('pn.*');
+
+		$this->db->select('
+		ifnull((
+			select pp.page_id
+				from page pp
+					where pp.page_left < pn.page_left AND pp.page_right > pn.page_right
+				order by
+					pp.page_right asc
+				limit 1
+		), 0) as page_parent_id', false);
+		
+		$this->db->select('group_concat(pp.page_slug order by pp.page_left separator "") as page_slug_path', false);
+		$this->db->select('count(pp.page_id) - 1 as page_depth');
+		$this->db->from('page pn');
+		$this->db->from('page pp');
+		$this->db->where('pn.page_left between pp.page_left and pp.page_right');
+		$this->db->where(sprintf('match(pn.page_name, pn.page_content) AGAINST (\'%s\' IN BOOLEAN MODE)', $search_term));
+		$this->db->order_by('pn.page_left');
+		$this->db->group_by('pn.page_id');
 		$news_result = $this->db->get();
 		
 		return $news_result->result('Page_Object');
@@ -224,6 +243,37 @@ class Page_Model extends NestedSet_Model {
 		
 		return explode(',', $subtree_result->row('node_ids'));
 	}
+	
+	
+	public function ajax_slug($json) {
+		
+		$iter = 0;
+		$name = str_replace(array('&'), array('and'), $json['incoming']['page_name']);
+		$slug = url_title($name, 'dash', true);
+		
+		if($this->page_slugs_preslashed) {
+			$slug = '/' . $slug;
+		}
+		
+		while(false === $this->validate_unique_permalink($slug, $json['incoming']['page_parent_id'], isset($json['incoming']['page_id']) ? $json['incoming']['page_id'] : null)) {
+			
+			$slug = url_title($name . ($iter === 0 ? '' : '-' . $iter), 'dash', true);
+			if($this->page_slugs_preslashed) {
+				$slug = '/' . $slug;
+			}
+			
+			$iter++;
+		}
+		
+		$json = array_merge($json, array('status' => true, 'result' => array(
+			'slug'	=> $slug,
+			'iter'	=> $iter
+		)));
+		
+		return $json;
+	}
+	
+	
 	
 	/*
 	public function delete($page_id) {
@@ -282,10 +332,15 @@ class Page_Model extends NestedSet_Model {
 	 * URLs built from a tree and for hashing.
 	 * 
 	 * @param string $page_slug 
-	 * @param string $reference_field 
+	 * @param mixed $reference_field 
+	 * @param mixed $ignore
 	 * @return boolean
 	 */
-	public function validate_unique_permalink($page_slug, $reference_field = 'page_parent_id') {
+	public function validate_unique_permalink($page_slug, $reference_field = 'page_parent_id', $ignore = null) {
+		
+		// Are we calling this wishing to rely on form_validation?
+		// This is generally true as this function is used as a callback.
+		$via_form_validation = !is_numeric($reference_field);
 		
 		$this->db->select('pn.page_id');
 		$this->db->select('pn.page_name');
@@ -297,7 +352,7 @@ class Page_Model extends NestedSet_Model {
 		$this->db->group_by('pn.page_id');
 		
 		// If we are at the root...
-		if($this->form_validation->value($reference_field) == 0) {		
+		if(($via_form_validation && $this->form_validation->value($reference_field) == 0) || $reference_field == 0) {		
 			$this->db->having('page_depth', 0);
 			$this->db->where('pn.page_slug', $page_slug);
 		}
@@ -316,14 +371,14 @@ class Page_Model extends NestedSet_Model {
 			', false);
 			
 			$this->db->where('pn.page_slug', $page_slug);
-			$this->db->having('page_parent_id', $this->form_validation->value($reference_field));
+			$this->db->having('page_parent_id', $via_form_validation ? $this->form_validation->value($reference_field) : $reference_field);
 		}
 		
 		// If there is a page id value present in the POST array
 		// allow this to be 'ignored' from the query.  This will
 		// stop self-comparisons on an ->update() request.
-		if(false !== $this->form_validation->value('page_id')) {
-			$this->db->where('pn.page_id !=', $this->form_validation->value('page_id'));
+		if($via_form_validation && false !== $this->form_validation->value('page_id')) {
+			$this->db->where('pn.page_id !=', $via_form_validation ? $this->form_validation->value('page_id') : $ignore);
 		}
 		
 		$page_result = $this->db->get();
@@ -332,7 +387,10 @@ class Page_Model extends NestedSet_Model {
 		}
 		
 		// Set validation message because we have found a collision.
-		$this->form_validation->set_message('module_callback', sprintf('The %%s must have a unique permalink. This is taken by page "%s".', $page_result->row(0, 'Page_Object')->title()));
+		if($via_form_validation) {
+			$this->form_validation->set_message('module_callback', sprintf('The %%s must have a unique permalink. This is taken by page "%s".', $page_result->row(0, 'Page_Object')->title()));
+		}
+		
 		return false;
 	}
 	
@@ -550,10 +608,11 @@ class NestedSet_Model extends CI_Model {
 	 * @return 	void
 	 */
 	public function retrieve_nested($element_root = 0, $element_limit = null) {
-			
+		
 		$this->db->select('pn.page_id');
 		$this->db->select('pn.page_name');
 		$this->db->select('pn.page_slug');
+		$this->db->select('pn.page_status');
 		
 		// debug:
 		$this->db->select('pn.page_left, pn.page_right');
@@ -561,6 +620,8 @@ class NestedSet_Model extends CI_Model {
 		$this->db->select('pn.page_date_created');
 		$this->db->select('pn.page_date_updated');
 		$this->db->select('group_concat(pp.page_slug order by pp.page_left separator "") as page_slug_path', false);
+		
+		$this->db->select('group_concat(NULLIF(pp.page_id, pn.page_id) order by pp.page_left) as page_id_path', false);
 		
 		$this->db->from('page pp');
 		$this->db->from('page pn');
@@ -603,10 +664,23 @@ class NestedSet_Model extends CI_Model {
 		}
 		else {
 			$this->db->select('count(pp.page_id) - 1 as page_depth');
+			// group concat screws this up royally.
+			//$this->db->select('pp.page_id as page_parent_id', false);
+			$this->db->select('(
+				select 
+					pt.page_id
+				from
+					page as pt
+				where
+					pt.page_left < pn.page_left AND pt.page_right > pn.page_right
+				order by
+					pt.page_right - pn.page_right asc
+				limit 1
+			) as page_parent_id');
 		}
-
+		
 		$page_result = $this->db->get();
-        $page_objects = $page_result->result('Nested_Page_Object');
+		$page_objects = $page_result->result('Nested_Page_Object');
 		$tree_objects = $this->build_tree($page_objects);
 		
 		// Built a tree out of 'Nested_Page_Object's
@@ -638,7 +712,7 @@ class NestedSet_Model extends CI_Model {
 			$_depth 			= $page->depth();
 			$depths[$_depth] 	= &$tree[$page->id()];
 		}
-
+		
 		return $pointer;
 	}
 	
@@ -703,8 +777,16 @@ class Page_Object {
 		return $this->page_name;
 	}
 	
+	public function status($formatted = false) {
+		
+		if(!$formatted) {
+			return $this->page_status;
+		}
+		
+		return ucfirst($this->page_status);
+	}
+	
 	public function parent() {
-		//return $this->page_parent_id == $this->page_id ? null : (int)$this->page_parent_id;
 		return (int)$this->page_parent_id;
 	}
 	
@@ -817,6 +899,10 @@ class Nested_Page_Object extends Page_Object implements RecursiveIterator, Count
 	}
 	
 	
+	
+	
+	
+	
 	// Iterator methods.
 	public function hasChildren() {
 		return count($this->children) > 0;
@@ -824,6 +910,14 @@ class Nested_Page_Object extends Page_Object implements RecursiveIterator, Count
 	
 	public function getChildren() {
 		return new ArrayIterator($this->children);
+	}
+	
+	public function id_recursive() {
+		
+		if(is_null($this->page_id_path))
+			return '';
+		
+		return json_encode(array_map('intval', explode(',', $this->page_id_path)));
 	}
 
 	public function next() {

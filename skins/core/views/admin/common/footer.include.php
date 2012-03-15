@@ -57,20 +57,24 @@
 		
 		$(function() {
 			
+			var ckWidth = 600;
+			
 			var ck_tb_default = {
 				toolbar: [
 					{ name: 'styles', items: [ 'Format' ] },
 					{ name: 'basicstyles', items: [ 'Bold', 'Italic', 'Strike' ] },
 					{ name: 'lists', items: [ 'BulletedList', 'NumberedList', '-','Outdent','Indent', '-', 'Blockquote' ] },
 					{ name: 'spelling', items: [ 'atd-ckeditor' ]},
+					{ name: 'media', items: [ 'Image', 'Youtube' ]},
 					'/',
 					{ name: 'justify', items: [ 'JustifyLeft', 'JustifyCenter', 'JustifyRight' ] },
-					{ name: 'insert', items: [ 'Link', 'Unlink', 'Anchor', 'SpecialChar' ] },
+					{ name: 'insert', items: [ 'Link', 'Unlink', 'Anchor', 'SpecialChar', 'HorizontalRule' ] },
 					{ name: 'document', items: [ 'Source' ] },
 					{ name: 'editing', items : [ 'C3Widgets' ] },
+					{ name: 'tools', items: [ 'Maximize', 'Preview' ] }
 				],
 				removePlugins: 'elementspath',
-				extraPlugins: 'C3Widgets,atd-ckeditor',
+				extraPlugins: 'C3Widgets,atd-ckeditor,youtube',
 				stylesSet: [
 					{ name: 'Normal', element: 'p' },
 					{ name: 'Heading', element : 'h2', styles : { } },
@@ -83,7 +87,7 @@
 				forcePasteAsPlainText: true,
 				
 				height: '200px',
-				width: '560px',
+				width: (ckWidth + 43) + 'px',
 				resize_maxWidth: '100%',
 				startupShowBorders: false,
 				autoParagraph: false,
@@ -459,7 +463,7 @@
 					console.log('rockballs.');
 				},
 				onUploadSuccess: function(file, data, response) {
-
+					
 					// Return is JSON.
 					data = $.parseJSON(data);
 					
@@ -481,8 +485,56 @@
 				$dp.datepicker('show');
 				e.preventDefault();
 			});
+			
+			
+			
+			
+			
+			
+			// Page
+			// Toggle/Collapse.
+			$('.xer').click(function(event) {
+				
+				event.preventDefault();
+				
+				toggle = $(this).hasClass('open') ? 'closed' : 'open';
+				toggleFunc = toggle == 'closed' ? false : true;
+				
+				parent_id = parseInt($(this).parents('tr').data('id'));
+				data_rows = $.grep($(this).parents('tbody').find('tr'), function(el, i) {
+					return $.inArray(parent_id, $(el).data('children')) !== -1;
+				});
+				
+				$(this).removeClass('open closed').addClass(toggle).text(toggleFunc ? '-' : '+');
+				$(data_rows).toggle(toggleFunc);
+				
+				if(toggleFunc) {
+					$(data_rows).find('td').effect('highlight', { backgroundColor: '#ffd07f' }, 1000);
+				}
+			});
+			
+			// Auto-Slug
+			$('input.slug_title').blur(function() {
+				
+				// Find the slug field.
+				parent_form = $(this).parents('form');
+				parent_field = parent_form.find('input[data-slug-generate]');
+				slug_field = $('input[name="' + parent_field.data('slug-generate') + '"]').first();
+				
+				// If there is not slug field, or it has already been filled...
+				if(slug_field.length == 0 || slug_field.val().length > 1) {
+					return;
+				}
+				
+				$.post('/admin/' + parent_field.data('slug-module') + '/ajax/slug', parent_form.serialize(), function(data) {
+					slug_field.val(data.result.slug);
+				}, 'json');
+				
+				// Effect
+				slug_field.effect('highlight', { backgroundColor: '#ffd07f' }, 1000);
+			});
+			
 		});
-		
 		</script>
 		
 	</body>

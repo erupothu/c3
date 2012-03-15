@@ -19,6 +19,8 @@ class Admin extends INSIGHT_Admin_Controller {
 		// Load all pages into a Recurisve Iterator.
 		$page_iterator = new RecursiveArrayIterator($this->page->retrieve_nested());
 		
+		//var_dump($this->page->retrieve_nested());
+		
 		// Load an empty chunk if there are 0 rows.
 		if($page_iterator->count() === 0) {
 			return $this->load->view('admin/page/chunks/' . $format . '.empty.chunk.php');
@@ -66,7 +68,32 @@ class Admin extends INSIGHT_Admin_Controller {
 		echo 'settings for page';
 	}
 	
-
+	/**
+	 * ajax
+	 * 
+	 * Ajax endpoint.
+	 *
+	 * @return string JSON
+	 */
+	public function ajax($function) {
+		
+		$func = 'ajax_' . $function;
+		$post = $this->input->post(null, true);
+		$json = array(
+			'function'	=> $function,
+			'incoming'	=> $post,
+			'status'	=> false
+		);
+		
+		if(is_callable(array($this->page, $func))) {
+			$json = call_user_func(array($this->page, $func), $json);
+		}
+		
+		return $this->output->set_output(json_encode($json));
+	}
+	
+	
+	
 	private function _render($page_iterator, $limit = 0, $format = 'table-row', $args = array()) {
 		
 		while($page_iterator->valid()) {
@@ -82,6 +109,8 @@ class Admin extends INSIGHT_Admin_Controller {
 			$page_iterator->next();
 		}
 	}
+	
+	
 	
 	
 	

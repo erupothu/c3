@@ -1,3 +1,4 @@
+				
 				<!-- Rendering Event: <?php echo $event->id(); ?> -->
 				<tr>
 					<td class="date"><?php echo $event->date('M jS'); ?></td>

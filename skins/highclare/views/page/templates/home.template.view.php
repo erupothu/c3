@@ -17,7 +17,7 @@
 							<h2>Admissions &amp; Open Days</h2>
 							
 							<a href="/admissions">
-								<img src="<?php echo $this->uri->skin('assets/images/temp2.jpg'); ?>" alt="Admissions &amp; Open Days">
+								<img src="<?php echo $this->uri->skin('assets/images/boxes/box-admissions.jpg'); ?>" alt="Admissions &amp; Open Days">
 							</a>
 							
 							<p>
@@ -35,7 +35,7 @@
 							
 							<h2>
 								News
-								<small><a href="#">View all news</a></small>
+								<small><a href="/news">View all news</a></small>
 							</h2>
 							
 							<div class="news-container">
@@ -52,7 +52,7 @@
 							
 							<h2>
 								Diary Dates
-								<small><a href="#">View all dates</a></small>
+								<small><a href="/calendar">View all dates</a></small>
 							</h2>
 							
 							<div class="calendar-container">
@@ -65,7 +65,7 @@
 										</tr>
 									</thead>
 									<tbody>
-										<?php echo Modules::run('calendar/retrieve'); ?>
+										<?php echo Modules::run('calendar/retrieve', 'default', array('limit' => false)); ?>
 									</tbody>
 								</table>
 								

@@ -21,17 +21,10 @@ $(function() {
 		
 	});
 	
-	// Page-Curl Effect
-	$('#prospectus').fold({
-		side: 'right',
-		directory: '/skins/highclare/assets/images',
-		turnImage: 'fold.png',
-		maxHeight: 140,
-		startingWidth: 80,
-		startingHeight: 80,
-		autoCurl: true
+	$('#quicklink').change(function(event) {
+		window.location = $(this).val();
+		return event.preventDefault();
 	});
-	
 	
 	
 	// Menu
@@ -40,6 +33,7 @@ $(function() {
 	}, function() {
 		$(this).removeClass('selected');
 	});
+	
 	
 	// Slider
 	$('#gallery').nivoSlider({
@@ -86,6 +80,17 @@ $(function() {
 		afterLoad: function() {}
 	});
 	
+	
+	// Page Curl (Prospectus)
+	$('#prospectus').fold({
+		side: 'right',
+		directory: '/skins/highclare/assets/images',
+		turnImage: 'fold.png',
+		maxHeight: 140,
+		startingWidth: 80,
+		startingHeight: 80,
+		autoCurl: true
+	});
 	
 	pageCurlWaggle = function() {
 		obj = $('#turn_object');

@@ -333,16 +333,23 @@
 		}
 		
 			/* Breadcrumb */
-			.breadcrumb ul {
+			.breadcrumb {
+				background: #e7e8e9;
+				font-size: 0.8em;
+				margin: 20px 0;
+				padding: 0.5em;
+			}
+			
+			.breadcrumb ol {
 				
 			}
 			
-			.breadcrumb ul li {
+			.breadcrumb ol li {
 				float: left;
 				margin-right: 10px;
 			}
 			
-			.breadcrumb ul li a {
+			.breadcrumb ol li a {
 				
 			}
 		
@@ -389,6 +396,13 @@
 			.box a {
 				font-weight: bold;
 				text-decoration: none;
+			}
+			
+			.box a img {
+				display: block;
+				width: 289px;
+				height: 119px;
+				outline: 0;
 			}
 			
 			.box h2 {
@@ -694,6 +708,51 @@
 			#footer-nav li.first-child {
 				float: left;
 			}
+			
+			
+			/* Footer > Login */
+			#form-login {
+				
+			}
+			
+			#form-login .row {
+				clear: both;
+			}
+			
+			#form-login label {
+				color: #ffffff;
+				float: left;
+				width: 115px;
+				display: block;
+				line-height: 23px;
+				height: 24px;
+			}
+			
+			#form-login select {
+				
+			}
+			
+			#form-login input.password {
+				border: 1px solid #e4e4e4;
+				padding: 0 0 0 3px;
+				color: #9c9c9c;
+				height: 22px;
+				outline: none;
+				margin: 0 0 3px 0;
+			}
+			
+			#form-login a {
+				color: #fff;
+				float: right;
+				font-size: 0.7em;
+				text-decoration: none;
+			}
+			
+			#form-login a:hover {
+				text-decoration: underline;
+			}
+			
+			
 			
 			
 			/* Footer > Search */
@@ -1155,9 +1214,8 @@
 			</header>
 			
 			<div id="prospectus">
-				<a href="http://www.google.com/">Online Prospectus</a>
+				<a href="/admissions/prospectus">Online Prospectus</a>
 			</div>
 			
 			<div role="main" id="main" class="constrain clearfix">
-				
-				
+							

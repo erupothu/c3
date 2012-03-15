@@ -11,9 +11,11 @@ class Search extends INSIGHT_HMVC_Controller {
 	public function index() {
 		
 		
-		if($this->form_validation->run('search-form')) {
-			$search = $this->form_validation->value('search');
+		if(!$this->form_validation->run('search-form')) {
+			die('no search');
 		}
+
+		$search = $this->form_validation->value('search');		
 		
 		// @todo Observer Pattern here?
 		// @todo Modules should have 'capabilities', such as Administerable, Searchable, Installable, etc etc.
@@ -36,11 +38,10 @@ class Search extends INSIGHT_HMVC_Controller {
 			$search_results = array_merge($search_results, $model_object->search($search));
 		}
 		
+		echo '<ol>';
 		foreach($search_results as $search_result) {
-			
-			echo $search_result->title() . '<br />';
-			echo $search_result->content();
-			
+			echo '<li>' . get_class($search_result) . ' ' . anchor($search_result->permalink(true), $search_result->title()) . '</li>';
 		}
+		echo '</ol>';
 	}
 }
