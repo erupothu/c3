@@ -260,6 +260,7 @@
 			}
 			
 			
+			/* Header > Slider */
 			header #slider {
 				display: block;
 				width: 930px;
@@ -309,8 +310,11 @@
 				font-size: 1.65em;
 				padding-left: 0.5em;
 				text-decoration: none;
-				
 				letter-spacing: 0px;
+			}
+			
+			header #slider ul li.last-child a {
+				margin-bottom: 0;
 			}
 			
 			header #slider ul li a:hover {
@@ -318,8 +322,53 @@
 			}
 			
 			header #slider #gallery {
-				height: 304px;
+				height: 303px !important;
 				width: 930px !important;
+				overflow: hidden;
+			}
+			
+			
+			/* Header > Slider > nivoSlider */
+			.nivoSlider {
+				position: relative;
+			}
+			
+			.nivoSlider img {
+				position: absolute;
+				top: 0px;
+				left: 0px;
+			}
+			
+			/* If an image is wrapped in a link */
+			.nivoSlider a.nivo-imageLink {
+				position: absolute;
+				top: 0px;
+				left: 0px;
+				width: 100%;
+				height: 100%;
+				border: 0;
+				padding: 0;
+				margin: 0;
+				z-index: 6;
+				display: none;
+			}
+			
+			/* The slices and boxes in the Slider */
+			.nivo-slice {
+				display: block;
+				position: absolute;
+				z-index: 5;
+				height: 100%;
+			}
+			
+			.nivo-box {
+				display: block;
+				position: absolute;
+				z-index: 5;
+			}
+			
+			.nivo-caption {
+				display: none !important;
 			}
 		
 		
@@ -914,96 +963,9 @@
 		
 		
 		
-		/*
-		 * jQuery Nivo Slider v2.7.1
-		 * http://nivo.dev7studios.com
-		 *
-		 * Copyright 2011, Gilbert Pellegrom
-		 * Free to use and abuse under the MIT license.
-		 * http://www.opensource.org/licenses/mit-license.php
-		 * 
-		 * March 2010
-		 */
-
-
-		/* The Nivo Slider styles */
-		.nivoSlider {
-			position:relative;
-		}
-		.nivoSlider img {
-			position:absolute;
-			top:0px;
-			left:0px;
-		}
-		/* If an image is wrapped in a link */
-		.nivoSlider a.nivo-imageLink {
-			position:absolute;
-			top:0px;
-			left:0px;
-			width:100%;
-			height:100%;
-			border:0;
-			padding:0;
-			margin:0;
-			z-index:6;
-			display:none;
-		}
-		/* The slices and boxes in the Slider */
-		.nivo-slice {
-			display:block;
-			position:absolute;
-			z-index:5;
-			height:100%;
-		}
-		.nivo-box {
-			display:block;
-			position:absolute;
-			z-index:5;
-		}
-		/* Caption styles */
-		.nivo-caption {
-			position:absolute;
-			left:0px;
-			bottom:0px;
-			background:#000;
-			color:#fff;
-			opacity:0.8; /* Overridden by captionOpacity setting */
-			width:100%;
-			z-index:8;
-		}
-		.nivo-caption p {
-			padding:5px;
-			margin:0;
-		}
-		.nivo-caption a {
-			display:inline !important;
-		}
-		.nivo-html-caption {
-		    display:none;
-		}
-		/* Direction nav styles (e.g. Next & Prev) */
-		.nivo-directionNav a {
-			position:absolute;
-			top:45%;
-			z-index:9;
-			cursor:pointer;
-		}
-		.nivo-prevNav {
-			left:0px;
-		}
-		.nivo-nextNav {
-			right:0px;
-		}
-		/* Control nav styles (e.g. 1,2,3...) */
-		.nivo-controlNav a {
-			position:relative;
-			z-index:9;
-			cursor:pointer;
-		}
-		.nivo-controlNav a.active {
-			font-weight:bold;
-		}
 		
+		
+
 		
 		
 		
@@ -1056,131 +1018,131 @@
 				<nav>
 					<ul class="clearfix">
 						<li class="first-child">
-							<a href="#">Introduction</a>
+							<a href="/introduction">Introduction</a>
 							<ul>
 								<li class="first-child">
-									<a href="#">Meeting Individual Needs</a>
+									<a href="/introduction/individual-needs">Meeting Individual Needs</a>
 									<ul>
-										<li class="first-child last-child"><a href="#">In More Detail</a></li>
+										<li class="first-child last-child"><a href="/introduction/individual-needs/in-detail">In More Detail</a></li>
 									</ul>
 								</li>
-								<li><a href="#">Governors &amp; Staff</a></li>
-								<li class="last-child"><a href="#">Policies &amp; Downloads</a></li>
+								<li><a href="/introduction/governors-and-staff">Governors &amp; Staff</a></li>
+								<li class="last-child"><a href="/introduction/policies">Policies &amp; Downloads</a></li>
 							</ul>
 						</li>
 						<li>
-							<a href="#">Administration</a>
+							<a href="/administration">Administration</a>
 							<ul>
-								<li class="first-child"><a href="#">School Offices</a></li>
-								<li><a href="#">Transport</a></li>
-								<li><a href="#">Uniforms</a></li>
-								<li><a href="#">School Calendar</a></li>
-								<li><a href="#">Catering</a></li>
+								<li class="first-child"><a href="/administration/school-offices">School Offices</a></li>
+								<li><a href="/administration/transport">Transport</a></li>
+								<li><a href="/administration/uniforms">Uniforms</a></li>
+								<li><a href="/administration/school-calendar">School Calendar</a></li>
+								<li><a href="/administration/catering">Catering</a></li>
 								<li>
-									<a href="#">Vacancies</a>
+									<a href="/administration/vacancies">Vacancies</a>
 									<ul>
-										<li class="first-child last-child"><a href="#">Downloads</a></li>
+										<li class="first-child last-child"><a href="/administration/vacancies/downloads">Downloads</a></li>
 									</ul>
 								</li>
-								<li class="last-child"><a href="#">Snow &amp; Bad Weather</a></li>
+								<li class="last-child"><a href="/administration/snow-and-bad-weather">Snow &amp; Bad Weather</a></li>
 							</ul>
 						</li>
 						<li class="no-separator">
-							<a href="#">Admissions</a>
+							<a href="/admissions">Admissions</a>
 							<ul>
-								<li class="first-child"><a href="#">Fees</a></li>
-								<li><a href="#">Scholarships</a></li>
-								<li><a href="#">Prospectus Download</a></li>
-								<li><a href="#">Open Days</a></li>
-								<li class="last-child"><a href="#">Admission Policy</a></li>
+								<li class="first-child"><a href="/admissions/fees">Fees</a></li>
+								<li><a href="/admissions/scholarships">Scholarships</a></li>
+								<li><a href="/admissions/prospectus">Prospectus Download</a></li>
+								<li><a href="/admissions/open-days">Open Days</a></li>
+								<li class="last-child"><a href="/admissions/policy">Admission Policy</a></li>
 							</ul>
 						</li>
 						<li class="age-group two-lines">
-							<a href="#">Nursery&nbsp;&amp; Pre-School</a>
+							<a href="/nursery-and-preschool/">Nursery&nbsp;&amp; Pre-School</a>
 							<ul>
-								<li class="first-child last-child"><a href="#">Admissions</a></li>
+								<li class="first-child last-child"><a href="/nursery-and-preschool/admissions">Admissions</a></li>
 							</ul>
 						</li>
 						<li class="age-group">
-							<a href="#">Infants</a>
+							<a href="/infants">Infants</a>
 							<ul>
-								<li class="first-child"><a href="#">School Life</a></li>
-								<li><a href="#">Curriculum</a></li>
-								<li><a href="#">Extra Curricular</a></li>
-								<li><a href="#">Diary Dates</a></li>
-								<li><a href="#">The School Day</a></li>
-								<li><a href="#">Sports</a></li>
-								<li class="last-child"><a href="#">News</a></li>
+								<li class="first-child"><a href="/infants/school-life">School Life</a></li>
+								<li><a href="/infants/curriculum">Curriculum</a></li>
+								<li><a href="/infants/extra-curricular">Extra Curricular</a></li>
+								<li><a href="/infants/diary-dates">Diary Dates</a></li>
+								<li><a href="/infants/school-day">The School Day</a></li>
+								<li><a href="/infants/sports">Sports</a></li>
+								<li class="last-child"><a href="/news/category/infants">News</a></li>
 							</ul>
 						</li>
 						<li class="age-group">
-							<a href="#">Juniors</a>
+							<a href="/juniors">Juniors</a>
 							<ul>
-								<li class="first-child"><a href="#">School Life</a></li>
-								<li><a href="#">Curriculum</a></li>
-								<li><a href="#">Extra Curricular</a></li>
-								<li><a href="#">Diary Dates</a></li>
-								<li><a href="#">The School Day</a></li>
-								<li><a href="#">Clubs</a></li>
-								<li><a href="#">Sports</a></li>
-								<li><a href="#">Assessment</a></li>
-								<li><a href="#">KS2</a></li>
-								<li class="last-child"><a href="#">News</a></li>
+								<li class="first-child"><a href="/juniors/school-life">School Life</a></li>
+								<li><a href="/juniors/curriculum">Curriculum</a></li>
+								<li><a href="/juniors/extra-curricular">Extra Curricular</a></li>
+								<li><a href="/juniors/diary-dates">Diary Dates</a></li>
+								<li><a href="/juniors/school-day">The School Day</a></li>
+								<li><a href="/juniors/clubs">Clubs</a></li>
+								<li><a href="/juniors/sports">Sports</a></li>
+								<li><a href="/juniors/assessment">Assessment</a></li>
+								<li><a href="/juniors/key-stage-2">KS2</a></li>
+								<li class="last-child"><a href="/news/category/juniors">News</a></li>
 							</ul>
 						</li>
 						<li class="age-group">
-							<a href="#">Seniors</a>
+							<a href="/seniors">Seniors</a>
 							<ul>
-								<li class="first-child"><a href="#">School Life</a></li>
-								<li><a href="#">Curriculum</a></li>
-								<li><a href="#">Extra Curricular</a></li>
-								<li><a href="#">Maths, English &amp; Science</a></li>
-								<li><a href="#">Diary Dates</a></li>
-								<li><a href="#">The School Day</a></li>
-								<li><a href="#">Clubs</a></li>
-								<li><a href="#">Sports</a></li>
-								<li><a href="#">Music &amp; Drama</a></li>
-								<li class="last-child"><a href="#">News</a></li>
+								<li class="first-child"><a href="/seniors/school-life">School Life</a></li>
+								<li><a href="/seniors/curriculum">Curriculum</a></li>
+								<li><a href="/seniors/extra-curricular">Extra Curricular</a></li>
+								<li><a href="/seniors/maths-english-and-science">Maths, English &amp; Science</a></li>
+								<li><a href="/seniors/diary-dates">Diary Dates</a></li>
+								<li><a href="/seniors/school-day">The School Day</a></li>
+								<li><a href="/seniors/clubs">Clubs</a></li>
+								<li><a href="/seniors/sports">Sports</a></li>
+								<li><a href="/seniors/music-and-drama">Music &amp; Drama</a></li>
+								<li class="last-child"><a href="/news/category/seniors">News</a></li>
 							</ul>
 						</li>
 						<li class="age-group">
-							<a href="#">Sixth Form</a>
+							<a href="/sixth-form">Sixth Form</a>
 							<ul>
-								<li class="first-child"><a href="#">School Life</a></li>
-								<li><a href="#">Subjects</a></li>
-								<li><a href="#">Results</a></li>
-								<li class="last-child"><a href="#">News</a></li>
+								<li class="first-child"><a href="/sixth-form/school-life">School Life</a></li>
+								<li><a href="/sixth-form/subjects">Subjects</a></li>
+								<li><a href="/sixth-form/results">Results</a></li>
+								<li class="last-child"><a href="/news/category/sixth-form">News</a></li>
 							</ul>
 						</li>
 						<li>
-							<a href="#">Results</a>
+							<a href="/results">Results</a>
 							<ul>
-								<li class="first-child last-child"><a href="#">OFSTED Reports</a></li>
+								<li class="first-child last-child"><a href="/results/ofsted-reports">OFSTED Reports</a></li>
 							</ul>
 						</li>
 						<li>
-							<a href="#">Photo Gallery</a>
+							<a href="/gallery">Photo Gallery</a>
 							<ul>
-								<li class="first-child"><a href="#">General</a></li>
-								<li><a href="#">Nursery</a></li>
-								<li><a href="#">Pre-School &amp; Infants</a></li>
-								<li><a href="#">Juniors</a></li>
-								<li><a href="#">Seniors</a></li>
-								<li class="last-child"><a href="#">Sixth Form</a></li>
+								<li class="first-child"><a href="/gallery/general">General</a></li>
+								<li><a href="/gallery/nursery-and-preschool">Nursery &amp; Pre-School</a></li>
+								<li><a href="/gallery/infants">Infants</a></li>
+								<li><a href="/gallery/juniors">Juniors</a></li>
+								<li><a href="/gallery/seniors">Seniors</a></li>
+								<li class="last-child"><a href="/gallery/sixth-form">Sixth Form</a></li>
 							</ul>
 						</li>
 						<li class="flip-menu">
-							<a href="#">PTA</a>
+							<a href="/pta">PTA</a>
 							<ul>
-								<li class="first-child"><a href="#">Diary Dates</a></li>
-								<li class="last-child"><a href="#">News</a></li>
+								<li class="first-child"><a href="/pta/diary-dates">Diary Dates</a></li>
+								<li class="last-child"><a href="/news/category/pta">News</a></li>
 							</ul>
 						</li>
 						<li class="flip-menu last-child">
-							<a href="#">TOPS</a>
+							<a href="/tops">TOPS</a>
 							<ul>
-								<li class="first-child"><a href="#">Diary Dates</a></li>
-								<li class="last-child"><a href="#">News</a></li>
+								<li class="first-child"><a href="/tops/diary-dates">Diary Dates</a></li>
+								<li class="last-child"><a href="/news/category/tops">News</a></li>
 							</ul>
 						</li>
 					</ul>
@@ -1188,25 +1150,28 @@
 				
 				<ul id="subnav">
 					<li class="first-child"><a href="/">Home</a></li>
-					<li><a href="#">News</a></li>
-					<li><a href="#">Downloads</a></li>
-					<li><a href="#">Contact Us</a></li>
-					<li class="last-child"><a href="#">Site Map</a></li>
+					<li><a href="/news">News</a></li>
+					<li><a href="/downloads">Downloads</a></li>
+					<li><a href="/contact-us">Contact Us</a></li>
+					<li class="last-child"><a href="/sitemap">Site Map</a></li>
 				</ul>
 				
 				<div id="slider">
 					
 					<div id="gallery">
-						<img src="<?php echo $this->uri->skin('assets/images/slider/seniors-01.jpg'); ?>" alt="" data-tab="item-5">
-						<img src="<?php echo $this->uri->skin('assets/images/slider/seniors-02.jpg'); ?>" alt="" data-tab="item-4">
+						<?php $age_groups = array(1 => 'nursery-and-preschool', 2 => 'infants', 3 => 'juniors', 4 => 'seniors', 5 => 'sixth-form');
+						$age_groups = in_array($segment = $this->uri->segment(1), $age_groups) ? array_filter($age_groups, function($i) use ($segment) { return $i == $segment; }) : $age_groups;
+						for($i = 1; $i <= 2; $i++): foreach($age_groups as $age_nth => $age_group): ?>
+						<img src="<?php echo $this->uri->skin(sprintf('assets/images/slider/%s-%02d.jpg', $age_group, $i)); ?>" alt="" data-tab="item-<?php echo $age_nth; ?>">
+						<?php endforeach; endfor; ?>
 					</div>
 					
-					<ul class="item-5">
-						<li class="first-child"><a href="#">Nursery &amp; Pre-School</a></li>
-						<li><a href="#">Infants</a></li>
-						<li><a href="#">Juniors</a></li>
-						<li class="selected"><a href="#">Seniors</a></li>
-						<li class="last-child"><a href="#">Sixth Form</a></li>
+					<ul>
+						<li class="first-child"><a href="/nursery-and-preschool" title="Nursery &amp; Pre-School">Nursery &amp; Pre-School</a></li>
+						<li><a href="/infants" title="Infants">Infants</a></li>
+						<li><a href="/juniors" title="Juniors">Juniors</a></li>
+						<li><a href="/seniors" title="Seniors">Seniors</a></li>
+						<li class="last-child"><a href="/sixth-form" title="Sixth Form">Sixth Form</a></li>
 					</ul>
 					
 				</div>

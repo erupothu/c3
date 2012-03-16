@@ -6,19 +6,23 @@ Cufon.replace('.swiss-bd, .page-content h2', { fontFamily: 'Swis721 Bd BT' })
 
 $(function() {
 	
+	// Make Logo behave.
+	$('#logo').hover(function() {
+		$(this).css({ cursor: 'pointer' });
+	}).click(function() {
+		window.location = '/';
+	});
+	
+	
 	// User-Friendly Search
 	$('.search-box').focus(function() {
-		
 		if($(this).val() == 'Search') {
 			$(this).val('');
 		}
-		
 	}).blur(function() {
-		
 		if($(this).val() == '') {
 			$(this).val('Search');
 		}
-		
 	});
 	
 	$('#quicklink').change(function(event) {
@@ -62,23 +66,18 @@ $(function() {
 			
 			// Slider disappears
 			$('#slider ul').stop().animate({ left: '-284px' }, 250);
-			
-			data = $(this).data('nivo:vars');
-			
 		},
 		afterChange: function() {
 			
 			// Slider re-appears
 			$('#slider ul').stop().animate({ left: 0 }, 250);
-			
-			data = $(this).data('nivo:vars');
-			
-			$('#slider ul').attr('class', $(data.currentImage[0]).data('tab'));
-		},
-		slideshowEnd: function() {},
-		lastSlide: function() {},
-		afterLoad: function() {}
+			nivoSliderSetTab();
+		}
 	});
+	
+	nivoSliderSetTab = function() {
+		$('#slider ul').attr('class', $($('#gallery').data('nivo:vars').currentImage[0]).data('tab'));
+	}
 	
 	
 	// Page Curl (Prospectus)
@@ -104,4 +103,5 @@ $(function() {
 	});
 	
 	pageCurlWaggle();
+	nivoSliderSetTab();
 });
