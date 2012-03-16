@@ -118,9 +118,9 @@
 				
 				<input type="checkbox" name="account_marketing" id="account_marketing" value="0"<?php echo $this->form_validation->checked('account_marketing', '0'); ?>>
 				<label for="account_marketing">
-					Anubis are always developing new courses and new technologies, please 
+					XXX are always developing new courses and new technologies, please 
 					tick here if you don't wish to be informed of future developments.
-					<span>(Please Note: Your details will be held by Anubis Associates ltd and will not be shared with any other organisation)</span>
+					<span>(Please Note: Your details will be held by XXX and will not be shared with any other organisation)</span>
 				</label>
 				
 			</div>

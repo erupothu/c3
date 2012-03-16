@@ -14,22 +14,22 @@
 			
 		</div>
 		
-		<script src="<?php echo $this->uri->skin('scripts/jquery-1.7.1.min.js'); ?>"></script>
-		<script src="<?php echo $this->uri->skin('scripts/jquery-ui-1.8.17.min.js'); ?>"></script>
-		<script src="<?php echo $this->uri->skin('scripts/libs/jcrop-0.9.9/jquery.jcrop-0.9.9.min.js'); ?>"></script>
+		<script src="<?php echo $this->uri->skin('scripts/jquery-1.7.1.min.js', 'core'); ?>"></script>
+		<script src="<?php echo $this->uri->skin('scripts/jquery-ui-1.8.17.min.js', 'core'); ?>"></script>
+		<script src="<?php echo $this->uri->skin('scripts/libs/jcrop-0.9.9/jquery.jcrop-0.9.9.min.js', 'core'); ?>"></script>
 		
-		<script src="<?php echo $this->uri->skin('scripts/libs/ckeditor-3.6.2/ckeditor.js'); ?>"></script>
-		<script src="<?php echo $this->uri->skin('scripts/libs/ckeditor-3.6.2/adapters/jquery.js'); ?>"></script>
+		<script src="<?php echo $this->uri->skin('scripts/libs/ckeditor-3.6.2/ckeditor.js', 'core'); ?>"></script>
+		<script src="<?php echo $this->uri->skin('scripts/libs/ckeditor-3.6.2/adapters/jquery.js', 'core'); ?>"></script>
 		
 		<!--
-		<script src="<?php echo $this->uri->skin('scripts/libs/ckeditor-r7356/ckeditor.js'); ?>"></script>
-		<script src="<?php echo $this->uri->skin('scripts/libs/ckeditor-r7356/adapters/jquery.js'); ?>"></script>
+		<script src="<?php echo $this->uri->skin('scripts/libs/ckeditor-r7356/ckeditor.js', 'core'); ?>"></script>
+		<script src="<?php echo $this->uri->skin('scripts/libs/ckeditor-r7356/adapters/jquery.js', 'core'); ?>"></script>
 		-->
 		
-		<script src="<?php echo $this->uri->skin('scripts/libs/uploadify-3.0.0/jquery.uploadify-3.0.0.min.js'); ?>"></script>
+		<script src="<?php echo $this->uri->skin('scripts/libs/uploadify-3.0.0/jquery.uploadify-3.0.0.min.js', 'core'); ?>"></script>
 		
-		<script src="<?php echo $this->uri->skin('scripts/libs/fileuploader-1.0.0/fileuploader-1.0.0.js'); ?>"></script>
-		<script src="<?php echo $this->uri->skin('scripts/libs/fancybox-1.3.4/jquery.fancybox-1.3.4.min.js'); ?>"></script>
+		<script src="<?php echo $this->uri->skin('scripts/libs/fileuploader-1.0.0/fileuploader-1.0.0.js', 'core'); ?>"></script>
+		<script src="<?php echo $this->uri->skin('scripts/libs/fancybox-1.3.4/jquery.fancybox-1.3.4.min.js', 'core'); ?>"></script>
 		<script>
 		
 		var adminFlashMessageHide = function() {
@@ -80,7 +80,7 @@
 					{ name: 'Heading', element : 'h2', styles : { } },
 					{ name: 'Subheading', element: 'h3' }
 				],
-				contentsCss: [ '<?php echo $this->uri->skin('styles/page.css'); ?>', '<?php echo $this->uri->skin('assets/styles/page.css', $this->insight->config('display/skin')); ?>' ],
+				contentsCss: [ '<?php echo $this->uri->skin('styles/page.css', 'core'); ?>', '<?php echo $this->uri->skin('assets/styles/page.css', $this->insight->config('display/skin')); ?>' ],
 				bodyClass: 'page-content',
 				pasteFromWordRemoveFontStyles: true,
 				pasteFromWordRemoveStyles: true,
@@ -195,14 +195,15 @@
 			$areas = $('.ck-default textarea, textarea.ck-default').ckeditor(ck_tb_default);
 			
 			if($('#file-uploader').length > 0) {
+				
 				var uploader = new qq.FileUploader({
 					element: $('#file-uploader')[0],
 		 			action: '<?php echo site_url('admin/image/upload'); ?>',
-					allowedExtensions: ['jpg', 'jpeg'],
+					allowedExtensions: ['jpg'],
 					sizeLimit: 10485760,
 					debug: true,
 					onComplete: function(id, filename, data) {
-					
+						
 						// Add a hidden input
 						$li = $('.qq-upload-list li:last-child');
 						$li.append($('<input />', {
@@ -217,7 +218,7 @@
 					
 						// After upload, pop a modal
 						$.fancybox(
-							'/admin/image/modal/' + data.db_id, {
+							'/image/display/modal/' + data.db_id, {
 								'type'				: 'ajax',
 								'autoDimensions'	: true,
 								'autoScale'			: true,
@@ -230,9 +231,6 @@
 								'overlayColor'		: '#000'
 							}
 						);
-					},
-					onInit: function() {
-						alert('Init is working');
 					}
 				}); 
 			}
@@ -243,13 +241,17 @@
 				cursor: 'move'
 			});
 			
-			$('ul.qq-upload-list li a').live('click', function(e) {
+			$('ul.qq-upload-list li a').on('click', function(e) {
 				e.preventDefault();
 			});
 			
-			$('input[type="checkbox"]').bind('click change', function() {
-				$('.qq-on-select').toggle($('input[type="checkbox"]:checked').length > 0);
-			});
+			
+			
+			imageCheckSelectedImages = function() {
+				$('.qq-on-select').toggle($('.qq-upload-list .qq-upload-select:checked').length > 0);
+			}
+			
+			$('.qq-upload-list').on('change', 'input[type="checkbox"]', imageCheckSelectedImages);
 			
 			$('.qq-delete-images').click(function(e) {
 				
@@ -262,15 +264,18 @@
 						dataType: 'json',
 						url: '/admin/image/delete/' + $image_id + '/' + $page_id + '/true',
 						data: [],
-						success: function() {
+						success: function(data) {
+							
 							$($element).parents('li').fadeOut(250, function() {
 								$(this).remove();
+								imageCheckSelectedImages();
 							});
 						},
 						error: function() {
 							alert('Cannot delete image.');
 						}
 					});
+					
 				});
 				
 			});

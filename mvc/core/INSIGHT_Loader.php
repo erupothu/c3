@@ -41,7 +41,25 @@ class INSIGHT_Loader extends MX_Loader {
 		// Add the default skin folder.
 		$this->_ci_view_paths[$this->_ci_skin_path . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR] = true;
 	}
-
+	
+	
+	/**
+	 * add_viewpaths
+	 *
+	 * @access public
+	 * @param array $paths 
+	 * @return void
+	 */
+	public function add_viewpaths($paths) {
+		
+		if(!is_array($paths)) {
+			return $this->add_viewpaths(array($paths));
+		}
+		
+		$additional_paths = array_combine($paths, array_fill(0, count($paths), true));
+		$this->_ci_view_paths = array_merge($this->_ci_view_paths, $additional_paths);
+	}
+	
 	
 	/**
 	 * database

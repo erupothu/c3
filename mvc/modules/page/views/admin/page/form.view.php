@@ -1,9 +1,9 @@
-
+	
 	<div class="clearfix">
 		
-		<?php /*
-		<pre style="border: solid 1px #cccccc; padding: 20px; background: #fff; margin-bottom: 1.0em;"><?php print_r($page); ?></pre>
-		*/ ?>
+		<div id="images">
+			<?php echo Modules::run('image/display/upload', 'hello'); ?>
+		</div>
 		
 		<form method="post" action="<?php echo $this->uri->uri_string(); ?>">
 			<fieldset>

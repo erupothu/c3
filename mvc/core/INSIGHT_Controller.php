@@ -12,9 +12,10 @@ class INSIGHT_HMVC_Controller extends MX_Controller {
 	public function __construct() {
 		
 		parent::__construct();
-
+		
 		// Set the skin.
 		CI::$APP->load->skin(get_instance()->insight->config('display/skin'), 'views' . DIRECTORY_SEPARATOR . CI::$APP->router->fetch_module());
+		$this->load->add_viewpaths('skins/core/views/');
 	}
 }
 
