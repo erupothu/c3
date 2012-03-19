@@ -46,7 +46,7 @@ class INSIGHT_Admin_Controller extends INSIGHT_HMVC_Controller {
 		$this->load->library('form_validation');
 		
 		// Is this user authorised?
-		if(false === $this->multipartdata && $this->required_auth && (!isset($this->{$this->user_identifier}) || !is_object($this->{$this->user_identifier}) || !$this->{$this->user_identifier}->authenticated() || $this->{$this->user_identifier}->cannot('ADMINISTRATION_VIEW'))) {
+		if(false === $this->multipartdata && $this->required_auth && (!is_object($this->{$this->user_identifier}) || !$this->{$this->user_identifier}->authenticated() || $this->{$this->user_identifier}->cannot('ADMINISTRATION_VIEW'))) {
 			return redirect('admin/login');
 		}
 	}
