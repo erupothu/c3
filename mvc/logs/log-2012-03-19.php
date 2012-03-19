@@ -89,3 +89,7 @@ ERROR - 2012-03-19 16:33:26 --> Severity: Notice  --> Undefined index: image_wid
 ERROR - 2012-03-19 16:33:26 --> Severity: Notice  --> Undefined index: image_path /var/www/vhosts/highclare/public_html/mvc/modules/image/views/display/modal.view.php 30
 ERROR - 2012-03-19 16:33:26 --> Severity: Notice  --> Undefined index: image_id /var/www/vhosts/highclare/public_html/mvc/modules/image/views/display/modal.view.php 32
 ERROR - 2012-03-19 16:59:35 --> Severity: Notice  --> Undefined property: Image_Object::$image_thumbnail_path /var/www/vhosts/highclare/public_html/mvc/modules/image/models/image_model.php 30
+ERROR - 2012-03-19 17:23:34 --> Severity: Notice  --> Undefined property: CI::$administrator /var/www/vhosts/highclare/public_html/mvc/third_party/MX/Controller.php 58
+ERROR - 2012-03-19 17:25:19 --> Severity: Notice  --> Undefined property: CI::$administrator /var/www/vhosts/highclare/public_html/mvc/third_party/MX/Controller.php 58
+ERROR - 2012-03-19 17:27:37 --> Severity: Notice  --> Undefined property: CI::$administrator /var/www/vhosts/highclare/public_html/mvc/third_party/MX/Controller.php 58
+ERROR - 2012-03-19 17:27:41 --> Severity: Notice  --> Undefined property: CI::$administrator /var/www/vhosts/highclare/public_html/mvc/third_party/MX/Controller.php 58
