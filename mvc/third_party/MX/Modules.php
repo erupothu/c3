@@ -60,17 +60,17 @@ class Modules
 	* Output from module is buffered and returned.
 	**/
 	public static function run($module) {
-
+		
 		$method = 'index';
-
+		
 		if(($pos = strrpos($module, '/')) != FALSE) {
 			$method = substr($module, $pos + 1);
 			$module = substr($module, 0, $pos);
 		}
-
+		
 		if($class = self::load($module)) {
-
-			if (method_exists($class, $method))	{
+			
+			if(method_exists($class, $method)) {
 				ob_start();
 				$args = func_get_args();
 				$output = call_user_func_array(array($class, $method), array_slice($args, 1));
@@ -78,7 +78,7 @@ class Modules
 				return ($output !== NULL) ? $output : $buffer;
 			}
 		}
-
+		
 		log_message('error', "Module controller failed to run: {$module}/{$method}");
 	}
 

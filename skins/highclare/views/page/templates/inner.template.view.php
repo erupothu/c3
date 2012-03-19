@@ -14,11 +14,8 @@
 					
 				</div>
 				
-				<div class="right" style="background: none; padding: 0; margin: 0;">
-					
-					<div style="border: solid 1px blue; margin-left: 20px; margin-top: 20px;">
-						photos here.
-					</div>
+				<div class="right neutral">
+					<?php echo Modules::run('image/resource/hook', 'page', $page->id(), 'list'); ?>
 				</div>
 				
 <?php $this->load->view('common/footer.include.php'); ?>

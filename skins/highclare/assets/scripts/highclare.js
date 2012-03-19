@@ -31,6 +31,17 @@ $(function() {
 	});
 	
 	
+	// Lightboxing
+	$('a.image-lightbox').fancybox({
+		'transitionIn'	: 'elastic',
+		'transitionOut'	: 'elastic',
+		'speedIn'		: 600, 
+		'speedOut'		: 200, 
+		'overlayShow'	: true,
+		'overlayColor'	: '#000000'
+	});
+	
+	
 	// Menu
 	$('header nav > ul li').hover(function() {
 		$(this).has('ul').addClass('selected');

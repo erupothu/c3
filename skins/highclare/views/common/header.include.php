@@ -12,6 +12,8 @@
 		<meta name="generator" content="C3">
 		<link rel="stylesheet" href="<?php echo $this->uri->skin('assets/styles/screen.css'); ?>">
 		<link rel="stylesheet" href="<?php echo $this->uri->skin('assets/styles/page.css'); ?>">
+		
+		<link rel="stylesheet" href="<?php echo $this->uri->skin('assets/scripts/libs/fancybox-1.3.4/jquery.fancybox-1.3.4.css'); ?>">
 		<style>
 		
 		html, body {
@@ -414,6 +416,24 @@
 			position: relative;
 			background: #fff;
 		}
+		
+			/* Right > Images */
+			#main .right.neutral {
+				background: none;
+				padding: 0;
+				margin: 0;
+			}
+			
+			#main .right .images {
+				margin-left: 20px;
+				margin-top: 20px;
+			}
+			
+			#main .right .images img {
+				display: block;
+				margin-bottom: 8px;
+			}
+			
 		
 		.boxes {
 			background: #fff;

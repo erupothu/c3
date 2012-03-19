@@ -29,28 +29,44 @@ class Admin extends INSIGHT_Admin_Controller {
 		// Iterate over children.
 		iterator_apply($page_iterator, array($this, '_render'), array($page_iterator, 0, $format, $args));
 	}
-
-
+	
+	
 	public function create() {
 		
 		if($this->form_validation->run('admin-page-form')) {
+			
+			// Create Page.
 			$page_id = $this->page->create();
+			
+			// Link Resources.
+			$resource_call = sprintf('%s/resource/link', $this->form_validation->value('resource_link'));
+			Modules::run($resource_call, 'page', $page_id, explode(',', $this->form_validation->value('resource_data')));
+			
+			// Return.
 			return redirect('admin/page');
 		}
 		
 		$this->load->view('admin/page/create.view.php', array());
 	}
-
+	
 	
 	public function update($page_id) {
 		
 		if($this->form_validation->run('admin-page-form')) {
+			
+			// Update Page.
 			$this->page->update($page_id);
+			
+			// Link Resources.
+			$resource_call = sprintf('%s/resource/link', $this->form_validation->value('resource_link'));
+			Modules::run($resource_call, 'page', $page_id, explode(',', $this->form_validation->value('resource_data')));
+			
+			// Return.
 			return redirect('admin/page');
 		}
-
+		
 		$this->load->view('admin/page/update.view.php', array(
-			'page' 	=> $this->page->retrieve_by_id($page_id)	// , 'page_id', true
+			'page' 	=> $this->page->retrieve_by_id($page_id)
 		));
 	}
 	

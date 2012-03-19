@@ -38,6 +38,18 @@ $config = array(
 			'field'	=> 'page_image_id[]',
 			'label'	=> 'Page Images',
 			'rules'	=> ''
-		)
+		),
+		
+		// Hook Resource
+		array(
+			'field'	=> 'resource_link',
+			'label'	=> 'Resource Link',
+			'rules'	=> ''
+		),
+		array(
+			'field'	=> 'resource_data',
+			'label'	=> 'Resource Data',
+			'rules'	=> ''
+		),
 	)
 );

@@ -23,4 +23,3 @@ $route['admin/(settings)/(:any)']		= '$2/admin/$1';
 $route['admin/(login|logout)']			= 'admin/gateway/$1';
 $route['admin/([^/]+)/(:any)']			= '$1/admin/$2';
 $route['admin/([^/]+)/?']				= '$1/admin/index';
-

@@ -9,6 +9,13 @@ class Admin extends INSIGHT_Admin_Controller {
 	}
 	
 	
+	public function index() {
+		
+		$this->load->view('admin/image/index.view.php');
+		
+	}
+	
+	
 	public function upload($filename = null, $upload_key = null) {
 		
 		$this->load->library('upload', $upload_config = array(
@@ -28,8 +35,11 @@ class Admin extends INSIGHT_Admin_Controller {
 			
 			$max_width = 1024;
 			$max_height = 684;
+			//$thumb_width = 195;
+			$thumb_width = 300;
+			$thumb_height = '';
 			
-			$thumbnail_arg = "-thumbnail '195x>' -gravity center";
+			$thumbnail_arg = "-thumbnail '" . $thumb_width . ">' -gravity center";
 			$all_arguments = sprintf('-resize %dx%d\>', $max_width, $max_height);
 			$command_magic = sprintf('mogrify %s %s', $all_arguments, $path_raw_part);
 			
@@ -69,7 +79,7 @@ class Admin extends INSIGHT_Admin_Controller {
 	public function retrieve() {}
 	public function update() {}
 	
-	public function delete($image_id, $page_id = null, $ajax_call = false) {
+	public function delete($image_id, $resource_id = null, $resource_type = null, $ajax_call = false) {
 		
 		// get image.
 		$this->db->select('*');
@@ -78,21 +88,24 @@ class Admin extends INSIGHT_Admin_Controller {
 		$image_result = $this->db->get();
 		$image = $image_result->row_array();
 		
-		// delete image
+		// delete image.
 		$this->db->from('image');
 		$this->db->where('image_id', $image_id);
 		$this->db->delete();
 		$this->db->affected_rows();
 		
-		/*
-		if(!is_null($page_id)) {
-			// delete image links
-			$this->db->from('page_image');
+		// delete any image links.
+		if(!is_null($resource_type) && !is_null($resource_id)) {
+			
+			$this->db->from('image_link');
 			$this->db->where('link_image_id', $image_id);
-			$this->db->where('link_page_id', $page_id);
+			$this->db->where('link_resource_id', $resource_id);
+			$this->db->where('link_resource_type', $resource_type);
 			$this->db->delete();
+			
+			// @TODO
+			// Re-order.
 		}
-		*/
 		
 		// physically remove image
 		if(file_exists($image['image_path'])) {
@@ -131,11 +144,14 @@ class Admin extends INSIGHT_Admin_Controller {
 				);
 			}
 			
+			$thumb_width = 300;
+			
+			
 			$thumbnailname = substr_replace($image['image_name'], '.thumbnail', strrpos($image['image_name'], '.'), 0);
 			$path_raw_part = 'uploads/' . $thumbnailname;
 			$path_sys_safe = FCPATH . $path_raw_part;
 			$path_web_safe = '/' . $path_raw_part;
-			$thumbnail_arg = "-thumbnail '195x>' -gravity center";
+			$thumbnail_arg = "-thumbnail '" . $thumb_width . "x>' -gravity center";
 			$all_arguments = '-auto-orient' . $crop_argument . ' +repage ' . $thumbnail_arg . ' -strip';
 			$command_magic = sprintf('convert %s %s %s', FCPATH . substr($image['image_path'], 1), $all_arguments, $path_sys_safe);
 			

@@ -191,6 +191,7 @@
 		<script src="<?php echo $this->uri->skin('assets/scripts/fonts/swiss721-bold.font.js'); ?>"></script>
 		<script src="<?php echo $this->uri->skin('assets/scripts/libs/sexy-curls.js'); ?>"></script>
 		<script src="<?php echo $this->uri->skin('assets/scripts/libs/jquery.nivo.slider.js'); ?>"></script>
+		<script src="<?php echo $this->uri->skin('assets/scripts/libs/fancybox-1.3.4/jquery.fancybox-1.3.4.pack.js'); ?>"></script>
 		<script src="<?php echo $this->uri->skin('assets/scripts/highclare.js'); ?>"></script>
 		
 		<script>

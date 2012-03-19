@@ -201,21 +201,32 @@
 		 			action: '<?php echo site_url('admin/image/upload'); ?>',
 					allowedExtensions: ['jpg'],
 					sizeLimit: 10485760,
-					debug: true,
+					debug: false,
+					onSubmit: function(id, filename) {
+						$('.qq-upload-list').show();
+						//toggle($('.qq-upload-list li').length > 0);
+					},
 					onComplete: function(id, filename, data) {
 						
+						//console.log('Complete', id, filename, $('.qq-upload-list'));
+						
 						// Add a hidden input
-						$li = $('.qq-upload-list li:last-child');
+						$li = $('.qq-upload-list li').not('.qq-bound').eq(id);
 						$li.append($('<input />', {
 							type: 'hidden',
-							name: 'page_image_id[]',
+							name: 'image_id[]',
 							value: parseInt(data.db_id)
 						}));
-					
+						
+						$li.addClass('qq-bound');
+						
 						// Set the CB name.
 						$cb = $li.find('input.qq-upload-select');
 						$cb.attr('name', 'image_select[' + data.db_id + ']');
-					
+						
+						// Hook onto existing image hook if it exists.
+						$('#resource_data').val($('#resource_data').val() + ($('#resource_data').val() == '' ? '' : ',') + data.db_id);
+						
 						// After upload, pop a modal
 						$.fancybox(
 							'/image/display/modal/' + data.db_id, {
@@ -235,21 +246,67 @@
 				}); 
 			}
 			
+			/* Debug:
+			$.fancybox(
+				'/image/display/modal/6', {
+					'type'				: 'ajax',
+					'autoDimensions'	: true,
+					'autoScale'			: true,
+					'centerOnScroll'	: true,
+					'width'				: 'auto',
+					'height'			: 'auto',
+					'transitionIn'		: 'elastic',
+					'transitionOut'		: 'elastic',
+					'modal'				: true,
+					'overlayColor'		: '#000'
+				}
+			);
+			*/
 			
+			
+			// Sortable!
 			$('ul.qq-upload-list').sortable({ 
 				axis: 'y',
-				cursor: 'move'
-			});
-			
-			$('ul.qq-upload-list li a').on('click', function(e) {
-				e.preventDefault();
+				cursor: 'move',
+				placeholder: 'ui-state-highlight'
 			});
 			
 			
+			var imageSortPositions = function() {
+				
+				id_list = [];
+				$('ul.qq-upload-list').find('li').each(function(index, item) {
+					image_id = $(item).find('.qq-upload-select').attr('name').match(/image_select\[(\d+)\]/i);
+					id_list.push(parseInt(image_id[1]))
+				});
+				
+				// Post to image order function.
+				//$.post('/image/resource/order', { order: id_list, fields: $('.resource_field').serialize() }, function(data) {
+				//	console.log(data);
+				//});
+				
+				// Set hidden.
+				$('#resource_data').val(id_list.join(','));
+				//console.log('sort order:', id_list);
+			}
 			
 			imageCheckSelectedImages = function() {
 				$('.qq-on-select').toggle($('.qq-upload-list .qq-upload-select:checked').length > 0);
 			}
+			
+			
+			
+			
+			
+			$('ul.qq-upload-list').on('sortupdate', imageSortPositions);
+			
+			
+			$('.qq-upload-success').on('click', 'a', function(event) {
+				event.preventDefault();
+			});
+			
+			
+			
 			
 			$('.qq-upload-list').on('change', 'input[type="checkbox"]', imageCheckSelectedImages);
 			
@@ -262,13 +319,18 @@
 					$image_id = $($element).attr('name').substring(13).slice(0, -1);
 					$.ajax({
 						dataType: 'json',
-						url: '/admin/image/delete/' + $image_id + '/' + $page_id + '/true',
+						url: '/admin/image/delete/' + $image_id + '/page/' + $page_id + '/true',
 						data: [],
 						success: function(data) {
 							
 							$($element).parents('li').fadeOut(250, function() {
 								$(this).remove();
 								imageCheckSelectedImages();
+								
+								// Hide the 'frame' if there are no images left.
+								if($('.qq-upload-list li').length == 0) {
+									$('.qq-upload-list').hide();
+								}
 							});
 						},
 						error: function() {
@@ -280,12 +342,23 @@
 				
 			});
 			
-			$('#qq_existing li').each(function($index, $element) {
-				$('ul.qq-upload-list').append($element);
+			$('#qq_existing li').each(function(index, element) {
+				
+				$('ul.qq-upload-list').append(element);
+				$('ul.qq-upload-list:hidden').show();
+				
+				if($('#qq_existing li').length == 0) {
+					imageSortPositions();
+				}
 			});
 			
 			// Check for race conds.
 			$('#qq_existing').remove();
+			
+			// On Load.
+			imageSortPositions();
+			
+			
 			
 			/*Options of both classes
 
@@ -465,14 +538,14 @@
 					testing: [ 'a', 'b', 'c' ]
 				},
 				onInit: function() {
-					console.log('rockballs.');
+					//console.log('rockballs.');
 				},
 				onUploadSuccess: function(file, data, response) {
 					
 					// Return is JSON.
 					data = $.parseJSON(data);
 					
-					console.log($(this), file, data, response);
+					//console.log($(this), file, data, response);
 					
 					$('#' + $(this).attr('queueID')).after('<a href="' + data.path + '" class="uploaded-pdf-preview" title="Preview"><span>Preview</span></a>', {});
 				}

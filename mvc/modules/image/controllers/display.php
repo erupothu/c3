@@ -3,7 +3,9 @@
 class Display extends INSIGHT_HMVC_Controller {
 	
 	public function __construct() {
+		
 		parent::__construct();
+		$this->load->model('image_model', 'image');
 	}
 	
 	public function upload() {
@@ -30,7 +32,7 @@ class Display extends INSIGHT_HMVC_Controller {
 		$image_result = $this->db->get();
 		
 		$this->load->view('display/modal.view.php', array(
-			'image'	=> $image_result->row_array()
+			'image'	=> $image_result->row(0, 'Image_Object')
 		));
 	}
 }

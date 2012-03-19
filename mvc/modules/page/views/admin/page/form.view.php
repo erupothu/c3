@@ -2,7 +2,7 @@
 	<div class="clearfix">
 		
 		<div id="images">
-			<?php echo Modules::run('image/display/upload', 'hello'); ?>
+			<?php echo Modules::run('image/display/upload'); ?>
 		</div>
 		
 		<form method="post" action="<?php echo $this->uri->uri_string(); ?>">
@@ -10,7 +10,11 @@
 				
 				<?php if(isset($page->page_id)): ?>
 				<input type="hidden" name="page_id" value="<?php echo $page->id(); ?>">
+				<input type="hidden" name="resource_id" class="resource_field" value="<?php echo $page->id(); ?>">
+				<input type="hidden" name="resource_type" class="resource_field" value="page">
 				<?php endif; ?>
+				
+				<?php echo Modules::run('image/resource/hook', 'page', isset($page->page_id) ? $page->page_id : null); ?>
 				
 				<?php if($this->form_validation->has_errors()): ?>
 				<div class="row form-errors">

@@ -15,8 +15,13 @@
 		<link rel="stylesheet" href="<?php echo $this->uri->skin('scripts/libs/fileuploader-1.0.0/fileuploader-1.0.0.css', 'core'); ?>" />
 		<link rel="stylesheet" href="<?php echo $this->uri->skin('scripts/libs/fancybox-1.3.4/jquery.fancybox-1.3.4.css', 'core'); ?>" />		
 		<link rel="stylesheet" href="<?php echo $this->uri->skin('scripts/libs/uploadify-3.0.0/uploadify.css', 'core'); ?>" />
-		<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.7/themes/smoothness/jquery-ui.css" />
+		<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/smoothness/jquery-ui.css" />
 		<script src="<?php echo $this->uri->skin('scripts/modernizr-2.0.6.min.js', 'core'); ?>"></script>
+		<style>
+		
+		.qq-upload-list { display: none; }
+		.ui-state-highlight { background: #ffd07f !important; height: 20px; }
+		</style>
 	</head>
 	<body>
 		

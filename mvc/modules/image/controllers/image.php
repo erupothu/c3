@@ -7,6 +7,4 @@ class Image extends INSIGHT_HMVC_Controller {
 		parent::__construct();
 		$this->load->model('image_model', 'image');
 	}
-	
-
 }
