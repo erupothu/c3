@@ -63,6 +63,8 @@ class Insight {
 	public function modules() {
 		
 		$modules = array();
+		// @TODO make this more... configurable :)
+		$modules_inactive = array('order', 'product');
 		
 		foreach(Modules::$locations as $location => $_) {
 			foreach(new DirectoryIterator($location) as $module_folder) {
@@ -71,7 +73,7 @@ class Insight {
 					continue;
 				
 				// Is this an administrable module?  Does it have an admin controller?
-				if(file_exists($module_folder->getPathname() . DIRECTORY_SEPARATOR . 'controllers/admin' . EXT)) {
+				if(file_exists($module_folder->getPathname() . DIRECTORY_SEPARATOR . 'controllers/admin' . EXT) && !in_array($module_folder->getBasename(), $modules_inactive)) {
 					$modules[$module_folder->getBasename()] = ucfirst($module_folder->getBasename());
 				}
 			}

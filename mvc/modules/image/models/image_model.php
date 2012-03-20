@@ -6,6 +6,19 @@ class Image_Model extends CI_Model {
 		parent::__construct();
 	}
 	
+	public function retrieve_by_id($image_id) {
+		
+		$this->db->select('i.*');
+		$this->db->from('image i');
+		$this->db->where('i.image_id', $image_id);
+		$image_result = $this->db->get();
+		
+		if($image_result->num_rows() !== 1) {
+			return false;
+		}
+		
+		return $image_result->row(0, 'Image_Object');
+	} 
 }
 
 class Image_Object {

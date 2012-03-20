@@ -93,3 +93,4 @@ ERROR - 2012-03-19 17:23:34 --> Severity: Notice  --> Undefined property: CI::$a
 ERROR - 2012-03-19 17:25:19 --> Severity: Notice  --> Undefined property: CI::$administrator /var/www/vhosts/highclare/public_html/mvc/third_party/MX/Controller.php 58
 ERROR - 2012-03-19 17:27:37 --> Severity: Notice  --> Undefined property: CI::$administrator /var/www/vhosts/highclare/public_html/mvc/third_party/MX/Controller.php 58
 ERROR - 2012-03-19 17:27:41 --> Severity: Notice  --> Undefined property: CI::$administrator /var/www/vhosts/highclare/public_html/mvc/third_party/MX/Controller.php 58
+ERROR - 2012-03-19 17:33:37 --> Severity: Notice  --> Undefined property: CI::$administrator /var/www/vhosts/highclare/public_html/mvc/third_party/MX/Controller.php 58

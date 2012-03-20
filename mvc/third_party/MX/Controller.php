@@ -57,4 +57,8 @@ class MX_Controller {
 	public function __get($class) {
 		return CI::$APP->$class;
 	}
+	
+	public function __isset($class) {
+		return isset(CI::$APP->$class);
+	}
 }

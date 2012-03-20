@@ -21,18 +21,13 @@ class Display extends INSIGHT_HMVC_Controller {
 	
 	public function modal($image_id) {
 		
-		$parameters = array(
-			
-		);
+		if(!$image = $this->image->retrieve_by_id($image_id)) {
+			show_error('Unable to load image.');
+		}
 		
-		// @TODO Model
-		$this->db->select('*');
-		$this->db->from('image i');
-		$this->db->where('i.image_id', $image_id);
-		$image_result = $this->db->get();
-		
+		// Display the modal
 		$this->load->view('display/modal.view.php', array(
-			'image'	=> $image_result->row(0, 'Image_Object')
+			'image'	=> $image
 		));
 	}
 }

@@ -23,7 +23,7 @@
 		body {
 			color: #010101;
 			font: normal 15px/20px 'Arial', sans-serif;
-			background: #fff url(<?php echo $this->uri->skin('assets/images/bg.body.png'); ?>) no-repeat top left;
+			background: #fff url(<?php echo $this->uri->skin('assets/images/bg.body.png'); ?>) no-repeat top center;
 		}
 		
 		#highclare {
@@ -51,7 +51,7 @@
 		}
 		
 		header {
-			
+			margin-top: 50px;
 		}
 			
 			header nav {

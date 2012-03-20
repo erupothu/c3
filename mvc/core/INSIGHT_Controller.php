@@ -23,7 +23,7 @@ class INSIGHT_Admin_Controller extends INSIGHT_HMVC_Controller {
 	
 	protected $required_auth = true;
 	protected $required_perm = null;
-	private $user_identifier = 'administrator';
+	static private $user_identifier = 'administrator';
 	
 	public function __construct($required_auth = true, $required_perm = null) {
 		
@@ -43,10 +43,11 @@ class INSIGHT_Admin_Controller extends INSIGHT_HMVC_Controller {
 		// Is this a multipart data query?
 		$this->multipartdata = (false !== $this->input->server('CONTENT_TYPE') && substr($this->input->server('CONTENT_TYPE'), 0, 19) == 'multipart/form-data');
 		
+		// Load common libraries (all admin modules use form_validation).
 		$this->load->library('form_validation');
 		
-		// Is this user authorised?
-		if(false === $this->multipartdata && $this->required_auth && (!is_object($this->{$this->user_identifier}) || !$this->{$this->user_identifier}->authenticated() || $this->{$this->user_identifier}->cannot('ADMINISTRATION_VIEW'))) {
+		// Is this user authorised as an administrator?
+		if(false === $this->multipartdata && $this->required_auth && (!isset($this->{self::$user_identifier}) || !is_object($this->{self::$user_identifier}) || !$this->{self::$user_identifier}->authenticated() || $this->{self::$user_identifier}->cannot('ADMINISTRATION_VIEW'))) {
 			return redirect('admin/login');
 		}
 	}
