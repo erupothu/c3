@@ -75,8 +75,8 @@
 			bounds = jcrop_api.getBounds();
 			
 			// Auto-Select the middle.
-			if(minCropDimensions && (bounds[0] > minCropDimensions[0] && bounds[1] > minCropDimensions[1])) {
-				jcrop_api.setSelect([ Math.floor((bounds[0] - minCropDimensions[0]) / 2), Math.floor((bounds[1] - minCropDimensions[1]) / 2), minCropDimensions[0], minCropDimensions[1] ]);
+			if(1 == 0 && minCropDimensions && (Math.round(bounds[0]) > minCropDimensions[0] && Math.round(bounds[1]) > minCropDimensions[1])) {
+				jcrop_api.setSelect([ Math.floor((Math.round(bounds[0]) - minCropDimensions[0]) / 2), Math.floor((Math.round(bounds[1]) - minCropDimensions[1]) / 2), minCropDimensions[0], minCropDimensions[1] ]);
 			}
 		});
 		

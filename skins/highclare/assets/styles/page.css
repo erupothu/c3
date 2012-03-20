@@ -25,12 +25,9 @@
 	margin-top: 2.0em;
 }
 
-.page-content h1 {
-	visibility: hidden;
-}
-
-/* Display when Cufon has finished loading */
-.cufon-ready .page-content h1, .cufon-ready .page-content h2 {
+/* Display when Cufon has finished loading, or is not active. */
+.cufon-ready .page-content h1, .cufon-ready .page-content h2,
+body.page-content h1, body.page-content h2 {
 	visibility: visible;
 }
 

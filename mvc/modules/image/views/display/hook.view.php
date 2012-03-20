@@ -5,9 +5,9 @@
 		<?php foreach($images as $image): ?>
 		<li class="qq-upload-success qq-bound">
 			<input class="qq-upload-select" type="checkbox" name="image_select[<?php echo $image->id(); ?>]" />
-			<span class="qq-upload-file"><a href="#"><?php echo $image->name(); ?></a></span>
-			<span class="qq-upload-size" style="display: inline; "><?php echo $image->size(); ?>kb</span>
-			<input type="hidden" name="page_image_id[]" value="<?php echo $image->id(); ?>" />
+			<span class="qq-upload-file"><a href="<?php echo $image->path(); ?>"><?php echo $image->name(); ?></a></span>
+			<span class="qq-upload-size" style="display: inline;"><?php echo $image->size(); ?>kb</span>
+			<input type="hidden" name="page_image_id[]" class="page_image_id" value="<?php echo $image->id(); ?>" />
 		</li>
 		<?php endforeach; ?>
 	</ul>

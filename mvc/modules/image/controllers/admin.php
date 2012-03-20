@@ -15,7 +15,13 @@ class Admin extends INSIGHT_Admin_Controller {
 		
 	}
 	
-	
+	/**
+	 * upload
+	 *
+	 * @access public
+	 * @param string $filename 
+	 * @param string $upload_key 
+	 */
 	public function upload($filename = null, $upload_key = null) {
 		
 		$this->load->library('upload', $upload_config = array(
@@ -26,58 +32,60 @@ class Admin extends INSIGHT_Admin_Controller {
 		$upload_data = array();
 		if(false !== ($status = $this->upload->handle($filename))) {
 			
+			// Grab the raw upload.
 			$upload_data = $this->upload->data();
 			
-			// Run through the converter
-			// (IM) - stop files wider than XxY...
-			// @TODO tidy this up.  A lot.
-			$path_raw_part = $upload_data['full_path']; //sprintf('/%s/%s', $upload_config['upload_path'], $upload_data['file_name']);
+			$max_width 		= 1024;
+			$max_height 	= 684;
+			$thumb_width 	= 300;
 			
-			$max_width = 1024;
-			$max_height = 684;
-			//$thumb_width = 195;
-			$thumb_width = 300;
-			$thumb_height = '';
+			//$thumb_height 	= '';
 			
 			$thumbnail_arg = "-thumbnail '" . $thumb_width . ">' -gravity center";
 			$all_arguments = sprintf('-resize %dx%d\>', $max_width, $max_height);
-			$command_magic = sprintf('mogrify %s %s', $all_arguments, $path_raw_part);
+			$command_magic = sprintf('mogrify %s %s', $all_arguments, $upload_data['full_path']);
 			
 			$output = null;
 			exec($command_magic, $output);
 			
+			$image_details = getimagesize($upload_data['full_path']);
+			$image_size_kb = round(filesize($upload_data['full_path']) / 1024, 2);
 			
 			// insert.
-			// move to model here.
+			// @TODO move to model
 			$upload_date = new DateTime;
-			$this->db->insert('image', array(
+			$upload_load = array(
 				'image_name'			=> $upload_data['file_name'],
 				'image_path'			=> sprintf('/%s/%s', $upload_config['upload_path'], $upload_data['file_name']),
 				'image_alt'				=> null,
-				'image_width'			=> $upload_data['image_width'],
-				'image_height'			=> $upload_data['image_height'],
-				'image_size'			=> $upload_data['file_size'],
+				'image_width'			=> $image_details[0],
+				'image_height'			=> $image_details[1],
+				'image_size'			=> $image_size_kb,
 				'image_type'			=> 'ORIGINAL',
 				'image_date_created'	=> $upload_date->format('Y-m-d H:i:s')
-			));
+			);
 			
+			$this->db->insert('image', $upload_load);
 			$image_id = $this->db->insert_id();
 		}
 		
 		$return = array(
 			'success'	=> $status,
 			'error'		=> $this->upload->get_errors(),
-			'data'		=> $upload_data,
-			'db_id'		=> $image_id,
-			'temp'		=> $command_magic,
-			'asfasfas'	=> $output
+			'data'		=> $upload_load,
+			'db_id'		=> $image_id
 		);
 		
 		echo json_encode($return);
 	}
 	
-	public function retrieve() {}
-	public function update() {}
+	public function retrieve() {
+		
+	}
+	
+	public function update() {
+		
+	}
 	
 	public function delete($image_id, $resource_id = null, $resource_type = null, $ajax_call = false) {
 		

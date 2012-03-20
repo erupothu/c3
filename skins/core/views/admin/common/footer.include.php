@@ -202,6 +202,11 @@
 					allowedExtensions: ['jpg'],
 					sizeLimit: 10485760,
 					debug: false,
+					template: '<div class="qq-uploader">' + 
+						'<div class="qq-upload-drop-area"><span>Drop files here to upload</span></div>' +
+						'<div class="qq-upload-button button upload">Upload Image</div>' +
+						'<ul class="qq-upload-list"></ul>' + 
+					'</div>',
 					onSubmit: function(id, filename) {
 						$('.qq-upload-list').show();
 						//toggle($('.qq-upload-list li').length > 0);
@@ -214,10 +219,13 @@
 						$li = $('.qq-upload-list li').not('.qq-bound').eq(id);
 						$li.append($('<input />', {
 							type: 'hidden',
+							class: 'page_image_id',
 							name: 'image_id[]',
 							value: parseInt(data.db_id)
 						}));
 						
+						// Now enhance the span with a link to the image.
+						$li.find('.qq-upload-file').wrapInner('<a href="' + data.data.image_path + '">');
 						$li.addClass('qq-bound');
 						
 						// Set the CB name.
@@ -246,9 +254,9 @@
 				}); 
 			}
 			
-			/* Debug:
+			/*
 			$.fancybox(
-				'/image/display/modal/1', {
+				'/image/display/modal/2', {
 					'type'				: 'ajax',
 					'autoDimensions'	: true,
 					'autoScale'			: true,
@@ -268,7 +276,10 @@
 			$('ul.qq-upload-list').sortable({ 
 				axis: 'y',
 				cursor: 'move',
-				placeholder: 'ui-state-highlight'
+				distance: 5,
+				delay: 250,
+				placeholder: 'ui-state-highlight',
+				forcePlaceholderSize: true
 			});
 			
 			
@@ -301,7 +312,21 @@
 			$('ul.qq-upload-list').on('sortupdate', imageSortPositions);
 			
 			
-			$('.qq-upload-success').on('click', 'a', function(event) {
+			$('.qq-upload-list').on('click', '.qq-upload-success a', function(event) {
+				
+				$.fancybox('/image/display/frame/' + $(this).parents('li').find('.page_image_id').val(), {
+					'type'				: 'ajax',
+					'autoDimensions'	: true,
+					'autoScale'			: true,
+					'centerOnScroll'	: true,
+					'width'				: 'auto',
+					'height'			: 'auto',
+					'transitionIn'		: 'elastic',
+					'transitionOut'		: 'elastic',
+					'modal'				: false,
+					'overlayColor'		: '#000'
+				});
+				
 				event.preventDefault();
 			});
 			

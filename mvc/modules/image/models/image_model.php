@@ -47,6 +47,18 @@ class Image_Object {
 		return $this->image_alt;
 	}
 	
+	public function width() {
+		return $this->image_width;
+	}
+	
+	public function height() {
+		return $this->image_height;
+	}
+	
+	public function dimensions() {
+		return array($this->width(), $this->height());
+	}
+	
 	public function has_thumbnail() {
 		return is_numeric($this->image_thumbnail_id);
 	}
