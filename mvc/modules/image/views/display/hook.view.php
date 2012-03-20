@@ -3,7 +3,7 @@
 	<?php if(count($images) > 0): ?>
 	<ul id="qq_existing">
 		<?php foreach($images as $image): ?>
-		<li class="qq-upload-success qq-bound">
+		<li class="qq-upload-success qq-original">
 			<input class="qq-upload-select" type="checkbox" name="image_select[<?php echo $image->id(); ?>]" />
 			<span class="qq-upload-file"><a href="<?php echo $image->path(); ?>"><?php echo $image->name(); ?></a></span>
 			<span class="qq-upload-size" style="display: inline;"><?php echo $image->size(); ?>kb</span>

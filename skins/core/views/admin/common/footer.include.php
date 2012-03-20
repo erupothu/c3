@@ -216,7 +216,7 @@
 						//console.log('Complete', id, filename, $('.qq-upload-list'));
 						
 						// Add a hidden input
-						$li = $('.qq-upload-list li').not('.qq-bound').eq(id);
+						$li = $('.qq-upload-list li').not('.qq-original').eq(id);
 						$li.append($('<input />', {
 							type: 'hidden',
 							class: 'page_image_id',

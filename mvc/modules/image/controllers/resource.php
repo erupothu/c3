@@ -36,14 +36,18 @@ class Resource extends INSIGHT_HMVC_Controller {
 	}
 	
 	
-	public function link($resource_type, $resource_id, $image_ids) {
+	public function link($resource_type, $resource_id, $image_ids = array()) {
+		
+		// If there are no IDs, there is nothing to link.
+		if(empty($image_ids)) {
+			return;
+		}
 		
 		// Clear any existing links on this resource.
 		$this->db->where('link_resource_type', $resource_type);
 		$this->db->where('link_resource_id', $resource_id);
 		$this->db->where_in('link_image_id', $image_ids);
 		$this->db->delete('image_link');
-		
 		
 		// Tie new links
 		$increment = false;

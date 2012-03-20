@@ -9,7 +9,8 @@
 }
 
 .qq-upload-button-hover {
-	background: #ffffff;
+	background: #fafafa;
+	border-color: #666;
 }
 
 .qq-upload-button {

@@ -1,5 +1,5 @@
 	
-	<div id="upload-area" style="border: solid 1px red; margin: 0 0 1.0em 0;">
+	<div id="upload-area" style="margin: 0 0 1.0em 0;">
 		
 		<div id="file-uploader">
 			<noscript>

@@ -59,7 +59,7 @@ class Admin extends INSIGHT_Admin_Controller {
 			
 			// Link Resources.
 			$resource_call = sprintf('%s/resource/link', $this->form_validation->value('resource_link'));
-			Modules::run($resource_call, 'page', $page_id, explode(',', $this->form_validation->value('resource_data')));
+			Modules::run($resource_call, 'page', $page_id, preg_split('/,/', $this->form_validation->value('resource_data'), -1, PREG_SPLIT_NO_EMPTY));
 			
 			// Return.
 			return redirect('admin/page');

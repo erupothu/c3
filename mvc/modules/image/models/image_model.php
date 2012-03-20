@@ -59,8 +59,16 @@ class Image_Object {
 		return array($this->width(), $this->height());
 	}
 	
+	public function thumbnail() {
+		
+		if(!$this->has_thumbnail() || $this->is_thumbnail())
+			return false;
+			
+		return $this->image_thumbnail_path;
+	}
+	
 	public function has_thumbnail() {
-		return is_numeric($this->image_thumbnail_id);
+		return isset($this->image_thumbnail_id) && is_numeric($this->image_thumbnail_id);
 	}
 	
 	public function is_thumbnail() {

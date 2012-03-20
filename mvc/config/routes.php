@@ -13,7 +13,8 @@ $route['sitemap']						= 'page/sitemap';
 $route['sitemap.?([a-zA-Z.]+)?']		= 'page/sitemap/generate/$1';
 
 /* TEMP ROUTES */
-$route['special-projects/(technical-equipment|training)'] = 'product/route/$1';
+$route['gallery'] = 'image/gallery';//special-projects/(technical-equipment|training)'] = 'product/route/$1';
+$route['gallery/([^/]+)'] = 'image/gallery/display/$1';
 /* END NASTY TEMP ROUTES :( */
 
 /* Administration */
