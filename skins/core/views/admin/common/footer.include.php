@@ -246,7 +246,7 @@
 				}); 
 			}
 			
-			/* Debug: */
+			/* Debug:
 			$.fancybox(
 				'/image/display/modal/1', {
 					'type'				: 'ajax',
@@ -261,7 +261,7 @@
 					'overlayColor'		: '#000'
 				}
 			);
-			/**/
+			*/
 			
 			
 			// Sortable!
