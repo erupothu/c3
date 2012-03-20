@@ -597,6 +597,10 @@
 			.news-article {
 			}
 			
+			.news-article header {
+				margin-top: 0;
+			}
+			
 			.news-article h1 {
 				margin: 0 0 0.5em 0;
 				font-size: 1.1em;
