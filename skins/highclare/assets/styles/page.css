@@ -16,12 +16,22 @@
 .page-content h1, .page-content h2 {
 	font-weight: normal;
 	color: #991a2e;
+	visibility: hidden;
 }
 
 .page-content h2 {
 	font-weight: bold;
 	font-size: 1.35em;
 	margin-top: 2.0em;
+}
+
+.page-content h1 {
+	visibility: hidden;
+}
+
+/* Display when Cufon has finished loading */
+.cufon-ready .page-content h1, .cufon-ready .page-content h2 {
+	visibility: visible;
 }
 
 .page-content h3 {

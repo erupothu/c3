@@ -352,7 +352,7 @@ class Page_Model extends NestedSet_Model {
 		$this->db->group_by('pn.page_id');
 		
 		// If we are at the root...
-		if(($via_form_validation && $this->form_validation->value($reference_field) == 0) || $reference_field == 0) {		
+		if(($via_form_validation && ($this->form_validation->value($reference_field) == 0) || $reference_field === 0)) {
 			$this->db->having('page_depth', 0);
 			$this->db->where('pn.page_slug', $page_slug);
 		}

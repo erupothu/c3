@@ -26,6 +26,7 @@
 			background: #fff url(<?php echo $this->uri->skin('assets/images/bg.body.png'); ?>) no-repeat top center;
 		}
 		
+		
 		#highclare {
 			min-height: 100%;
 			height: auto !important;
@@ -1017,9 +1018,6 @@
 		}
 		
 		.calendar-dates td.name {}
-		
-		
-		
 		
 		</style>
 		
