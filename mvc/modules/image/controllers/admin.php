@@ -11,8 +11,49 @@ class Admin extends INSIGHT_Admin_Controller {
 	
 	public function index() {
 		
-		$this->load->view('admin/image/index.view.php');
+		$this->load->model('gallery_model', 'gallery');
+		
+		$this->load->view('admin/image/index.view.php', array(
+			'galleries'	=> $this->gallery->retrieve()
+		));
 	}
+	
+	
+	public function index_gallery() {
+		
+	} // ??
+	
+	public function create_gallery() {
+		
+		$this->load->model('gallery_model', 'gallery');
+		
+		if($this->form_validation->run('admin-image-gallery-form')) {
+			$gallery_id = $this->gallery->create();
+			return redirect('admin/image');
+		}
+		
+		$this->load->view('admin/gallery/create.view.php');
+	}
+	
+	public function update_gallery($gallery_id) {
+		
+		$this->load->model('gallery_model', 'gallery');
+		
+		if($this->form_validation->run('admin-image-gallery-form')) {
+			$this->gallery->update($gallery_id);
+			return redirect('admin/image');
+		}
+		
+		$this->load->view('admin/gallery/update.view.php', array(
+			'gallery'	=> $this->gallery->retrieve_by_id($gallery_id)
+		));
+	}
+	
+	public function delete_gallery($gallery_id) {
+		echo 'Delete ' . $gallery_id;
+	}
+	
+	
 	
 	/**
 	 * upload

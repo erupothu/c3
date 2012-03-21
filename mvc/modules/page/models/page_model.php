@@ -196,7 +196,7 @@ class Page_Model extends NestedSet_Model {
 		// Flash Message
 		$this->session->set_flashdata('admin/message', sprintf('Page entitled "%s" has been updated', $this->form_validation->value('page_name')));
 		
-		// Return the insert ID.
+		// Returns true if a record has successfully been modified.
 		return $this->db->affected_rows() === 1;
 	}
 	

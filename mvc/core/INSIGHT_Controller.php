@@ -65,8 +65,19 @@ class INSIGHT_Admin_Controller extends INSIGHT_HMVC_Controller {
 		// Find module & function.
 		$module = $this->router->fetch_module();
 		$module_function = 'ajax_' . $function;
-		
 		$post = $this->input->post(null, true);
+		
+		if(false !== ($module_override = $this->input->post('override_module'))) {
+			
+			// Attempt a load!
+			if(!property_exists(CI::$APP, $module_override)) {
+				$this->load->model(sprintf('%s/%s_model', $module, $module_override), $module_override);
+			}
+			
+			// Override Module.
+			$module = $module_override;
+		}
+		
 		$json = array(
 			'module'	=> $module,
 			'function'	=> $module_function,

@@ -298,13 +298,13 @@ class INSIGHT_Form_Validation extends CI_Form_Validation {
 		if(false !== stripos(is_array($rules) ? implode('|', $rules) : $rules, 'checkbox')) {
 			$postdata = $row['postdata'] = true;
 		}
-
+		
 		return parent::_execute($row, $rules, $postdata, $cycles);
 	}
 	
 	
 	public function module_callback($data, $args) {
-
+		
 		if(count($args = explode(',', $args)) < 1) {
 			return true;
 		}
@@ -317,6 +317,12 @@ class INSIGHT_Form_Validation extends CI_Form_Validation {
 		// This required the model to be in the format:
 		// module_name/models/module_name_model.php
 		// Yes, this is a little restrictive but keeps the form_validation rules neater.
+		// UPDATE: you can now do [whatever->func]
+		// This will call MODULE/WHATEVER/FUNC.
+		if(false !== strstr($function, '->')) {
+			list($model_name, $function) = explode('->', $function);
+		}
+		
 		$this->CI->load->model(sprintf('%1$s/%1$s_model', $model_name), $model_name);
 		
 		if(!method_exists($this->CI->$model_name, $function)) {

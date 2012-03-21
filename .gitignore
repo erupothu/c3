@@ -1,5 +1,24 @@
-.DS_Store
-._*
+# Project Ignores
 uploads/*
 skins/core/scripts/libs/ckeditor-r*
-mvc/logs/*.php
+
+# Logs
+mvc/logs/*
+*.log
+
+# Packages
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# 'Annoyings'
+.DS_Store*
+ehthumbs.db
+Icon?
+Thumbs.db
+._*

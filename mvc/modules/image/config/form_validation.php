@@ -24,5 +24,26 @@ $config = array(
 			'label'	=> 'Height',
 			'rules'	=> ''
 		)
+	),
+	
+	
+	'admin-image-gallery-form' => array(
+		
+		array(
+			'field'	=> 'gallery_id',
+			'label'	=> 'ID',
+			'rules'	=> ''
+		),
+		array(
+			'field'	=> 'gallery_name',
+			'label'	=> 'Name',
+			'rules'	=> 'required'
+		),
+		array(
+			'field'	=> 'gallery_slug',
+			'label'	=> 'Permalink',
+			'rules'	=> 'required|module_callback[gallery->validate_unique_permalink]'
+		)
+
 	)
 );

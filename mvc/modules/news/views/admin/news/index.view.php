@@ -1,5 +1,5 @@
 <?php $this->load->view('admin/common/header.include.php'); ?>
-
+		
 		<h2>News</h2>
 		
 		<table>

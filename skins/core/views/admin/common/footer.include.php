@@ -553,13 +553,20 @@
 				parent_form = $(this).parents('form');
 				parent_field = parent_form.find('input[data-slug-generate]');
 				slug_field = $('input[name="' + parent_field.data('slug-generate') + '"]').first();
-
+				
 				// If there is not slug field, or it has already been filled...
 				if(slug_field.length == 0 || slug_field.val().length > 1) {
 					return;
 				}
 				
-				$.post('/admin/' + parent_field.data('slug-module') + '/ajax/slug', parent_form.serialize(), function(data) {
+				serialized = parent_form.serialize();
+				
+				// Are we overriding the module?
+				if(parent_field.data('slug-override')) {
+					serialized += '&override_module=' + parent_field.data('slug-override');
+				}
+				
+				$.post('/admin/' + parent_field.data('slug-module') + '/ajax/slug', serialized, function(data) {
 					
 					if(!data.status) {
 						return;

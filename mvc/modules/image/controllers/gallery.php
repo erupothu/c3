@@ -23,6 +23,8 @@ class Gallery extends INSIGHT_HMVC_Controller {
 			
 		}
 		
+		
+		
 		$this->load->view('gallery/gallery.view.php', array(
 			'gallery' => $gallery
 		));
