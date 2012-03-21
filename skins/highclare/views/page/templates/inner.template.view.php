@@ -4,6 +4,12 @@
 					
 					<?php echo Modules::run('page/breadcrumb', $page); ?>
 					
+					<?php if($page->status() === 'draft'): ?>
+					<div id="page-draft">
+						<strong>Notice:</strong> This page is still a draft.  Only Administrators can preview it.
+					</div>
+					<?php endif; ?>
+					
 					<div class="page-content">
 						
 						<article style="margin: 0 0 1.5em 0;">

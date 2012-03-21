@@ -24,6 +24,12 @@ class Page extends INSIGHT_HMVC_Controller {
 		// Protected page?
 		// @TODO Permissions module?
 		
+		// Draft page?
+		// @TODO Permission ->can('PAGE_VIEW_DRAFT')
+		if($page->status() === 'draft' && !property_exists(CI::$APP, 'administrator')) {
+			return $this->_404();
+		}
+		
 		// Select template.
 		// @TODO This needs to come from the metadata.
 		$page_template = $page->slug() == '/' ? 'home' : 'inner';

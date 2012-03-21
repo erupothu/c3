@@ -16,13 +16,7 @@ class Admin extends INSIGHT_Admin_Controller {
 			'calendars' => $this->calendar->retrieve()
 		));
 	}
-	
-	
-	public function retrieve($format = 'table-row', $args = array()) {
-		
-	}
-	
-	
+
 	public function create() {
 		
 		if($this->form_validation->run('admin-calendar-form')) {
@@ -33,7 +27,6 @@ class Admin extends INSIGHT_Admin_Controller {
 		$this->load->view('admin/calendar/create.view.php', array());
 	}
 
-	
 	public function update($calendar_id) {
 		
 		if($this->form_validation->run('admin-calendar-form')) {
@@ -46,7 +39,6 @@ class Admin extends INSIGHT_Admin_Controller {
 		));
 	}
 	
-	
 	public function delete($calendar_id) {
 		
 		if(!$this->calendar->delete($calendar_id))
@@ -54,4 +46,13 @@ class Admin extends INSIGHT_Admin_Controller {
 			
 		return redirect('admin/calendar');
 	}
+	
+	
+	public function events($calendar_id) {
+		
+	}
+	
+	public function create_event() {}
+	public function update_event() {}
+	public function delete_event() {}
 }

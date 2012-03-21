@@ -404,6 +404,13 @@
 			.breadcrumb ol li a {
 				
 			}
+			
+			#page-draft {
+				border-radius: 0.5em;
+				background: #99002a;
+				color: #fff;
+				padding: 0.5em 1.0em;
+			}
 		
 		
 		
