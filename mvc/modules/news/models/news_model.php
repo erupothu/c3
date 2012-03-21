@@ -52,9 +52,12 @@ class News_Model extends CI_Model {
 		
 		$news_update = new DateTime;
 		$news_change = array(
-			'news_author_id'		=> 1,
 			'news_title'			=> $this->form_validation->value('news_title', '', false),
-			'news_date_updated'		=> $news_update->format('Y-m-d H:i:s'),
+			'news_slug'				=> $this->form_validation->value('news_slug'),
+			'news_data_excerpt'		=> $this->form_validation->value('news_data_excerpt', null, false),
+			'news_data_full'		=> $this->form_validation->value('news_data_full', null, false),
+			'news_date_updated'		=> $news_update->format(DATE_MYSQL_DATETIME),
+			'news_date_published'	=> DateTime::createFromFormat('Y-m-d H:i:s', sprintf('%s %02d:%02d:00', $this->form_validation->value('news_date_published'), $this->form_validation->value('news_date_published_h', date('H')), $this->form_validation->value('news_date_published_i', date('i'))))->format(DATE_MYSQL_DATETIME)
 		);
 		
 		$this->db->update('news', $news_change, array('news_id' => $news_id));
@@ -216,6 +219,40 @@ class News_Model extends CI_Model {
 		$dbforge->add_key('news_id', true);
 		$dbforge->create_table('news_test');
 	}
+	
+	
+	public function ajax_slug($json) {
+		
+		$iter = 0;
+		$name = str_replace(array('&'), array('and'), $json['incoming']['news_title']);
+		$slug = url_title($name, 'dash', true);
+		
+		while(false === $this->validate_unique_permalink($slug, isset($json['incoming']['news_id']) ? array($json['incoming']['news_id']) : null)) {
+			
+			$slug = url_title($name . ($iter === 0 ? '' : '-' . $iter), 'dash', true);
+			$iter++;
+		}
+		
+		$json = array_merge($json, array('status' => true, 'result' => array(
+			'slug'	=> $slug,
+			'iter'	=> $iter
+		)));
+		
+		return $json;
+	}
+	
+	public function validate_unique_permalink($slug, $ignore = array()) {
+		
+		$this->db->select('news.news_id');
+		$this->db->from('news');
+		$this->db->where('news.news_slug', $slug);
+		if(count($ignore) > 0) {
+			$this->db->where_not_in('news.news_id', $ignore);
+		}
+		
+		$news_result = $this->db->get();
+		return $news_result->num_rows() === 0;
+	}
 }
 
 class News_Object {
@@ -246,7 +283,7 @@ class News_Object {
 
 	public function permalink($complete = false) {
 		$permalink = array('news', $this->news_slug);
-		return $complete ? site_url($permalink) : '/' . implode('/', $permalink);
+		return $complete ? site_url($permalink) : $this->news_slug;
 	}
 	
 	public function active() {

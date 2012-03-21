@@ -40,10 +40,15 @@ class Admin extends INSIGHT_Admin_Controller {
 	}
 	
 	public function delete($news_id) {
-		
+
+		if(!$this->news->delete($news_id)) {
+			show_error('Could not delete News Article.');
+		}
+
+		return redirect('admin/news');
 	}
 	
 	public function settings() {
-		echo 'settings for page';
+		echo 'settings for News';
 	}
 }

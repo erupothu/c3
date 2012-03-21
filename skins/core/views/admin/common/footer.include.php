@@ -545,21 +545,28 @@
 				}
 			});
 			
-			// Auto-Slug
+			
+			// Auto-Slug code
 			$('input.slug_title').blur(function() {
 				
 				// Find the slug field.
 				parent_form = $(this).parents('form');
 				parent_field = parent_form.find('input[data-slug-generate]');
 				slug_field = $('input[name="' + parent_field.data('slug-generate') + '"]').first();
-				
+
 				// If there is not slug field, or it has already been filled...
 				if(slug_field.length == 0 || slug_field.val().length > 1) {
 					return;
 				}
 				
 				$.post('/admin/' + parent_field.data('slug-module') + '/ajax/slug', parent_form.serialize(), function(data) {
+					
+					if(!data.status) {
+						return;
+					}
+					
 					slug_field.val(data.result.slug);
+					
 				}, 'json');
 				
 				// Effect

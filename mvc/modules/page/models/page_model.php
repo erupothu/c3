@@ -245,6 +245,7 @@ class Page_Model extends NestedSet_Model {
 	}
 	
 	
+	/* @TODO: 'Genericify this' within a common model (INSIGHT_Model?) */
 	public function ajax_slug($json) {
 		
 		$iter = 0;

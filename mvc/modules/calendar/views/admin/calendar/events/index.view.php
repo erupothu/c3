@@ -1,6 +1,6 @@
 <?php $this->load->view('admin/common/header.include.php'); ?>
 
-		<h2>Calendar: <span><?php echo $calendar->name(); ?></span></h2>
+		<h2><?php echo anchor('admin/calendar', 'Calendars') ?> &rarr; <span><?php echo $calendar->name(); ?></span></h2>
 		
 		<table>
 			<colgroup>

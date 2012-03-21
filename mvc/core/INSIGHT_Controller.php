@@ -51,4 +51,34 @@ class INSIGHT_Admin_Controller extends INSIGHT_HMVC_Controller {
 			return redirect('admin/login');
 		}
 	}
+	
+	
+	/**
+	 * ajax
+	 * 
+	 * Ajax endpoint.
+	 *
+	 * @return string JSON
+	 */
+	public function ajax($function) {
+		
+		// Find module & function.
+		$module = $this->router->fetch_module();
+		$module_function = 'ajax_' . $function;
+		
+		$post = $this->input->post(null, true);
+		$json = array(
+			'module'	=> $module,
+			'function'	=> $module_function,
+			'incoming'	=> $post,
+			'status'	=> false,
+			'callable'	=> (is_callable(array($this->$module, $module_function)))
+		);
+		
+		if($json['callable']) {
+			$json = call_user_func(array($this->$module, $module_function), $json);
+		}
+		
+		return $this->output->set_output(json_encode($json));
+	}
 }

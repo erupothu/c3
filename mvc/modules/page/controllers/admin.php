@@ -84,31 +84,6 @@ class Admin extends INSIGHT_Admin_Controller {
 		echo 'settings for page';
 	}
 	
-	/**
-	 * ajax
-	 * 
-	 * Ajax endpoint.
-	 *
-	 * @return string JSON
-	 */
-	public function ajax($function) {
-		
-		$func = 'ajax_' . $function;
-		$post = $this->input->post(null, true);
-		$json = array(
-			'function'	=> $function,
-			'incoming'	=> $post,
-			'status'	=> false
-		);
-		
-		if(is_callable(array($this->page, $func))) {
-			$json = call_user_func(array($this->page, $func), $json);
-		}
-		
-		return $this->output->set_output(json_encode($json));
-	}
-	
-	
 	
 	private function _render($page_iterator, $limit = 0, $format = 'table-row', $args = array()) {
 		
@@ -132,26 +107,29 @@ class Admin extends INSIGHT_Admin_Controller {
 	
 	public function spellcheck() {
 		
-		$api = 'test_anubis_' . $this->administrator->id();
+		$text_data = '';
+		$api_key = sprintf('itsy.%s[usr-%d]', $this->input->server('HTTP_HOST'), $this->administrator->id());
 		
-		$postText = '';
-		if($_SERVER['REQUEST_METHOD'] === 'POST') {
-			$postText = trim(file_get_contents('php://input'));
+		if($this->input->server('REQUEST_METHOD') === 'POST') {
+			$text_data = trim(file_get_contents('php://input'));
 		}
 		
-		$postText .= '&key=' . $api;
-
+		
+		$url = $this->input->get('url', true) ? $this->input->get('url', true) : '/checkDocument';
+		
 		$url = isset($_GET['url']) ? $_GET['url'] : '/checkDocument';
 
 
-		$data = $this->AtD_http_post($postText, "service.afterthedeadline.com", $url);
+		$data = $this->AtD_http_post($text_data . '&key=' . $api_key, 'service.afterthedeadline.com', $url);
 
-		header('Content-Type: text/xml');
-		echo $data[1];
+		$this->output->set_content_type('text/xml');
+		$this->output->set_output($data[1]);
 	}
+	
 	
 	private function AtD_http_post($request, $host, $path, $port = 80) 
 	{
+		
 	   $http_request  = "POST $path HTTP/1.0\r\n";
 	   $http_request .= "Host: $host\r\n";
 	   $http_request .= "Content-Type: application/x-www-form-urlencoded\r\n";
