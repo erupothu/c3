@@ -78,6 +78,18 @@ body.page-content h1, body.page-content h2 {
 	margin-left: 2.5em;
 }
 
-.page-content iframe {
+.page-content table {
+	margin-top: 1.0em;
+}
+
+.page-content table.cke_show_border, .page-content table.cke_show_border td {
+	border: 1px solid #ddd;
+}
+
+.page-content table th {
 	
+}
+
+.page-content table td {
+	padding: 2px 4px;
 }

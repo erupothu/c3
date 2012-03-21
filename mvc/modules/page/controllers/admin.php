@@ -130,7 +130,7 @@ class Admin extends INSIGHT_Admin_Controller {
 	
 	
 	
-	public function temp() {
+	public function spellcheck() {
 		
 		$api = 'test_anubis_' . $this->administrator->id();
 		
