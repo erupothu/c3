@@ -37,8 +37,9 @@ define('FOPEN_WRITE_CREATE_STRICT',				'xb');
 define('FOPEN_READ_WRITE_CREATE_STRICT',		'x+b');
 
 
+
+// MySQL-compatible date formats
+// For use with DateTime
 define('DATE_MYSQL', 'Y-m-d H:i:s');
-
-
-/* End of file constants.php */
-/* Location: ./application/config/constants.php */
+define('DATE_MYSQL_DATETIME', DATE_MYSQL);
+define('DATE_MYSQL_DATE', 'Y-m-d');

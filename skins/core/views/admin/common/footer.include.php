@@ -243,6 +243,25 @@
 			// Init.
 			$areas = $('.ck-default textarea, textarea.ck-default').ckeditor(ck_tb_default);
 			
+			// CKEditor > Close Toolbars afterwards.
+			$('.ck-close-toolbar textarea').each(function() {
+				
+				found_instance = false;
+				for(i in CKEDITOR.instances) {
+					if(CKEDITOR.instances[i].name == $(this).attr('id')) {
+						found_instance = CKEDITOR.instances[i];
+						break;
+					}
+				}
+
+				if(!found_instance)
+					return;
+
+				// Alter options.
+				found_instance.config.toolbarStartupExpanded = false;
+			});
+
+			
 			if($('#file-uploader').length > 0) {
 				
 				var uploader = new qq.FileUploader({

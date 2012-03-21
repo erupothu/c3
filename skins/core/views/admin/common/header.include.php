@@ -20,7 +20,7 @@
 		<style>
 		
 		.qq-upload-list { display: none; }
-		.ui-state-highlight { background: #ffd07f !important; height: 20px; }
+		.qq-upload-list .ui-state-highlight { background: #ffd07f !important; height: 20px; }
 		</style>
 	</head>
 	<body>

@@ -2,6 +2,11 @@
 
 class Calendar extends INSIGHT_HMVC_Controller {
 	
+	private $iterator_defaults = array(
+		'format' 	=> 'default',
+		'limit'		=> false
+	);
+	
 	public function __construct() {
 		
 		parent::__construct();
@@ -10,7 +15,7 @@ class Calendar extends INSIGHT_HMVC_Controller {
 	}
 	
 	public function index() {
-		
+		echo 'Calendar';
 	}
 	
 	
@@ -20,32 +25,46 @@ class Calendar extends INSIGHT_HMVC_Controller {
 	
 	
 	
-	
-	public function retrieve($format = '', $args = array()) {
+	/**
+	 * retrieve
+	 *
+	 * @param array $arguments 
+	 * @return void
+	 */
+	public function retrieve($arguments = array()) {
 		
-		// Load all events into an Iterator.
-		$event_iterator = $this->calendar->retrieve_by_id(1)->getIterator();
+		// Build Arguments.
+		$arguments = array_merge($this->iterator_defaults, $arguments);
+
+		// Attempt to load this calendar
+		$calendar = $this->calendar->retrieve_by_id($arguments['id']);
 		
-		// Load an empty chunk if there are 0 rows.
-		
+		if(false === $calendar || $calendar->getIterator()->count() === 0) {
+			return $this->load->view('chunks/calendar/' . $arguments['format'] . '.empty.chunk.php');
+		}
 		
 		// Iterate over children.
-		iterator_apply($event_iterator, array($this, '_render'), array($event_iterator));
+		iterator_apply($calendar->getIterator(), array($this, '_render'), array($calendar->getIterator(), $arguments));
 	}
 	
-	
-	private function _render($iterator, $limit = 0, $format = '', $args = array()) {
-		
-		if($iterator->count() === 0) {
-			return $this->load->view('chunks/calendar/' . $format . '.empty.chunk.php');
-		}
+	/**
+	 * _render
+	 *
+	 * @param Iterator $iterator 
+	 * @param array $arguments 
+	 * @return void
+	 */
+	private function _render(Iterator $iterator, $arguments = array()) {
 		
 		$iterator_position = 0;
 		while($iterator->valid()) {
 			
 			$item = $iterator->current();
+			$this->load->view('chunks/calendar/' . $arguments['format'] . '.chunk.php', array_merge(array('event' => $item), $arguments));
 			
-			$this->load->view('chunks/calendar/event-row.chunk.php', array_merge(array('event' => $item), $args));
+			if(false !== $arguments['limit'] && ++$iterator_position >= $arguments['limit']) {
+				break;
+			}
 			
 			$iterator->next();
 		}

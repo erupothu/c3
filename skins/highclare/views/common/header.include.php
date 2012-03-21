@@ -1024,6 +1024,11 @@
 			width: 70px;
 		}
 		
+		.calendar-dates tr.event-past td {
+			/*text-decoration: line-through;*/
+			color: #999999;
+		}
+		
 		.calendar-dates td.name {}
 		
 		</style>

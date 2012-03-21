@@ -65,7 +65,7 @@
 										</tr>
 									</thead>
 									<tbody>
-										<?php echo Modules::run('calendar/retrieve', 'default', array('limit' => false)); ?>
+										<?php echo Modules::run('calendar/retrieve', array('format' => 'table-row', 'limit' => false, 'id' => 1)); ?>
 									</tbody>
 								</table>
 								
