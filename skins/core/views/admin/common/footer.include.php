@@ -552,10 +552,15 @@
 				// Find the slug field.
 				parent_form = $(this).parents('form');
 				parent_field = parent_form.find('input[data-slug-generate]');
+				if($.trim(parent_field.val()).length == 0) {
+					return;
+				}
+				
+				// Get Slug field.
 				slug_field = $('input[name="' + parent_field.data('slug-generate') + '"]').first();
 				
 				// If there is not slug field, or it has already been filled...
-				if(slug_field.length == 0 || slug_field.val().length > 1) {
+				if(slug_field.length == 0 || (slug_field.val().length > 0 && slug_field.val() != '/')) {
 					return;
 				}
 				
