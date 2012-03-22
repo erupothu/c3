@@ -53,18 +53,33 @@ class INSIGHT_Form_Validation extends CI_Form_Validation {
 	}
 	
 	
-	public function value($field, $default = '', $auto_encode = true) {
+	/**
+	 * undocumented value
+	 *
+	 * @param string $field 
+	 * @param string $default 
+	 * @param string $auto_encode 
+	 * @param string $nibble_arrays 
+	 * @return mixed
+	 */
+	public function value($field, $default = '', $auto_encode = true, $nibble_arrays = true) {
 		
 		$set_value = $this->set_value($field, $default);
 		
 		if(is_array($set_value)) {
-		
-			$return_values = $auto_encode ? array_map('htmlspecialchars', $set_value, array(ENT_COMPAT, 'UTF-8', false)) : $set_value;
+			
+			$return_values = $auto_encode ? array_map('htmlspecialchars', $set_value, array_fill(0, count($set_value), ENT_COMPAT), array_fill(0, count($set_value), 'UTF-8'), array_fill(0, count($set_value), false)) : $set_value;
+			
+			// If we just want the array in question, stop it
+			// from being 'nibbled'.
+			if(!$nibble_arrays) {
+				return $return_values;
+			}
 			
 			if(!isset($this->_field_points[$field])) {
 				$this->_field_points[$field] = 0;
 			}
-
+			
 			// Get the applicable item, and then index.
 			$selected_index = array_slice($return_values, $this->_field_points[$field], 1);
 			$this->_field_points[$field]++;			

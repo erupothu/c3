@@ -6,6 +6,7 @@ class Admin extends INSIGHT_Admin_Controller {
 		
 		parent::__construct();
 		$this->load->model('news_model', 'news');
+		//var_dump($this->insight->config('user/news'));
 	}
 	
 	public function index() {
@@ -23,7 +24,7 @@ class Admin extends INSIGHT_Admin_Controller {
 		}
 		
 		$this->load->view('admin/news/create.view.php', array(
-		//	'news' => new News_Object
+			'news_categories' => $this->news->retrieve_categories()
 		));
 	}
 	
@@ -35,7 +36,8 @@ class Admin extends INSIGHT_Admin_Controller {
 		}
 
 		$this->load->view('admin/news/update.view.php', array(
-			'news' => $this->news->retrieve_by_id($news_id)
+			'news' => $this->news->retrieve_by_id($news_id),
+			'news_categories' => $this->news->retrieve_categories()
 		));
 	}
 	

@@ -2,15 +2,24 @@
 
 class News_Model extends CI_Model {
 	
+	private $defaults = array(
+		'news_categories_enabled' => 'DISABLED'	// DISABLED, SINGLE, MULTIPLE
+	);
+	
+	private $settings;
+	
 	public function __construct() {
 		
 		parent::__construct();
 		
+		$this->settings = array_merge($this->defaults, $this->insight->config('user/news'));
+		
+		// Run Installer.
 		//News_Model::install();
 	}
 	
 	public function create() {
-
+		
 		$news_create = new DateTime;
 		$news_insert = array(			
 			'news_author_id'		=> $this->administrator->id(),
@@ -27,28 +36,82 @@ class News_Model extends CI_Model {
 		// Flash Message
 		$this->session->set_flashdata('admin/message', sprintf('News article entitled "%s" has been created', $this->form_validation->value('news_title')));
 		
+		// Get the PK.
+		$news_id = $this->db->insert_id();
+		
+		// Attach Categories.
+		$news_categories = array_filter($this->form_validation->value('news_category_id[]', null, false, false), function($element) { return !empty($element); });
+		$this->attach_categories($news_id, $news_categories);
+		
 		// Return the insert ID.
-		return $this->db->insert_id();
+		return $news_id;
 	}
 	
 	
-	public function retrieve() {
+	public function retrieve($where = array()) {
 		
-		$this->db->select('news.*');
-		$this->db->select('user.user_firstname as news_author_firstname');
-		$this->db->select('user.user_lastname as news_author_lastname');
-		$this->db->select('LENGTH(news.news_data_full) as news_length');
-		$this->db->from('news');
-		$this->db->join('user', 'user.user_id = news.news_author_id');
-		$this->db->where('NOW() >= news.news_date_published');
-		$this->db->order_by('news.news_date_published desc');
-		$news_result = $this->db->get();
+		$this->db->select('n.*');
+		$this->db->select('u.user_firstname as news_author_firstname');
+		$this->db->select('u.user_lastname as news_author_lastname');
+		$this->db->select('LENGTH(n.news_data_full) as news_length');
+		$this->db->from('news n');
+		$this->db->join('user u', 'u.user_id = n.news_author_id');
+		$this->db->where('NOW() >= n.news_date_published');
+		$this->db->order_by('n.news_date_published desc');
 		
-		return $news_result->result('News_Object');
+		foreach($where as $where_field => $where_value) {
+			$this->db->where($where_field, $where_value);
+		}
+		
+		// If we are using categories...
+		if($this->settings['news_categories_enabled'] !== 'DISABLED') {
+			
+			// THIS WILL WORK ONLY FOR 'SINGLE'.
+			// MULTIPLE IS GOING TO REQUIRE A REWRITE (NO TIME ATM).
+			// sorry :3
+			$this->db->select('nc.*');
+			$this->db->select('nl.link_news_id');
+			$this->db->join(array('news_link nl', 'news_category nc'), 'nl.link_news_id = n.news_id and nl.link_category_id = nc.category_id', 'left');
+			$this->db->group_by('n.news_id');
+			
+			$news_result = $this->db->get();
+			$linked_categories = array();
+			$category_objects = $news_result->result('News_Category_Object');
+			foreach($category_objects as $category_object) {
+				$linked_categories[$category_object->link_news_id] = $category_object;
+			}
+
+		}
+		
+		
+		if(!isset($news_result)) {
+			$news_result = $this->db->get();
+			//var_dump($news_result->result());
+		}
+		
+		$news_objects = $news_result->result('News_Object');
+		
+		
+		// If we are using categories...
+		if($this->settings['news_categories_enabled'] !== 'DISABLED') {
+			
+			foreach($news_objects as $i => $news_object) {
+				if(!isset($linked_categories[$news_object->id()]))
+					continue;
+				$news_objects[$i]->attach($linked_categories[$news_object->id()]);
+			}
+		}
+		
+		
+		return $news_objects;
 	}
 	
 	
 	public function update($news_id) {
+		
+		// Attach Categories.
+		$news_categories = array_filter($this->form_validation->value('news_category_id[]', null, false, false), function($element) { return !empty($element); });
+		$this->attach_categories($news_id, $news_categories);
 		
 		$news_update = new DateTime;
 		$news_change = array(
@@ -75,9 +138,14 @@ class News_Model extends CI_Model {
 			return false;
 		}
 		
-		// Mark the page as deleted
 		$this->session->set_flashdata('admin/message', sprintf('News article "%s" has been deleted', $news->title()));
-		$this->db->delete('news', array('news_id' => $news_id));
+		
+		// Remove any news category links.
+		$this->remove_categories($news_id);
+		
+		// Remove the actual news item.
+		$this->db->where('news_id', $news_id);
+		$this->db->delete('news');
 		
 		unset($news);
 		
@@ -130,19 +198,36 @@ class News_Model extends CI_Model {
 
 	public function retrieve_by_id($news_id) {
 		
-		$this->db->select('news.*');
-		$this->db->select('user.user_firstname as news_author_firstname');
-		$this->db->select('user.user_lastname as news_author_lastname');
-		$this->db->from('news');
-		$this->db->join('user', 'user.user_id = news.news_author_id');
-		$this->db->where('news.news_id', $news_id);
+		$this->db->select('n.*');
+		$this->db->select('u.user_firstname as news_author_firstname');
+		$this->db->select('u.user_lastname as news_author_lastname');
+		$this->db->from('news n');
+		$this->db->join('user u', 'u.user_id = n.news_author_id');
+		$this->db->where('n.news_id', $news_id);
+		
+		if($this->settings['news_categories_enabled'] !== 'DISABLED') {
+			
+			// THIS WILL WORK ONLY FOR 'SINGLE'.
+			// MULTIPLE IS GOING TO REQUIRE A REWRITE (NO TIME ATM).
+			// sorry :3
+			$this->db->select('nc.*');
+			$this->db->select('nl.link_news_id');
+			$this->db->join(array('news_link nl', 'news_category nc'), 'nl.link_news_id = n.news_id and nl.link_category_id = nc.category_id', 'left');
+			
+		}
+		
 		$news_result = $this->db->get();
 		
 		if($news_result->num_rows() === 0) {
 			return false;
 		}
 		
-		return $news_result->row(0, 'News_Object');
+		$news = $news_result->row(0, 'News_Object');
+		if($this->settings['news_categories_enabled'] !== 'DISABLED') {
+			$news->attach($news_result->result('News_Category_Object'));
+		}
+		
+		return $news;
 	}
 	
 	public function retrieve_by_slug($news_slug) {
@@ -161,6 +246,53 @@ class News_Model extends CI_Model {
 		
 		return $news_result->row(0, 'News_Object');
 	}
+	
+	
+	/* Categories */
+	/* Should this have it's own model? */
+	public function retrieve_categories() {
+		
+		$this->db->select('c.*');
+		$this->db->from('news_category c');
+		$this->db->order_by('c.category_id');
+		$category_result = $this->db->get();
+		
+		return $category_result->result('News_Category_Object');
+	}
+	
+	public function create_category() {}
+	public function update_category() {}
+	public function delete_category() {}
+	
+	public function attach_categories($news_id, $categories = array()) {
+		
+		// Remove existing links.
+		$this->remove_categories($news_id);
+		
+		foreach($categories as $category_id) {
+			
+			$this->db->insert('news_link', array(
+				'link_news_id'		=> $news_id,
+				'link_category_id'	=> $category_id
+			));
+		}
+		
+		return count($categories);
+	}
+	
+	public function remove_categories($news_id, $categories = array()) {
+		
+		if(!empty($categories)) {
+			$this->db->where_in('link_category_id', $categories);
+		}
+		
+		$this->db->where('link_news_id', $news_id);
+		$this->db->delete('news_link');
+		
+		return $this->db->affected_rows();
+	}
+	
+	
 	
 	
 	static public function install() {
@@ -340,4 +472,35 @@ class News_Object {
 			'output-encoding'	=> 'utf8'
 		));
 	}
+	
+	
+	public function attach($categories = array()) {
+		
+		if(!is_array($categories))
+			return $this->attach(array($categories));
+		
+		$this->categories = array_merge(!isset($this->categories) ? array() : $this->categories, $categories);
+	}
+	
+	public function categories() {
+		return new ArrayIterator(!isset($this->categories) ? array() : $this->categories);
+	}
+}
+
+class News_Category_Object {
+	
+	public function id() {
+		return $this->category_id;
+	}
+	
+	public function title() {
+		return $this->category_name;
+	}
+	
+	public function permalink($complete = false) {
+		return !$complete ? $this->category_slug : site_url(array('news/category/' . $this->category_slug));
+	}
+	
+	public function created() {}
+	public function updated() {}
 }

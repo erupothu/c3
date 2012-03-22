@@ -35,9 +35,7 @@
 				<label for="contact_enquiry_type">Enquiry Type</label>
 				<span><select id="contact_enquiry_type" name="contact_enquiry_type">
 					<option value="">---select---</option>
-					<option value="Risk Management">Risk Management</option>
-					<option value="Training">Training</option>
-					<option value="Special Projects">Special Projects</option>
+					
 				</select></span>
 			</div>
 			
@@ -49,7 +47,7 @@
 			<div class="row clearfix checkbox<?php echo $this->form_validation->earmark('contact_marketing'); ?>">
 				<span><input type="checkbox" name="contact_marketing" id="contact_marketing" value="1"<?php echo $this->form_validation->checked('contact_marketing', '1'); ?>></span>
 				<label for="contact_marketing">
-					Please tick this box if you do not wish to receive any form of contact from Anubis via email.
+					Please tick this box if you do not wish to receive any form of contact from XXX via email.
 				</label>
 			</div>
 			
@@ -59,8 +57,8 @@
 			
 			<small class="contact_notes">
 				Note: We will not use or pass your details on to any third parties<br />
-				Anubis is registered on the Data Protection Public Register with the 
-				Information Commissioner's Office with No Z1178771
+				XXX is registered on the Data Protection Public Register with the 
+				Information Commissioner's Office with No XXX
 			</small>
 			
 		</fieldset>

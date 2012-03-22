@@ -39,7 +39,7 @@
 							</h2>
 							
 							<div class="news-container">
-								<?php echo Modules::run('news/retrieve', 'default', array('limit' => 2)); ?>
+								<?php echo Modules::run('news/retrieve', array('limit' => 2)); ?>
 							</div>
 							
 						</div>

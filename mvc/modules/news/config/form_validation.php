@@ -14,6 +14,14 @@ $config = array(
 			'label'	=> 'Permalink',
 			'rules'	=> 'required'
 		),
+		
+		// Category(ies).
+		array(
+			'field'	=> 'news_category_id[]',
+			'label'	=> 'Category',	// Categories?
+			'rules'	=> ''
+		),
+		
 		array(
 			'field'	=> 'news_data_full',
 			'label'	=> 'Content',

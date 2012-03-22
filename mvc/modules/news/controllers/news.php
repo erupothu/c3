@@ -2,6 +2,11 @@
 
 class News extends INSIGHT_HMVC_Controller {
 	
+	private $iterator_defaults = array(
+		'format' 	=> 'default',
+		'limit'		=> false
+	);
+	
 	public function __construct() {
 		
 		parent::__construct();
@@ -32,35 +37,36 @@ class News extends INSIGHT_HMVC_Controller {
 	}
 	
 	
-	public function retrieve($format = '', $args = array()) {
+	public function retrieve($arguments = array()) {
+		
+		// Build Arguments.
+		$arguments = array_merge($this->iterator_defaults, $arguments);
 		
 		// Load all news into an Iterator.
-		$news_iterator = new ArrayIterator($this->news->retrieve());
+		$iterator = new ArrayIterator($this->news->retrieve());
 		
 		// Load an empty chunk if there are 0 rows.
 		
 		
 		// Iterate over children.
-		iterator_apply($news_iterator, array($this, '_render'), array($news_iterator, isset($args['limit']) ? $args['limit'] : 0, $format, $args));
+		iterator_apply($iterator, array($this, '_render'), array($iterator, $arguments));
 	}
 	
 	
-	private function _render($iterator, $limit = 0, $format = '', $args = array()) {
+	private function _render($iterator, $arguments = array()) {
 		
 		if($iterator->count() === 0) {
-			return $this->load->view('chunks/news/' . $format . '.empty.chunk.php');
+			return $this->load->view('chunks/news/' . $arguments['format'] . '.empty.chunk.php');
 		}
 		
 		$iterator_position = 0;
 		while($iterator->valid()) {
 			
 			$item = $iterator->current();
-			$this->load->view('chunks/news/' . $format . '.chunk.php', array_merge(array('article' => $item), $args));
+			$this->load->view('chunks/news/' . $arguments['format'] . '.chunk.php', array_merge(array('article' => $item), $arguments));
 			
 			$iterator->next();
-			
-			$iterator_position++;
-			if($limit !== 0 && $iterator_position >= $limit) {
+			if(false !== $arguments['limit'] && ++$iterator_position >= $arguments['limit']) {
 				break;
 			}
 		}
@@ -84,10 +90,32 @@ class News extends INSIGHT_HMVC_Controller {
 		$articles = $this->news->archive($year, $month, $day);
 		
 		//var_dump($articles);
-
+		
 		// Run it through the news template.
 	}
-
+	
+	
+	/**
+	 * category
+	 *
+	 * @return void
+	 * @author Jon
+	 */
+	public function category($category_slug, $arguments = array()) {
+		
+		// Build Arguments.
+		$arguments = array_merge($this->iterator_defaults, $arguments);
+		$iterator = new ArrayIterator($this->news->retrieve(array('category_slug' => $category_slug)));
+		
+		// Iterate over children.
+		//iterator_apply($iterator, array($this, '_render'), array($iterator, $arguments));
+		
+		
+		$this->load->view('templates/news-archive.template.view.php', array(
+			'articles'	=> $iterator
+		));
+	}
+	
 	
 	/**
 	 * view

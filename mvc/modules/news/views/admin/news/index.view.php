@@ -9,6 +9,7 @@
 					<th>&mdash;</th>
 					<th>Title</th>
 					<th>Author</th>
+					<th>Category</th>
 					<th>Publish Date</th>
 					<th>&nbsp;</th>
 				</tr>
@@ -20,6 +21,7 @@
 					<td><?php echo anchor($article->permalink(true), 'Preview', array('title' => sprintf("Preview '%s'", $article->title()), 'class' => 'icon icon-preview')); ?></td>
 					<td><?php echo anchor('admin/news/update/' . $article->id(), $article->title()); ?></td>
 					<td><?php echo $article->author(); ?></td>
+					<td><?php echo $article->categories()->count() > 0 ? $article->categories()->current()->title() : 'Uncategorised'; ?></td>
 					<td><?php echo $article->published(); ?></td>
 					<td><?php echo anchor('admin/news/delete/' . $article->id(), 'Delete'); ?></td>
 				</tr>
