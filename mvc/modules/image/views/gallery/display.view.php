@@ -1,1 +1,1 @@
-Gallery Display.
+Gallery Display template.

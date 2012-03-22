@@ -1,14 +1,14 @@
 <?php $this->load->view('common/header.include.php'); ?>
 				
-				<div class="left">
+				<div class="full">
 					
 					<?php //echo Modules::run('page/breadcrumb', $page); ?>
 					
-					<div class="page-content">
+					<div class="page-content" style="width: auto;">
 						
 						<h1><?php echo $gallery->name(); ?> Gallery</h1>
 						
-						<ul style="list-style: none; margin: 0; padding: 0;" class="clearfix">
+						<ul style="list-style: none; margin: 1.0em auto 1.5em; padding: 0;" class="clearfix">
 							<?php foreach($gallery->images() as $image): ?>
 							<li style="float: left; margin-right: 10px;">
 								<a href="<?php echo $image->path(); ?>" title="<?php echo $image->name(); ?>" class="image-lightbox" rel="gallery">

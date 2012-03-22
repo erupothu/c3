@@ -83,6 +83,10 @@ class Gallery_Model extends CI_Model {
 		$this->db->group_by('g.gallery_id');
 		$gallery_result = $this->db->get();
 		
+		if($gallery_result->num_rows() === 0) {
+			return false;
+		}
+		
 		// Create Gallery & Attach Images
 		$gallery = $gallery_result->row(0, 'Gallery_Object');
 		return $gallery->attach($gallery_result->result('Image_Object'));
@@ -97,33 +101,14 @@ class Gallery_Model extends CI_Model {
 		$this->db->select('t.image_path as image_thumbnail_path');
 		$this->db->from('image_gallery g');
 		$this->db->disable_escaping();
-		//$this->db->join(array('image_link il', 'image i'), 'il.link_resource_type = "gallery" and il.link_resource_id = g.gallery_id and i.image_id = il.link_image_id', 'left');
-		$this->db->join(array('image_link il', 'image t', 'image i'), 'il.link_resource_id = g.gallery_id and il.link_image_id = i.image_id and t.image_parent_id = i.image_id', 'left');
-		
-		
-		$this->db->where('il.link_resource_type', 'gallery');
+		$this->db->join(array('image_link il', 'image t', 'image i'), 'il.link_resource_type = "gallery" and il.link_resource_id = g.gallery_id and il.link_image_id = i.image_id and t.image_parent_id = i.image_id', 'left');
 		$this->db->where('g.gallery_slug', $gallery_slug);
-		
 		$this->db->order_by('g.gallery_id asc');
 		$gallery_result = $this->db->get();
-		
-		/*
-		$this->db->select('i.*');
-		$this->db->select('il.link_position');
-		$this->db->select('t.image_id as image_thumbnail_id');
-		$this->db->select('t.image_path as image_thumbnail_path');
-		$this->db->from('image i');
-		$this->db->join('image_link il', 'il.link_image_id = i.image_id');
-		$this->db->join('image t', 't.image_parent_id = i.image_id', 'left');
-		$this->db->where('il.link_resource_type', $resource_type);
-		$this->db->where('il.link_resource_id', $resource_id);
-		$this->db->order_by('il.link_position asc');
-		$resource_result = $this->db->get();
-		$resources = $resource_result->result('Image_Object');
-		*/
-		
-		
-		
+	
+		if($gallery_result->num_rows() === 0) {
+			return false;
+		}
 		
 		// Create Gallery & Attach Images
 		$gallery = $gallery_result->row(0, 'Gallery_Object');
