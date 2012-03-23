@@ -52,10 +52,22 @@ class Account_Model extends CI_Model {
 	
 	public function retrieve() {
 		
-		$this->db->select('*');
+		$this->db->select('u.*');
 		$this->db->from('user u');
-		$this->db->order_by('u.user_id asc');
+		$this->db->select('g.group_id as group_id');
+		$this->db->select('g.group_name as group_name');
+		$this->db->select('group_concat(p.permission_key) as group_permissions');
+		
+		$this->db->join('user_link ul', 'ul.link_user_id = u.user_id', 'left');
+		$this->db->join('user_group g', 'g.group_id = ul.link_group_id', 'left');
+		$this->db->join('permission_group gp', 'gp.link_group_id = g.group_id', 'left');
+		$this->db->join('permission p', 'p.permission_id = gp.link_permission_id', 'left');
+		
+		$this->db->group_by('u.user_id');
+		
 		$user_result = $this->db->get();
+		
+		//var_dump($user_result->result());
 		
 		return $user_result->result('Account_Object');
 	}
@@ -160,6 +172,10 @@ class Account_Object {
 	
 	public function name() {
 		return trim(sprintf('%s %s', $this->user_firstname, $this->user_lastname));
+	}
+	
+	public function group() {
+		return $this->group_name;
 	}
 	
 	public function marketing() {

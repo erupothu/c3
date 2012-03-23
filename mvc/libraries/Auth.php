@@ -30,12 +30,35 @@ class Auth {
 	 */
 	public function login($unique_identifier, $password, $auth_class = null, $additional_clauses = array()) {
 		
+		/*
 		$this->db->select('*');
 		$this->db->from('user u');
 		$this->db->where('u.user_email', $unique_identifier);
 		$this->db->where('u.user_password', self::encrypt($password));
 		$this->db->limit(1);
+		*/
+		
+		// This should come from the model, really!
+		// @TODO move to model.
+		
+		$this->db->select('u.*');
+		$this->db->from('user u');
+		$this->db->select('g.group_id as group_id');
+		$this->db->select('g.group_name as group_name');
+		$this->db->select('group_concat(p.permission_key) as group_permissions');
 
+		$this->db->join('user_link ul', 'ul.link_user_id = u.user_id', 'left');
+		$this->db->join('user_group g', 'g.group_id = ul.link_group_id', 'left');
+		$this->db->join('permission_group gp', 'gp.link_group_id = g.group_id', 'left');
+		$this->db->join('permission p', 'p.permission_id = gp.link_permission_id', 'left');
+
+		$this->db->where('u.user_email', $unique_identifier);
+		$this->db->where('u.user_password', self::encrypt($password));
+		
+		$this->db->group_by('u.user_id');
+		$this->db->limit(1);
+
+		
 		// Process additional clauses.
 		foreach($additional_clauses as $clause_field => $clause_value) {
 			$this->db->where($clause_field, $clause_value);
@@ -88,17 +111,47 @@ class Auth {
 			$auth_key = $user_class::$key;
 			
 			list($user_id, $user_password) = explode(':', $sub_data['hash']);
-		
+			
+			// Update Last Seen
+			// @TODO is this necessary in pulse?
+			$this->db->update('user', array('user_date_lastseen' => date(DATE_MYSQL_DATETIME)), array('user_id' => $user_id));
+			
+			
+			// This should come from the model, really!
+			// @TODO move to model.
+			
+			$this->db->select('u.*');
+			$this->db->from('user u');
+			$this->db->select('g.group_id as group_id');
+			$this->db->select('g.group_name as group_name');
+			$this->db->select('group_concat(p.permission_key) as group_permissions');
+
+			$this->db->join('user_link ul', 'ul.link_user_id = u.user_id', 'left');
+			$this->db->join('user_group g', 'g.group_id = ul.link_group_id', 'left');
+			$this->db->join('permission_group gp', 'gp.link_group_id = g.group_id', 'left');
+			$this->db->join('permission p', 'p.permission_id = gp.link_permission_id', 'left');
+
+			$this->db->where('u.user_id', $user_id);
+			$this->db->where('u.user_password', $user_password);
+			
+			$this->db->group_by('u.user_id');
+			$user_result = $this->db->get();
+			
+			
+			/*
 			$this->db->select('*');
 			$this->db->from('user u');
 			$this->db->where('u.user_id', $user_id);
 			$this->db->where('u.user_password', $user_password);
 			$user_result = $this->db->get();
+			*/
+			
+			
 			if($user_result->num_rows() !== 1) {
 				CI::$APP->session->set('auth/' . $auth_key, null);
 				continue;
 			}
-
+			
 			CI::$APP->session->set('auth/' . $auth_key . '/ping', time());
 			get_instance()->{$auth_key} = &$user_result->row(0, $user_class);
 		}
@@ -162,7 +215,8 @@ abstract class User {
 	
 	static public $key;
 	abstract public function authenticated();
-
+	protected $permissions = null;
+	
 	public function init() {
 		
 		if(isset($this->pulse_skip) && $this->pulse_skip)
@@ -202,7 +256,20 @@ abstract class User {
 	}
 	
 	public function can($permission = null) {
-		return true;
+		
+		if(is_null($this->permissions)) {
+			
+			// No permissions found... might want to throw an error here!
+			if(!isset($this->group_permissions) && !isset($this->user_permissions)) {
+				$this->permissions = array();
+				return false;
+			}
+			
+			$group_permissions = explode(',', $this->group_permissions);
+			$this->permissions = array_combine(array_values($group_permissions), array_fill(0, count($group_permissions), true));
+		}
+		
+		return isset($this->permissions[$permission]) && $this->permissions[$permission];
 	}
 	
 	public function cannot($permission = null) {

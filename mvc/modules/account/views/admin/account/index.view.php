@@ -18,7 +18,7 @@
 					<th>ID</th>
 					<th>Name</th>
 					<th>Email Address</th>
-					<th>Company</th>
+					<th>Group</th>
 					<th></th>
 					<th>Created</th>
 					<th>Last Seen</th>
@@ -31,7 +31,7 @@
 					<td class="center"><?php echo $account->id(); ?></td>
 					<td><?php echo anchor('admin/account/update/' . $account->id(), $account->name()); ?></td>
 					<td><?php echo $account->email(); ?></td>
-					<td><?php echo $account->company(); ?></td>
+					<td><?php echo $account->group(); ?></td>
 					<td></td>
 					<td><?php echo $account->created(); ?></td>
 					<td><?php echo $account->seen(); ?></td>
