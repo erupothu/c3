@@ -57,7 +57,7 @@ $(function() {
 		boxCols: 8,
 		boxRows: 4,
 		animSpeed: 1000,
-		pauseTime: 8000,
+		pauseTime: 4000,
 		startSlide: 0,
 		directionNav: false,
 		directionNavHide: true,
