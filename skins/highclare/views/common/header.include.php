@@ -1148,7 +1148,8 @@
 						<li class="first-child">
 							<a href="/introduction">Introduction</a>
 							<ul>
-								<li class="first-child">
+								<li class="first-child"><a href="/introduction">Home</a></li>
+								<li>
 									<a href="/introduction/individual-needs">Meeting Individual Needs</a>
 									<ul>
 										<li class="first-child last-child"><a href="/introduction/individual-needs/in-detail">In More Detail</a></li>
@@ -1161,7 +1162,8 @@
 						<li>
 							<a href="/administration">Administration</a>
 							<ul>
-								<li class="first-child"><a href="/administration/school-offices">School Offices</a></li>
+								<li class="first-child"><a href="/administration">Home</a></li>
+								<li><a href="/administration/school-offices">School Offices</a></li>
 								<li><a href="/administration/transport">Transport</a></li>
 								<li><a href="/administration/uniforms">Uniforms</a></li>
 								<li><a href="/administration/school-calendar">School Calendar</a></li>
@@ -1178,7 +1180,8 @@
 						<li class="no-separator">
 							<a href="/admissions">Admissions</a>
 							<ul>
-								<li class="first-child"><a href="/admissions/fees">Fees</a></li>
+								<li class="first-child"><a href="/admissions">Home</a></li>
+								<li><a href="/admissions/fees">Fees</a></li>
 								<li><a href="/admissions/scholarships">Scholarships</a></li>
 								<li><a href="/admissions/prospectus">Prospectus Download</a></li>
 								<li><a href="/admissions/open-days">Open Days</a></li>
@@ -1188,13 +1191,15 @@
 						<li class="age-group two-lines">
 							<a href="/nursery-and-preschool/">Nursery&nbsp;&amp; Pre-School</a>
 							<ul>
-								<li class="first-child last-child"><a href="/nursery-and-preschool/admissions">Admissions</a></li>
+								<li class="first-child"><a href="/nursery-and-preschool">Home</a></li>
+								<li class="last-child"><a href="/nursery-and-preschool/admissions">Admissions</a></li>
 							</ul>
 						</li>
 						<li class="age-group">
 							<a href="/infants">Infants</a>
 							<ul>
-								<li class="first-child"><a href="/infants/school-life">School Life</a></li>
+								<li class="first-child"><a href="/infants">Home</a></li>
+								<li><a href="/infants/school-life">School Life</a></li>
 								<li><a href="/infants/curriculum">Curriculum</a></li>
 								<li><a href="/infants/extra-curricular">Extra Curricular</a></li>
 								<li><a href="/infants/diary-dates">Diary Dates</a></li>
@@ -1206,7 +1211,8 @@
 						<li class="age-group">
 							<a href="/juniors">Juniors</a>
 							<ul>
-								<li class="first-child"><a href="/juniors/school-life">School Life</a></li>
+								<li class="first-child"><a href="/juniors">Home</a></li>
+								<li><a href="/juniors/school-life">School Life</a></li>
 								<li><a href="/juniors/curriculum">Curriculum</a></li>
 								<li><a href="/juniors/extra-curricular">Extra Curricular</a></li>
 								<li><a href="/juniors/diary-dates">Diary Dates</a></li>
@@ -1221,7 +1227,8 @@
 						<li class="age-group">
 							<a href="/seniors">Seniors</a>
 							<ul>
-								<li class="first-child"><a href="/seniors/school-life">School Life</a></li>
+								<li class="first-child"><a href="/seniors">Home</a></li>
+								<li><a href="/seniors/school-life">School Life</a></li>
 								<li><a href="/seniors/curriculum">Curriculum</a></li>
 								<li><a href="/seniors/extra-curricular">Extra Curricular</a></li>
 								<li><a href="/seniors/maths-english-and-science">Maths, English &amp; Science</a></li>
@@ -1236,7 +1243,8 @@
 						<li class="age-group">
 							<a href="/sixth-form">Sixth Form</a>
 							<ul>
-								<li class="first-child"><a href="/sixth-form/school-life">School Life</a></li>
+								<li class="first-child"><a href="/sixth-form">Home</a></li>
+								<li><a href="/sixth-form/school-life">School Life</a></li>
 								<li><a href="/sixth-form/subjects">Subjects</a></li>
 								<li><a href="/sixth-form/results">Results</a></li>
 								<li class="last-child"><a href="/news/category/sixth-form">News</a></li>
@@ -1245,7 +1253,8 @@
 						<li>
 							<a href="/results">Results</a>
 							<ul>
-								<li class="first-child last-child"><a href="/results/ofsted-reports">OFSTED Reports</a></li>
+								<li class="first-child"><a href="/results">Home</a></li>
+								<li class="last-child"><a href="/results/ofsted-reports">OFSTED Reports</a></li>
 							</ul>
 						</li>
 						<li>
@@ -1262,14 +1271,16 @@
 						<li class="flip-menu">
 							<a href="/pta">PTA</a>
 							<ul>
-								<li class="first-child"><a href="/pta/diary-dates">Diary Dates</a></li>
+								<li class="first-child"><a href="/pta">Home</a></li>
+								<li><a href="/pta/diary-dates">Diary Dates</a></li>
 								<li class="last-child"><a href="/news/category/pta">News</a></li>
 							</ul>
 						</li>
 						<li class="flip-menu last-child">
 							<a href="/tops">TOPS</a>
 							<ul>
-								<li class="first-child"><a href="/tops/diary-dates">Diary Dates</a></li>
+								<li class="first-child"><a href="/tops">Home</a></li>
+								<li><a href="/tops/diary-dates">Diary Dates</a></li>
 								<li class="last-child"><a href="/news/category/tops">News</a></li>
 							</ul>
 						</li>

@@ -630,7 +630,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,'technical@creativeinsight.co.uk','b004e9b6d82ad6d51a8832cd33c776164ea4874d4504e0405be051c9098f7ca0','Creative','Insight','Creative Insight','01213212828',1,1,'2011-10-25 17:21:09','2012-03-23 16:40:41',NULL),(2,'juliabaden@aol.com','96cb11f9d24a6011da515f386ed55c39c922836a74ce9fab7a6aa30cbe3775fe','Julia','Baden','Highclare School','01213868218',1,1,'2012-03-23 16:42:47','2012-03-23 16:46:15',NULL);
+INSERT INTO `user` VALUES (1,'technical@creativeinsight.co.uk','b004e9b6d82ad6d51a8832cd33c776164ea4874d4504e0405be051c9098f7ca0','Creative','Insight','Creative Insight','01213212828',1,1,'2011-10-25 17:21:09','2012-03-23 16:40:41',NULL),(2,'juliabaden@aol.com','96cb11f9d24a6011da515f386ed55c39c922836a74ce9fab7a6aa30cbe3775fe','Julia','Baden','Highclare School','01213868218',1,1,'2012-03-23 16:42:47','2012-03-23 17:11:38',NULL);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -691,4 +691,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-03-23 16:46:21
+-- Dump completed on 2012-03-23 17:11:53
