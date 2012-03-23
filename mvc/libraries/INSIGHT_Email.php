@@ -7,14 +7,24 @@ class INSIGHT_Email extends CI_Email {
 	
 	public function __construct($config = array()) {
 		
-		parent::__construct($config);		
+		parent::__construct($config);
 		$this->CI = &get_instance();
 		
 		$this->useragent = 'C3';
 	}
 	
+	public function from($from, $name = '') {
+		
+		/*
+		if(!in_array(ENVIRONMENT, array('development', 'testing')) && !preg_match('/' . preg_quote($this->CI->input->server('HTTP_HOST'), '/') . '$/i', $from, $m)) {
+			die('Check your email from hostname. ' . $from . ' and ' . $this->CI->input->server('HTTP_HOST') . ' do not match');
+		}
+		*/
+		
+		parent::from($from, $name);
+	}
+	
 	public function template($template_name, $template_data = array()) {
-		//array_combine(array_map(function($element) { return '%' . $element . '%'; }, array_keys($template_data)), array_values($template_data))
 		$this->message($this->CI->load->view('email/' . $template_name, $template_data, true));
 	}	
 }

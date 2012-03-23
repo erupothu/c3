@@ -1,9 +1,9 @@
 <?php
 
+/* C3 Configuration File */
 $config = array(
 	
 	'display'	=> array(
-		
 		'skin'		=> 'highclare',
 		'title'		=> 'Highclare'
 	),

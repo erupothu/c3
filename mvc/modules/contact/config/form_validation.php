@@ -12,7 +12,7 @@ $config = array(
 		array(
 			'field'	=> 'contact_company',
 			'label'	=> 'Company',
-			'rules'	=> 'required'
+			'rules'	=> ''
 		),
 		array(
 			'field'	=> 'contact_email',
@@ -38,6 +38,12 @@ $config = array(
 			'field'	=> 'contact_marketing',
 			'label'	=> 'Marketing',
 			'rules'	=> ''
-		)
+		),
+		
+		array(
+			'field'	=> 'contact_captcha',
+			'label'	=> 'Anti-Spam',
+			'rules'	=> 'required|module_callback[captcha->validate_captcha]'
+		),
 	)
 );

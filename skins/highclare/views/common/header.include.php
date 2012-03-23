@@ -994,10 +994,87 @@
 		
 		
 		
+		/* Contact > Default */
+		.contact-success {
+			padding: 0.5em 1.0em;
+			background: #e7e8e9;
+			border: solid 1px #bdbdbd;
+			box-shadow: 0px 2px 5px #bdbdbd;
+		}
+		
+		.contact-success h1, .contact-success h2 {
+			margin-top: 0.5em;
+		}
+		
+		.contact {
+			margin: 1.0em 0 0 0;
+		}
+		
+		.contact .row {
+			margin-bottom: 0.5em; 
+		}
+		
+		.contact .row.button {
+			margin-top: 1.5em;
+		}
+		
+		.contact label {
+			width: 180px;
+			display: block;
+			font-weight: bold;
+			color: #666;
+			line-height: 1.5em;
+		}
+		
+		.contact .row > span {
+			display: inline-block;
+			background: #dfdfdf;
+			padding: 4px;
+			border-radius: 6px;
+			-moz-border-radius: 6px;
+			-webkit-border-radius: 6px;
+		}
+		
+		.contact .row input[type="text"], .contact .row input[type="password"] {
+			font-size: 1.0em;
+			border: solid 1px #bdbdbd;
+			padding: 3px 2px;
+		}
+		
+		.contact input.captcha {
+			height: 26px;
+			width: 146px;
+			padding-left: 5px;
+			border: solid 1px #bdbdbd;
+			outline: none;
+		}
+		
+		.contact .row textarea {
+			font-size: 1.0em;
+			border: solid 1px #bdbdbd;
+			padding: 3px 2px;
+			width: 280px;
+			max-width: 280px;
+			min-height: 100px;
+		}
+		
+		.row-error > span {
+			background: #cecece !important;
+		}
+		
+		.row-error input, .row-error textarea {
+			border: solid 1px #99002a !important;
+		}
+		
+		.row-error label {
+			color: #99002a
+		}
 		
 		
 		
-
+		
+		
+		
 		
 		
 		

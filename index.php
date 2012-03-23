@@ -52,19 +52,21 @@
  * By default development will show errors but testing and live will hide them.
  */
 
-if (defined('ENVIRONMENT'))
-{
-	switch (ENVIRONMENT)
-	{
-		case 'development':
+if(defined('ENVIRONMENT')) {
+	
+	switch(ENVIRONMENT)	{
+		case 'development': {
 			error_reporting(-1);
-		break;
+			break;
+		}
 		case 'testing':
-		case 'production':
+		case 'production': {
 			error_reporting(0);
-		break;
-		default:
+			break;
+		}
+		default: {
 			exit('The application environment is not set correctly.');
+		}
 	}
 }
 
