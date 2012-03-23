@@ -76,24 +76,24 @@
 				<div class="column left">
 					
 					<ul>
-						<li class="first-child"><a href="#">Introduction</a></li>
-						<li><a href="#">Administration</a></li>
-						<li><a href="#">Admissions</a></li>
-						<li><a href="#">Nursery</a></li>
-						<li><a href="#">Pre-School &amp; Infants</a></li>
-						<li><a href="#">Juniors</a></li>
-						<li><a href="#">Seniors</a></li>
-						<li class="last-child"><a href="#">Sixth Form</a></li>
+						<li class="first-child"><a href="/introduction">Introduction</a></li>
+						<li><a href="/administration">Administration</a></li>
+						<li><a href="/admissions">Admissions</a></li>
+						<li><a href="/nursery-and-preschool">Nursery &amp; Pre-School</a></li>
+						<li><a href="/infants">Infants</a></li>
+						<li><a href="/juniors">Juniors</a></li>
+						<li><a href="/seniors">Seniors</a></li>
+						<li class="last-child"><a href="/sixth-form">Sixth Form</a></li>
 					</ul>
 					
 					<ul class="last-child">
-						<li class="first-child"><a href="#">Results</a></li>
-						<li><a href="#">Photo Gallery</a></li>
-						<li><a href="#">PTA</a></li>
-						<li><a href="#">TOPs</a></li>
-						<li><a href="#">News</a></li>
-						<li><a href="#">Downloads</a></li>
-						<li class="last-child"><a href="#">Contact Us</a></li>
+						<li class="first-child"><a href="/results">Results</a></li>
+						<li><a href="/gallery">Photo Gallery</a></li>
+						<li><a href="/pta">PTA</a></li>
+						<li><a href="/tops">TOPS</a></li>
+						<li><a href="/news">News</a></li>
+						<li><a href="/downloads">Downloads</a></li>
+						<li class="last-child"><a href="/contact-us">Contact Us</a></li>
 					</ul>
 					
 				</div>
@@ -106,9 +106,9 @@
 							<div class="row">
 								<label for="account_type">Select login type</label>
 								<select name="account_type" id="account_type">
-									<option value="">Parent</option>
-									<option value="">Past Pupil</option>
-									<option value="">Staff</option>
+									<option value="1">Parent</option>
+									<option value="2">Past Pupil</option>
+									<option value="3">Staff</option>
 								</select>
 							</div>
 							
@@ -135,7 +135,7 @@
 						
 						<form method="post" action="/search" class="clearfix" id="form-search">
 							<fieldset>
-								<input type="text" name="search" value="Search" id="search" class="search search-box">
+								<input type="text" name="search" value="<?php echo isset($search_term) ? $search_term : 'Search'; ?>" id="search" class="search search-box">
 								<input type="image" src="<?php echo $this->uri->skin('assets/images/form.search.png'); ?>" class="search search-submit">
 							</fieldset>
 						</form>

@@ -217,6 +217,7 @@ class Page_Model extends NestedSet_Model {
 		), 0) as page_parent_id', false);
 		
 		$this->db->select('group_concat(pp.page_slug order by pp.page_left separator "") as page_slug_path', false);
+		//$this->db->select('group_concat(pp.page_name order by pp.page_left separator " &rarr; ") as page_slug_path2', false);
 		$this->db->select('count(pp.page_id) - 1 as page_depth');
 		$this->db->from('page pn');
 		$this->db->from('page pp');
@@ -874,6 +875,17 @@ class Page_Object {
 			'output-encoding'				=> 'utf8',
 			'new-blocklevel-tags'			=> 'widget'
 		));
+	}
+	
+	public function excerpt($length = 65, $cleaned = true) {
+		
+		$content = $this->content($cleaned);
+		$content = strip_tags(trim(preg_replace('/(<(h1)>.*?<\/\\2>)/is', '', $content)));
+		
+		preg_match(sprintf('/\A(.{%1$u,%2$u}(?!\w)|.{0,%2$u})/s', 0, $length), $content, $matches);
+		$excerpt = $matches[1] . (strlen($content) > $length ? '&hellip;' : '');
+		
+		return $excerpt;
 	}
 }
 

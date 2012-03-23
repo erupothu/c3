@@ -30,6 +30,6 @@ class Contact extends INSIGHT_HMVC_Controller {
 			die('Email sent.  @TODO: ' . anchor('/', 'Forward to a success page.'));
 		}
 		
-		$this->load->view('form.view.php');
+		$this->load->view('templates/default.view.php');
 	}
 }

@@ -1031,6 +1031,23 @@
 		
 		.calendar-dates td.name {}
 		
+		
+		
+		/* Search Results */
+		.search-content article {
+			margin-bottom: 2.0em;
+		}
+		
+		.search-results {
+			padding: 0;
+		}
+		
+		.search-results li {
+			margin-bottom: 1.0em;
+		}
+		
+		
+		
 		</style>
 		
 		<meta name="robots" content="noindex, nofollow">
