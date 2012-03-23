@@ -92,7 +92,8 @@
 					
 					// Gets the list of tags from the settings.
 					var tags = [
-						['[C3 Contact Form]', 'Contact Form', 'Contact Form', { module: 'contact', method: 'form'} ]
+						['[C3 Contact Form]', 'Contact Form', 'Contact Form', { module: 'contact', method: 'form'} ],
+						['[Site Map]', 'Sitemap', 'Sitemap', { module: 'page', method: 'sitemap/generate'} ]
 					];
 					
 					// Create style objects for all defined styles.
@@ -120,7 +121,7 @@
 						},
 						
 						onClick: function(value) {
-
+							
 							editor.focus();
 							editor.fire('saveSnapshot');
 							

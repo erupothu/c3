@@ -9,8 +9,7 @@
 $route['default_controller'] 			= 'page';
 $route['404_override'] 					= 'page';
 
-$route['sitemap']						= 'page/sitemap';
-$route['sitemap.?([a-zA-Z.]+)?']		= 'page/sitemap/generate/$1';
+$route['sitemap\.([a-zA-Z.]+)']			= 'page/sitemap/generate/$1';
 
 /* TEMP ROUTES */
 $route['gallery'] = 'image/gallery';//special-projects/(technical-equipment|training)'] = 'product/route/$1';

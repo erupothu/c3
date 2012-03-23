@@ -166,12 +166,12 @@
 			<nav class="constrain bottom">
 				
 				<ul id="footer-nav" class="clearfix constrain">
-					<li class="first-child"><a href="#">Home</a></li>
+					<li class="first-child"><a href="/">Home</a></li>
 					<li class="creative-insight"><a href="http://www.creativeinsight.co.uk/" rel="external" target="_blank" title="The Web &hearts;'s Creative Insight">Site by <span>Creative Insight</span></a></li>
-					<li><a href="#">Privacy Policy</a></li>
-					<li><a href="#">Terms of Use</a></li>
-					<li><a href="#">Site Map</a></li>
-					<li class="last-child"><a href="#" rel="copyright">Highclare School <?php echo date('Y'); ?> &copy;</a></li>
+					<li><a href="/legal/privacy-policy">Privacy Policy</a></li>
+					<li><a href="/legal/terms-of-use">Terms of Use</a></li>
+					<li><a href="/sitemap">Site Map</a></li>
+					<li class="last-child"><a href="/legal/copyright" rel="copyright">Highclare School <?php echo date('Y'); ?> &copy;</a></li>
 				</ul>
 				
 			</nav>

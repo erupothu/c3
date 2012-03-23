@@ -9,15 +9,12 @@ class Sitemap extends INSIGHT_HMVC_Controller {
 		$this->load->model('page_model', 'page');
 	}
 	
-	public function index() {
-		$this->generate();
-	}
 	
 	public function generate($format = null) {
 		
 		// Load all pages into a Recurisve Iterator.
 		$iterator = new RecursiveArrayIterator($this->page->retrieve_nested());
-
+		
 		// Load an empty chunk if there are 0 rows.
 		if($iterator->count() === 0) {
 			//return $this->load->view('admin/page/chunks/' . $format . '.empty.chunk.php');
@@ -34,7 +31,7 @@ class Sitemap extends INSIGHT_HMVC_Controller {
 		while($iterator->valid()) {
 			
 			$page = $iterator->current();
-
+			
 			//$this->load->view('page/sitemap/chunks/' . $format . '.chunk.php', array_merge(array('page' => $page), $args));
 			echo '<li>' . anchor($page->permalink(), $page->title());
 			
