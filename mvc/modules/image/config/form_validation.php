@@ -45,5 +45,20 @@ $config = array(
 			'rules'	=> 'required|module_callback[gallery->validate_unique_permalink]'
 		)
 
+	),
+	
+	'admin-image-resource' => array(
+		
+		// Hook Resource
+		array(
+			'field'	=> 'resource_link',
+			'label'	=> 'Resource Link',
+			'rules'	=> ''
+		),
+		array(
+			'field'	=> 'resource_data',
+			'label'	=> 'Resource Data',
+			'rules'	=> ''
+		),
 	)
 );

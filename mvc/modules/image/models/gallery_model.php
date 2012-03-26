@@ -204,6 +204,21 @@ class Gallery_Object implements IteratorAggregate, Countable {
 		return $complete ? site_url(array('gallery', $this->slug())) : $this->slug();
 	}
 	
+	public function created($format = 'd/m/Y H:i:s') {
+		$datetime = DateTime::createFromFormat(DATE_MYSQL_DATETIME, $this->gallery_date_created);
+		return false !== $format ? $datetime->format($format) : $datetime;
+	}
+	
+	public function updated($format = 'd/m/Y H:i:s') {
+		
+		if(is_null($this->gallery_date_updated)) {
+			return $this->created($format);
+		}
+		
+		$datetime = DateTime::createFromFormat(DATE_MYSQL_DATETIME, $this->gallery_date_updated);
+		return false !== $format ? $datetime->format($format) : $datetime;
+	}
+	
 	public function attach($images, $id = null) {
 		$this->images = array_filter($images, function($image) { return is_a($image, 'Image_Object') && !is_null($image->id()); });
 		return $this;

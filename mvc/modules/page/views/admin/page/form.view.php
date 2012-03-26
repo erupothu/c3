@@ -22,7 +22,7 @@
 				</div>
 				<?php endif; ?>
 				
-				<div class="row required<?php $this->form_validation->earmark('page_name'); ?>">				
+				<div class="row required<?php $this->form_validation->earmark('page_name'); ?>">
 					<label for="page_name">Title</label>
 					<span><input type="text" class="slug_title" name="page_name" id="page_name" value="<?php echo $this->form_validation->value('page_name', !isset($page) ? '' : $page->page_name, false); ?>" data-slug-generate="page_slug" data-slug-module="page" /></span>
 				</div>

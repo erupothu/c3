@@ -18,8 +18,9 @@ class INSIGHT_Upload extends CI_Upload {
 			throw new Exception('Getting content length is not supported.');
 		}
 		
-		if(!$this->validate_upload_path())
+		if(!$this->validate_upload_path()) {
 			return false;
+		}
 		
 		// Set the uploaded data as class variables
 		$this->orig_name	= $file_name;
@@ -36,10 +37,18 @@ class INSIGHT_Upload extends CI_Upload {
 		$size = stream_copy_to_stream($input, $temp);
 		fclose($input);
 		
-		if($size != $file_size)
+		if($size != $file_size) {
 			return false;
+		}
 		
 		$this->file_size = round($file_size / 1024, 2);
+		
+		// Do not overwrite!
+		if(false == $this->overwrite && file_exists($this->full_path)) {
+			$this->file_name = $this->unique_filename($this->file_name, $this->upload_path);
+			$this->full_path = $this->upload_path . $this->file_name;
+		}
+		
 		if(!$target = fopen($this->full_path, 'w')) {
 			$this->set_error('upload_unable_to_write_file');
 			return false;
@@ -56,9 +65,13 @@ class INSIGHT_Upload extends CI_Upload {
 			return false;
 		}
 		
+		/*
+		 * Set the finalized image dimensions
+		 * This sets the image width/height (assuming the
+		 * file was an image).  We use this information
+		 * in the "data" function.
+		 */
 		$this->set_image_properties($this->full_path);
-		
-		sleep(2);
 		
 		return true;
 	}
@@ -76,8 +89,31 @@ class INSIGHT_Upload extends CI_Upload {
 		return $file_type;
 	}
 	
-	private function unique_filename() {
+	
+	/**
+	 * unique_filename
+	 *
+	 * @param string $file_name 
+	 * @param string $file_path 
+	 * @param string $starting_numeric 
+	 * @return string
+	 */
+	public function unique_filename($file_name, $file_path, $starting_numeric = 2) {
 		
+		if(!file_exists($file_path . $file_name)) {
+			return $file_path;
+		}
+		
+		$extension = $this->get_extension($file_name);
+		preg_match('/(.*?)-?(\d+)?' . preg_quote($extension, '/') . '/i', $file_name, $match);
+		$numeric = isset($match[2]) ? $numeric : $starting_numeric;
+		
+		// Loop until we find a filename that has not already been used...
+		while(file_exists($file_path . ($file_name = $match[1] . '-' . $numeric . $extension))) {
+			$numeric++;
+		}
+		
+		return $file_name;
 	}
 	
 	public function get_errors() {

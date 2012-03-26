@@ -123,7 +123,7 @@ CREATE TABLE `image` (
   `image_type` enum('ORIGINAL','THUMBNAIL') NOT NULL DEFAULT 'ORIGINAL',
   `image_date_created` datetime NOT NULL,
   PRIMARY KEY (`image_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -132,7 +132,6 @@ CREATE TABLE `image` (
 
 LOCK TABLES `image` WRITE;
 /*!40000 ALTER TABLE `image` DISABLE KEYS */;
-INSERT INTO `image` VALUES (1,NULL,'abbey.jpg','/uploads/abbey.jpg',NULL,1022,684,218.05,'ORIGINAL','2012-03-20 14:39:30'),(2,1,'abbey.thumbnail.jpg','/uploads/abbey.thumbnail.jpg','The Abbey',300,201,20.77,'THUMBNAIL','2012-03-20 14:39:33'),(3,NULL,'cookery+08+best.jpg','/uploads/cookery+08+best.jpg',NULL,912,684,1853.26,'ORIGINAL','2012-03-20 16:09:11'),(4,3,'cookery+08+best.thumbnail.jpg','/uploads/cookery+08+best.thumbnail.jpg',NULL,300,225,161.79,'THUMBNAIL','2012-03-20 16:09:26'),(5,NULL,'100_3291_rt8.jpg','/uploads/100_3291_rt8.jpg',NULL,1024,681,702.66,'ORIGINAL','2012-03-20 17:16:47'),(6,5,'100_3291_rt8.thumbnail.jpg','/uploads/100_3291_rt8.thumbnail.jpg',NULL,300,200,83.99,'THUMBNAIL','2012-03-20 17:16:50'),(7,NULL,'boys.jpg','/uploads/boys.jpg',NULL,912,684,2151.73,'ORIGINAL','2012-03-20 17:16:59'),(8,7,'boys.thumbnail.jpg','/uploads/boys.thumbnail.jpg',NULL,300,225,189.33,'THUMBNAIL','2012-03-20 17:17:02'),(18,17,'abbey.thumbnail.jpg','/uploads/abbey.thumbnail.jpg',NULL,300,201,20.77,'THUMBNAIL','2012-03-21 13:11:04'),(10,9,'100_0158_rt8.thumbnail.jpg','/uploads/100_0158_rt8.thumbnail.jpg',NULL,300,225,100.71,'THUMBNAIL','2012-03-20 17:21:41'),(17,NULL,'abbey.jpg','/uploads/abbey.jpg',NULL,1022,684,218.05,'ORIGINAL','2012-03-21 13:11:01'),(12,11,'poss+junior+photo+2.thumbnail.jpg','/uploads/poss+junior+photo+2.thumbnail.jpg',NULL,300,225,19.37,'THUMBNAIL','2012-03-20 17:22:20'),(13,NULL,'abbey.jpg','/uploads/abbey.jpg',NULL,1022,684,218.05,'ORIGINAL','2012-03-20 17:23:08'),(14,13,'abbey.thumbnail.jpg','/uploads/abbey.thumbnail.jpg',NULL,300,201,20.77,'THUMBNAIL','2012-03-20 17:23:11'),(15,NULL,'cathedral-ghosts-roof-dark.jpg','/uploads/cathedral-ghosts-roof-dark.jpg',NULL,800,600,229.88,'ORIGINAL','2012-03-20 17:23:26'),(16,15,'cathedral-ghosts-roof-dark.thumbnail.jpg','/uploads/cathedral-ghosts-roof-dark.thumbnail.jpg',NULL,300,225,29.27,'THUMBNAIL','2012-03-20 17:23:28'),(19,NULL,'nebulahorse3.jpg','/uploads/nebulahorse3.jpg',NULL,555,417,28.50,'ORIGINAL','2012-03-23 10:40:42'),(20,19,'nebulahorse3.thumbnail.jpg','/uploads/nebulahorse3.thumbnail.jpg',NULL,300,225,16.01,'THUMBNAIL','2012-03-23 10:40:50');
 /*!40000 ALTER TABLE `image` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -148,9 +147,10 @@ CREATE TABLE `image_gallery` (
   `gallery_name` varchar(128) NOT NULL,
   `gallery_slug` varchar(128) NOT NULL,
   `gallery_date_created` datetime NOT NULL,
+  `gallery_date_updated` datetime DEFAULT NULL,
   PRIMARY KEY (`gallery_id`),
   UNIQUE KEY `gallery_slug` (`gallery_slug`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -159,7 +159,7 @@ CREATE TABLE `image_gallery` (
 
 LOCK TABLES `image_gallery` WRITE;
 /*!40000 ALTER TABLE `image_gallery` DISABLE KEYS */;
-INSERT INTO `image_gallery` VALUES (1,'General','general','2012-03-20 14:37:01'),(2,'Testerosa','testerosa','2012-03-21 17:27:42');
+INSERT INTO `image_gallery` VALUES (1,'General','general','2012-03-26 14:44:07',NULL),(2,'Nursery &amp; Pre-School','nursery-and-preschool','2012-03-26 14:44:25',NULL),(3,'Infants','infants','2012-03-26 14:44:39',NULL),(4,'Juniors','juniors','2012-03-26 14:44:49',NULL),(5,'Seniors','seniors','2012-03-26 14:44:55',NULL),(6,'Sixth Form','sixth-form','2012-03-26 14:45:00',NULL);
 /*!40000 ALTER TABLE `image_gallery` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -185,7 +185,6 @@ CREATE TABLE `image_link` (
 
 LOCK TABLES `image_link` WRITE;
 /*!40000 ALTER TABLE `image_link` DISABLE KEYS */;
-INSERT INTO `image_link` VALUES (1,1,'gallery',1),(3,1,'gallery',2),(9,1,'page',1),(11,1,'page',2),(0,59,'page',1),(0,60,'page',1),(0,61,'page',1),(0,62,'page',1),(0,63,'page',1),(0,64,'page',1),(0,65,'page',1),(0,66,'page',1),(0,67,'page',1),(0,68,'page',1),(0,69,'page',1),(0,70,'page',1),(0,71,'page',1),(19,2,'page',1),(0,72,'page',1);
 /*!40000 ALTER TABLE `image_link` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -630,7 +629,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,'technical@creativeinsight.co.uk','b004e9b6d82ad6d51a8832cd33c776164ea4874d4504e0405be051c9098f7ca0','Creative','Insight','Creative Insight','01213212828',1,1,'2011-10-25 17:21:09','2012-03-23 16:40:41',NULL),(2,'juliabaden@aol.com','96cb11f9d24a6011da515f386ed55c39c922836a74ce9fab7a6aa30cbe3775fe','Julia','Baden','Highclare School','01213868218',1,1,'2012-03-23 16:42:47','2012-03-23 17:29:54',NULL);
+INSERT INTO `user` VALUES (1,'technical@creativeinsight.co.uk','b004e9b6d82ad6d51a8832cd33c776164ea4874d4504e0405be051c9098f7ca0','Creative','Insight','Creative Insight','01213212828',1,1,'2011-10-25 17:21:09','2012-03-23 16:40:41',NULL),(2,'juliabaden@aol.com','96cb11f9d24a6011da515f386ed55c39c922836a74ce9fab7a6aa30cbe3775fe','Julia','Baden','Highclare School','01213868218',1,1,'2012-03-23 16:42:47','2012-03-26 14:45:01',NULL);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -691,4 +690,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-03-23 17:31:05
+-- Dump completed on 2012-03-26 14:45:32

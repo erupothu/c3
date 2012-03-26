@@ -1,6 +1,10 @@
 
 	<div class="clearfix">
 		
+		<div id="images">
+			<?php echo Modules::run('image/display/upload'); ?>
+		</div>
+		
 		<form method="post" action="<?php echo $this->uri->uri_string(); ?>">
 			<fieldset>
 			
@@ -9,6 +13,13 @@
 					<?php echo $this->form_validation->errors(); ?>
 				</div>
 				<?php endif; ?>
+				
+				<?php if(isset($gallery)): ?>
+				<input type="hidden" name="resource_id" class="resource_field" value="<?php echo $gallery->id(); ?>">
+				<input type="hidden" name="resource_type" class="resource_field" value="gallery">
+				<?php endif; ?>
+				
+				<?php echo Modules::run('image/resource/hook', 'gallery', isset($gallery) ? $gallery->id() : null); ?>
 				
 				<?php if(isset($gallery)): ?>
 				<input type="hidden" name="gallery_id" id="gallery_id" value="<?php echo $gallery->id(); ?>">

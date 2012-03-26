@@ -12,9 +12,12 @@ class Admin extends INSIGHT_Admin_Controller {
 	
 	public function index() {
 		
-		$this->load->view('admin/image/index.view.php', array(
+		$this->load->view('admin/gallery/index.view.php', array(
 			'galleries'	=> $this->gallery->retrieve()
 		));
+		
+		$this->load->library('upload');
+		$this->upload->unique_filename('abbey.jpg', '/var/www/vhosts/highclare/www/uploads/');
 	}
 	
 	
@@ -25,17 +28,35 @@ class Admin extends INSIGHT_Admin_Controller {
 	public function create_gallery() {
 		
 		if($this->form_validation->run('admin-image-gallery-form')) {
+			
 			$gallery_id = $this->gallery->create();
+			
+			// Link Resources.
+			if(false !== $this->input->post('resource_link')) {
+				$resource_call = sprintf('%s/resource/link', $this->input->post('resource_link', true));
+				Modules::run($resource_call, 'gallery', $gallery_id, preg_split('/,/', $this->input->post('resource_data', true), -1, PREG_SPLIT_NO_EMPTY));
+			}
+			
 			return redirect('admin/image');
 		}
 		
 		$this->load->view('admin/gallery/create.view.php');
 	}
 	
+	
 	public function update_gallery($gallery_id) {
 		
 		if($this->form_validation->run('admin-image-gallery-form')) {
+			
+			// Update Gallery
 			$this->gallery->update($gallery_id);
+			
+			// Link Resources.
+			if(false !== $this->input->post('resource_link')) {
+				$resource_call = sprintf('%s/resource/link', $this->input->post('resource_link', true));
+				Modules::run($resource_call, 'gallery', $gallery_id, preg_split('/,/', $this->input->post('resource_data', true), -1, PREG_SPLIT_NO_EMPTY));
+			}
+			
 			return redirect('admin/image');
 		}
 		
@@ -66,7 +87,8 @@ class Admin extends INSIGHT_Admin_Controller {
 		
 		$this->load->library('upload', $upload_config = array(
 			'upload_path'	=> 'uploads',
-			'allowed_types'	=> 'jpg'
+			'allowed_types'	=> 'jpg',
+			'overwrite'		=> false
 		));
 		
 		$upload_data = array();
@@ -97,7 +119,7 @@ class Admin extends INSIGHT_Admin_Controller {
 			$upload_load = array(
 				'image_name'			=> $upload_data['file_name'],
 				'image_path'			=> sprintf('/%s/%s', $upload_config['upload_path'], $upload_data['file_name']),
-				'image_alt'				=> null,
+				'image_alt'				=> ucwords(urldecode(pathinfo($upload_data['orig_name'], PATHINFO_FILENAME))),
 				'image_width'			=> $image_details[0],
 				'image_height'			=> $image_details[1],
 				'image_size'			=> $image_size_kb,
@@ -113,6 +135,7 @@ class Admin extends INSIGHT_Admin_Controller {
 			'success'	=> $status,
 			'error'		=> $this->upload->get_errors(),
 			'data'		=> $upload_load,
+			'raw'		=> $upload_data,
 			'db_id'		=> $image_id
 		);
 		
@@ -127,37 +150,26 @@ class Admin extends INSIGHT_Admin_Controller {
 		
 	}
 	
-	public function delete($image_id, $resource_id = null, $resource_type = null, $ajax_call = false) {
+	public function delete($image_id, $resource_type = null, $resource_id = null, $ajax_call = false) {
 		
-		// get image.
-		$this->db->select('*');
-		$this->db->from('image i');
-		$this->db->where('i.image_id', $image_id);
-		$image_result = $this->db->get();
-		$image = $image_result->row_array();
-		
-		// delete image.
-		$this->db->from('image');
-		$this->db->where('image_id', $image_id);
-		$this->db->delete();
-		$this->db->affected_rows();
-		
-		// delete any image links.
+		// Delete any image resource links.
 		if(!is_null($resource_type) && !is_null($resource_id)) {
-			
 			$this->db->from('image_link');
 			$this->db->where('link_image_id', $image_id);
 			$this->db->where('link_resource_id', $resource_id);
 			$this->db->where('link_resource_type', $resource_type);
 			$this->db->delete();
-			
-			// @TODO
-			// Re-order.
 		}
 		
-		// physically remove image
-		if(file_exists($image['image_path'])) {
-			unlink($image['image_path']);
+		// Only delete this image if there are no links to it remaining.
+		$this->db->select('count(il.link_resource_id) as count');
+		$this->db->from('image_link il');
+		$this->db->where('il.link_image_id', $image_id);
+		$resource_result = $this->db->get();
+		$resource_unlink = $resource_result->row('count') == 0;
+		
+		if($resource_unlink) {
+			$this->image->delete($image_id, true);
 		}
 		
 		if($ajax_call) {

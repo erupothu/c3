@@ -254,10 +254,11 @@
 						break;
 					}
 				}
-
-				if(!found_instance)
+				
+				if(!found_instance) {
 					return;
-
+				}
+				
 				// Alter options.
 				found_instance.config.toolbarStartupExpanded = false;
 			});
@@ -278,11 +279,8 @@
 					'</div>',
 					onSubmit: function(id, filename) {
 						$('.qq-upload-list').show();
-						//toggle($('.qq-upload-list li').length > 0);
 					},
 					onComplete: function(id, filename, data) {
-						
-						//console.log('Complete', id, filename, $('.qq-upload-list'));
 						
 						// Add a hidden input
 						$li = $('.qq-upload-list li').not('.qq-original').eq(id);
@@ -300,6 +298,10 @@
 						// Set the CB name.
 						$cb = $li.find('input.qq-upload-select');
 						$cb.attr('name', 'image_select[' + data.db_id + ']');
+						
+						// Rename the link & actual size (Kb)
+						$li.find('.qq-upload-file a').text(data.data.image_alt);
+						$li.find('.qq-upload-size').text(data.data.image_size + ' Kb');
 						
 						// Hook onto existing image hook if it exists.
 						$('#resource_data').val($('#resource_data').val() + ($('#resource_data').val() == '' ? '' : ',') + data.db_id);
@@ -323,22 +325,6 @@
 				}); 
 			}
 			
-			/*
-			$.fancybox(
-				'/image/display/modal/2', {
-					'type'				: 'ajax',
-					'autoDimensions'	: true,
-					'autoScale'			: true,
-					'centerOnScroll'	: true,
-					'width'				: 'auto',
-					'height'			: 'auto',
-					'transitionIn'		: 'elastic',
-					'transitionOut'		: 'elastic',
-					'modal'				: true,
-					'overlayColor'		: '#000'
-				}
-			);
-			*/
 			
 			/* Image Uploads */
 			// Sortable!
@@ -408,14 +394,21 @@
 			/* Image Upload > Delete Images */
 			$('.qq-delete-images').click(function(e) {
 				
-				$page_id = $('#page_id').length == 1 ? $('#page_id').val() : null;
-				
 				e.preventDefault();
+				
+				resource_id = $('.resource_field[name="resource_id"]').val();
+				resource_type = $('.resource_field[name="resource_type"]').val();
+				
+				if(!resource_type || !resource_id) {
+					alert('Could not find resource type/ID.  Failed to unlink/delete image.');
+					return false;
+				}
+				
 				$list = $('.qq-upload-list').find('input[type="checkbox"]:checked').each(function(i, $element) {
 					$image_id = $($element).attr('name').substring(13).slice(0, -1);
 					$.ajax({
 						dataType: 'json',
-						url: '/admin/image/delete/' + $image_id + '/page/' + $page_id + '/true',
+						url: '/admin/image/delete/' + $image_id + '/' + resource_type + '/' + resource_id + '/true',
 						data: [],
 						success: function(data) {
 							
@@ -429,8 +422,9 @@
 								}
 							});
 						},
-						error: function() {
+						error: function(data) {
 							alert('Cannot delete image.');
+							console.log(data.responseText);
 						}
 					});
 					
