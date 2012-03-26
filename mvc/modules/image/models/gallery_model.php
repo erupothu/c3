@@ -33,13 +33,11 @@ class Gallery_Model extends CI_Model {
 		$this->db->select('i.*');
 		$this->db->select('il.*');
 		$this->db->select('count(i.image_id) as image_count');
-		//$this->db->select('(select count(im.link_image_id) from image_link im where im.link_resource_type = "gallery" and im.link_resource_id = g.gallery_id) as image_count');
 		$this->db->from('image_gallery g');
 		$this->db->disable_escaping();
-		$this->db->join(array('image_link il', 'image i'), 'il.link_resource_type = "gallery" and il.link_resource_id = g.gallery_id and i.image_parent_id = il.link_image_id', 'left');
-		$this->db->order_by('g.gallery_id asc');
+		$this->db->join(array('image i', 'image_link il'), 'il.link_resource_type = "gallery" and il.link_resource_id = g.gallery_id and i.image_parent_id = il.link_image_id', 'left');
+		$this->db->order_by('g.gallery_id');
 		$this->db->group_by('g.gallery_id');
-		
 		$gallery_result = $this->db->get();
 		
 		$galleries = $gallery_result->result('Gallery_Object');
@@ -238,9 +236,13 @@ class Gallery_Object implements IteratorAggregate, Countable {
 		return $this->images;
 	}
 	
-	public function temp() {
-		$first = $this->getIterator()->current();
-		return !is_null($first) ? $first->html() : 'No Image';
+	public function cover() {
+		
+		if($this->count() == 0) {
+			return false;
+		}
+		
+		return $this->getIterator()->current()->html();
 	}
 	
 	public function getIterator() {
