@@ -7,7 +7,7 @@
 		</div>
 		
 		<div id="footer">
-		
+
 			<div class="constrain">
 			Memory Usage: {memory_usage} &nbsp;&bull;&nbsp; Elapsed Time: {elapsed_time}s &nbsp;&bull;&nbsp; C3 &nbsp;<span class="copyright">&copy; Creative Insight <?php echo date('Y'); ?></span>
 			</div>
@@ -31,6 +31,10 @@
 		<script src="<?php echo $this->uri->skin('scripts/libs/fileuploader-1.0.0/fileuploader-1.0.0.js', 'core'); ?>"></script>
 		<script src="<?php echo $this->uri->skin('scripts/libs/fancybox-1.3.4/jquery.fancybox-1.3.4.min.js', 'core'); ?>"></script>
 		<script>
+		
+		/* Settings */
+		var insight_maxUploadBytes = <?php echo substr(ini_get('upload_max_filesize'), 0, -1) * pow(1024, array_search(strtoupper(substr(ini_get('upload_max_filesize'), -1)), array(1 => 'K', 2 => 'M', 3 => 'G'))); ?>; // <?php echo ini_get('upload_max_filesize'); ?>
+		
 		
 		var adminFlashMessageHide = function() {
 			$('.flash-message').slideUp(100, function() {
@@ -262,7 +266,7 @@
 				// Alter options.
 				found_instance.config.toolbarStartupExpanded = false;
 			});
-
+			
 			
 			if($('#file-uploader').length > 0) {
 				
@@ -270,7 +274,7 @@
 					element: $('#file-uploader')[0],
 		 			action: '<?php echo site_url('admin/image/upload'); ?>',
 					allowedExtensions: ['jpg'],
-					sizeLimit: 10485760,
+					sizeLimit: insight_maxUploadBytes,
 					debug: false,
 					template: '<div class="qq-uploader">' + 
 						'<div class="qq-upload-drop-area"><span>Drop files here to upload</span></div>' +
@@ -348,12 +352,10 @@
 				
 				// Post to image order function.
 				//$.post('/image/resource/order', { order: id_list, fields: $('.resource_field').serialize() }, function(data) {
-				//	console.log(data);
 				//});
 				
 				// Set hidden.
 				$('#resource_data').val(id_list.join(','));
-				//console.log('sort order:', id_list);
 			}
 			
 			imageCheckSelectedImages = function() {
@@ -484,15 +486,12 @@
 					testing: [ 'a', 'b', 'c' ]
 				},
 				onInit: function() {
-					//console.log('rockballs.');
+
 				},
 				onUploadSuccess: function(file, data, response) {
 					
 					// Return is JSON.
 					data = $.parseJSON(data);
-					
-					//console.log($(this), file, data, response);
-					
 					$('#' + $(this).attr('queueID')).after('<a href="' + data.path + '" class="uploaded-pdf-preview" title="Preview"><span>Preview</span></a>', {});
 				}
 			});

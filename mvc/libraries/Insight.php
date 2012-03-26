@@ -43,20 +43,22 @@ class Insight {
 	}
 	
 	public function config($keystring = null, $encode = false) {
-
-        if(is_null($keystring))
-            return $this->configuration;
-
-        $position =& $this->configuration;
-        foreach(explode('/', trim($keystring)) as $key) {
-
-            if(!isset($position[$key]))
-                return false;
-
-            $position =& $position[$key];
-        }
-
-        return $encode ? htmlentities($position, ENT_COMPAT, 'UTF-8') : $position;
+		
+		if(is_null($keystring)) {
+			return $this->configuration;
+		}
+		
+		$position =& $this->configuration;
+		foreach(explode('/', trim($keystring)) as $key) {
+			
+			if(!isset($position[$key])) {
+				return false;
+			}
+			
+			$position =& $position[$key];
+		}
+		
+		return $encode ? htmlentities($position, ENT_COMPAT, 'UTF-8') : $position;
 	}
 	
 	
@@ -78,9 +80,10 @@ class Insight {
 				}
 			}
 		}
-
+		
 		return $modules;
 	}
+	
 	
 	static public function error($exception) {
 		
