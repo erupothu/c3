@@ -6,12 +6,11 @@ class Admin extends INSIGHT_Admin_Controller {
 		
 		parent::__construct();
 		$this->load->model('image_model', 'image');
+		$this->load->model('gallery_model', 'gallery');
 	}
 	
 	
 	public function index() {
-		
-		$this->load->model('gallery_model', 'gallery');
 		
 		$this->load->view('admin/image/index.view.php', array(
 			'galleries'	=> $this->gallery->retrieve()
@@ -25,8 +24,6 @@ class Admin extends INSIGHT_Admin_Controller {
 	
 	public function create_gallery() {
 		
-		$this->load->model('gallery_model', 'gallery');
-		
 		if($this->form_validation->run('admin-image-gallery-form')) {
 			$gallery_id = $this->gallery->create();
 			return redirect('admin/image');
@@ -36,8 +33,6 @@ class Admin extends INSIGHT_Admin_Controller {
 	}
 	
 	public function update_gallery($gallery_id) {
-		
-		$this->load->model('gallery_model', 'gallery');
 		
 		if($this->form_validation->run('admin-image-gallery-form')) {
 			$this->gallery->update($gallery_id);
@@ -50,7 +45,12 @@ class Admin extends INSIGHT_Admin_Controller {
 	}
 	
 	public function delete_gallery($gallery_id) {
-		echo 'Delete ' . $gallery_id;
+		
+		if(!$this->gallery->delete($gallery_id)) {
+			show_error('Could not delete Image Gallery.');
+		}
+		
+		return redirect('admin/image');
 	}
 	
 	

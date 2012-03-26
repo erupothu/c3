@@ -68,6 +68,30 @@ class Gallery_Model extends CI_Model {
 	}
 	
 	
+	public function delete($gallery_id) {
+		
+		// Remove the actual gallery.
+		$this->db->from('image_gallery');
+		$this->db->where('gallery_id', $gallery_id);
+		$this->db->delete();
+		$deleted_successfully = $this->db->affected_rows() === 1;
+		
+		// Unlink any images attached to this gallery.
+		$this->db->from('image_link');
+		$this->db->where('link_resource_id', $gallery_id);
+		$this->db->where('link_resource_type', 'gallery');
+		$this->db->delete();
+		
+		// Flash Message
+		if($deleted_successfully) {
+			$this->session->set_flashdata('admin/message', 'Image Gallery has been deleted');
+			return true;
+		}
+		
+		return false;
+	}
+	
+	
 	public function retrieve_by_id($gallery_id) {
 		
 		$this->db->select('g.*');

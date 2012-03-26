@@ -10,6 +10,9 @@ class Image_Model extends CI_Model {
 		
 		$this->db->select('i.*');
 		$this->db->from('image i');
+		$this->db->select('t.image_id as image_thumbnail_id');
+		$this->db->select('t.image_path as image_thumbnail_path');
+		$this->db->join('image t', 't.image_parent_id = i.image_id', 'left');
 		$this->db->where('i.image_id', $image_id);
 		$image_result = $this->db->get();
 		
@@ -18,7 +21,37 @@ class Image_Model extends CI_Model {
 		}
 		
 		return $image_result->row(0, 'Image_Object');
-	} 
+	}
+	
+	
+	public function delete($image_id, $unlink = true) {
+		
+		if(!$image = $this->retrieve_by_id($image_id)) {
+			return false;
+		}
+		
+		// Delete Image & any thumbnails.
+		$this->db->from('image');
+		$this->db->where('image_id', $image_id);
+		$this->db->or_where('image_parent_id', $image_id);
+		$this->db->delete();
+		
+		// Remove any resource links.
+		$this->db->from('image_link');
+		$this->db->where('link_image_id', $image_id);
+		$this->db->delete();
+		
+		// Remove the physical file(s)?
+		$message = 'but the physical files were kept';
+		if($unlink) {
+			unlink($image->path(true));
+			unlink($image->thumbnail(true));
+			$message = 'and physical files removed';
+		}
+		
+		$this->session->set_flashdata('admin/message', 'Image & thumbnails removed (' . $message . ').');
+		return true;
+	}
 }
 
 class Image_Object {
@@ -39,8 +72,8 @@ class Image_Object {
 		return $this->image_size;
 	}
 	
-	public function path() {
-		return $this->image_path;
+	public function path($absolute = false) {
+		return $absolute ? realpath(FCPATH . $this->path(false)) : $this->image_path;
 	}
 	
 	public function alt() {
@@ -59,12 +92,12 @@ class Image_Object {
 		return array($this->width(), $this->height());
 	}
 	
-	public function thumbnail() {
+	public function thumbnail($absolute = false) {
 		
 		if(!$this->has_thumbnail() || $this->is_thumbnail())
 			return false;
 			
-		return $this->image_thumbnail_path;
+		return $absolute ? realpath(FCPATH . $this->thumbnail(false)) : $this->image_thumbnail_path;
 	}
 	
 	public function has_thumbnail() {

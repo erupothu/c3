@@ -561,7 +561,7 @@ class NestedSet_Model extends CI_Model {
 		$this->db->set('page_left', 'page_left - ' . $page->tree_width(), false);
 		$this->db->where('page_left > ' . $page->tree_right());
 		$this->db->update('page');
-
+		
 		// Write the flash message.
 		$this->session->set_flashdata('admin/message', sprintf('Deleted %d page%s', $deleted_items, $deleted_items == 1 ? '' : 's'));
 		

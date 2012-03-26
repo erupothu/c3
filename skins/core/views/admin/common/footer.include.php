@@ -466,13 +466,8 @@
 			
 			// Flash Messages.
 			$('.flash-message').effect('highlight', { color: '#ffd07f' }, 1000);
-			
-			
-			$('a.flash-close').live('click', adminFlashMessageHide);
+			$('.flash-message').on('click', 'a', adminFlashMessageHide);
 			setTimeout(function() { adminFlashMessageHide(); }, 7500);
-			
-			
-			
 			
 			
 			
