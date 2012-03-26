@@ -103,7 +103,7 @@ class Gallery_Model extends CI_Model {
 		$this->db->disable_escaping();
 		$this->db->join(array('image_link il', 'image t', 'image i'), 'il.link_resource_type = "gallery" and il.link_resource_id = g.gallery_id and il.link_image_id = i.image_id and t.image_parent_id = i.image_id', 'left');
 		$this->db->where('g.gallery_id', $gallery_id);
-		$this->db->order_by('g.gallery_id asc');
+		$this->db->order_by('il.link_position asc');
 		$this->db->group_by('g.gallery_id');
 		$gallery_result = $this->db->get();
 		
@@ -127,7 +127,7 @@ class Gallery_Model extends CI_Model {
 		$this->db->disable_escaping();
 		$this->db->join(array('image_link il', 'image t', 'image i'), 'il.link_resource_type = "gallery" and il.link_resource_id = g.gallery_id and il.link_image_id = i.image_id and t.image_parent_id = i.image_id', 'left');
 		$this->db->where('g.gallery_slug', $gallery_slug);
-		$this->db->order_by('g.gallery_id asc');
+		$this->db->order_by('il.link_position asc');
 		$gallery_result = $this->db->get();
 	
 		if($gallery_result->num_rows() === 0) {
