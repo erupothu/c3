@@ -44,21 +44,21 @@
 | the active record class
 */
 
-$active_group 	= $_SERVER['HTTP_HOST'];
-$active_record 	= true;
+$active_group  = $_SERVER['HTTP_HOST'];
+$active_record = true;
 
-$db['highclare.insight']['hostname'] = 'localhost';
-$db['highclare.insight']['username'] = 'highclare';
-$db['highclare.insight']['password'] = 'MU]<3MX4]HvrW0,';
-$db['highclare.insight']['database'] = 'highclare';
-$db['highclare.insight']['dbdriver'] = 'mysqli';
-$db['highclare.insight']['dbprefix'] = '';
-$db['highclare.insight']['pconnect'] = true;
-$db['highclare.insight']['db_debug'] = true;
-$db['highclare.insight']['cache_on'] = false;
-$db['highclare.insight']['cachedir'] = '';
-$db['highclare.insight']['char_set'] = 'utf8';
-$db['highclare.insight']['dbcollat'] = 'utf8_general_ci';
-$db['highclare.insight']['swap_pre'] = '';
-$db['highclare.insight']['autoinit'] = true;
-$db['highclare.insight']['stricton'] = false;
+$db['c3.localhost']['hostname'] = 'localhost';
+$db['c3.localhost']['username'] = 'c3';
+$db['c3.localhost']['password'] = ',';
+$db['c3.localhost']['database'] = 'c3';
+$db['c3.localhost']['dbdriver'] = 'mysqli';
+$db['c3.localhost']['dbprefix'] = '';
+$db['c3.localhost']['pconnect'] = true;
+$db['c3.localhost']['db_debug'] = true;
+$db['c3.localhost']['cache_on'] = false;
+$db['c3.localhost']['cachedir'] = '';
+$db['c3.localhost']['char_set'] = 'utf8';
+$db['c3.localhost']['dbcollat'] = 'utf8_general_ci';
+$db['c3.localhost']['swap_pre'] = '';
+$db['c3.localhost']['autoinit'] = true;
+$db['c3.localhost']['stricton'] = false;
